@@ -1,0 +1,111 @@
+---
+title: "California State University Chico \n Department of Mathematics and Statistics"
+output:
+  html_document:
+    highlight: pygments
+  pdf_document: default
+---
+
+# MATH 456, Applied Statistics II, Section 01, Spring 2016
+
+### Course Information
+**Instructor:** Dr. Robin Donatello  
+**Office Location:** Holt 216  
+**Telephone:** 898-5767  
+**E-mail:** rdonatello@csuchico.edu  
+**Office Hours:** TBD Week 2
+**Class days and times:** MWF 2-2:50, Holt 155  
+**Prerequisites:** MATH 315/615 at Chico State or instructor permission.  
+**Course Website:** http://norcalbiostat.github.io/MATH456/  
+**Piazza Forum:** https://piazza.com/mail.csuchico.edu/spring2016/math456
+
+## Course Usage of Blackboard Learn
+Blackboard Learn will be used for submission of assignments only. 
+Copies of the course syllabus and major assignments may be found on Blackboard Learn.  You are responsible for regularly checking the online resources, which is accessed through the Chico State Portal. [Insert applicable information regarding your online resources, and expectations for how students will use the system.]
+
+## Course Description and Goals
+From the CSUC Course Catalog: Advanced topics in applied statistics including multiple regression, multivariate methods, nonparametrics, analysis of covariance, bootstrap methods and others as appropriate. Statistical computer packages are introduced and used. Appropriate for biology, agriculture, nutrition, business, psychology, social science and other maojrs. 3 hours discussion.
+
+
+## Course Content Learning Outcomes
+Upon successful completion of this course, students will be able to:
+
+
+## Required Materials
+#### Textbooks
+TBD
+
+#### Computer Hardware and Software 
+We will be using the statistical programming language R. You are expected to have prior experience with this language. 
+
+Loaner laptops will be available for you to use during class time only. These systems will be set up properly and ready to go on day 1. You will eventually have to set up and bring your own laptop to class. There will not be sufficient time during class for you to complete the necessary work. All software programs we will use are free.  
+
+  - **R** http://cran.r-project.org/
+  - **R-Studio** http://www.rstudio.com/products/rstudio/download/
+  - **The typesetting environment LaTeX** http://www.latex-project.org/
+  - **A Piazza account** https://piazza.com/mail.csuchico.edu/spring2016/math456
+
+Here is a [slide deck](notes/xtra01_InstallPrograms.html) containing instructions on how to install these programs. _Notes are currently from a different class but main content remains unchanged_. 
+
+
+**If you have no prior experience with R you have some choices.**
+
+1) Go through any number of self-paced free online tutorials. Recommended ones are [DataCamp](https://www.datacamp.com/courses/free-introduction-to-r), [TryR](http://tryr.codeschool.com/), and [R Tutorial](http://www.r-tutor.com/r-introduction).    
+2) Go through a self-paced online R Bootcamp specifically designed by Dr. Donatello to provide just the basics needed for coursework in this class. This Bootcamp can be found at http://norcalbiostat.github.io/R-Bootcamp/
+2) Plan on enrolling in the in-person version of this R Bootcamp at the start of the semester. This will be 2 hour classes, 2 nights/week, for the first 3 weeks. Specific enrollment details will be announced as they are finalized. 
+
+
+
+
+## Dropping and Adding
+The last day to drop or add a course is 2/19/16. After this date, withdraws will only be allowed for serious and compelling reasons subject to department approval. You are responsible for understanding the policies and procedures about add/drops, academic renewal, etc., found in the CSU Chico University Catalog.  You should be aware of the new deadlines and penalties for adding and dropping classes. 
+
+## Assignments and Grading Policy
+Enumerate and briefly describe assignments for the course and indicate alignment with learning outcomes. Include information about due dates and assignment weights. Specify grading policies including how grades are determined, what grades are possible, whether extra credit are available, what the penalty is for late or missed word and what constitutes a passing grade for the course. 
+
+* Quizzes XX%
+* Assignments XX%
+* Midterm XX%
+* Final Exam XX%
+* Final Project XX%
+* Peer grading XX%
+* Participation XX% (i.e. in class/online discussions and attendance )
+
+Instructions and Guidelines for grading TBD. 
+
+
+## University Policies and Campus Resources
+### Academic Integrity
+Students are expected to be familiar with the University's Academic Integrity Policy. Your own commitment to learning, as evidenced by your enrollment at California State University, Chico, and the University's Academic Integrity Policy requires you to be honest in all your academic course work. Faculty members are required to report all infractions to the Office of Student Judicial Affairs. The policy on academic integrity and other resources related to student conduct can be found on the  Student Judicial Affairs web site.
+
+### IT Support Services
+Computer labs for student use are located on the first and fourth floor of the Meriam Library, Room 116 and 450, Tehama Hall Room 131, and the Bell Memorial Union (BMU) basement. You can get help using your computer from IT Support Services; contact them through the ITSS web site. There are loaner laptops available _during class time only_ in Holt 155. 
+
+### Americans with Disabilities Act
+If you need course adaptations or accommodations because of a disability or chronic illness, or if you need to make special arrangements in case the building must be evacuated, please make an appointment with me as soon as possible, or see me during office hours. Please also contact Accessibility Resource Center (ARC) as they are the designated department responsible for approving and coordinating reasonable accommodations and services for students with disabilities. ARC will help you understand your rights and responsibilities under the Americans with Disabilities Act and provide you further assistance with requesting and arranging accommodations. Phone: 530-898-5959. Location: Student Services Center 170. Email: arcdept@csuchico.edu
+
+### Student Learning Center
+The mission of the Student Learning Center (SLC) is to provide services that will assist CSU, Chico students to become independent learners. The SLC prepares and supports students in their college course work by offering a variety of programs and resources to meet student needs. Specific of note for this course is that the University Writing Center has been combined with the Student Learning Center. It is advised that you utilize these services to continually improve your writing skills and habits. 
+
+
+
+### Course Description
+
+*Topics include*:
+
+
+### Time Commitment
+It is not easy to write literate computer programs but the payoff is immeasurable. You will spend 3 hours in class discussing topics and working on code. Expect to spend around 6 hours outside of class to read, write, code and problem solve. For the best chance of success start assignments early, use the discussion forms, form study groups and come to office hours. You will get out of this class what you put into it.
+
+### Tentative Daily Schedule
+The daily class schedule can be found [here](Schedule.html). This is an experimental course, so the list of topics and timings are subject to change. It is your responsibility to be aware of the current schedule. 
+
+
+
+**Getting a head start on R**  
+If you want to get a head start on learning R so we can get into the really kewl stuff, there are several ways to get started learning the basics right away. These topics will be covered in the first three weeks, most of the work you will be doing outside of class. 
+
+
+
+
+

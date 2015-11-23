@@ -1,0 +1,81 @@
+---
+title: "Introduction"
+author: "_Use arrow keys for navigation_"
+date: "Robin Donatello - Math 456 Spring 2016"
+output:
+  ioslides_presentation:
+    highlight: pygments
+  beamer_presentation:
+    colortheme: beaver
+    fonttheme: professionalfonts
+    highlight: pygments
+    theme: Warsaw
+  slidy_presentation:
+    highlight: pygments
+---
+
+## Introduction and Motivation
+
+- Who are you? 
+    - Name
+    - Why you are here?
+    - Are you an R user? If so, for how long? 
+    - What do you want to get out of this class? 
+
+
+## Structure of this class
+- Quasi flipped classroom. 
+- Students read lecture notes, book readings and start coding prior to class. 
+- Class time is devoted to working examples, discussing interpretations and limitations of methods learned.
+
+## General daily structure. 
+If we all keep to this time schedule it will make the most of our class time. 
+
+  - Housekeeping (5 min)  
+  - Discussion of current topic (20 min)  
+  - Hands on work (20 min)  
+  - Take home message (5 min)  
+    
+## General weekly structure. 
+  - **Monday**: New topic introduction and discussion. First set of easy hands on application of topic using R. 
+  - **Wednesday**: Discussion of interpretations and limitations. More complicated examples. 
+  - **Friday**: Finish discussion of topic and example problems. 
+
+
+## Class website
+http://norcalbiostat.github.io/MATH456
+
+* First stop for all class materials. 
+* Hosted by [GitHub](https://github.com/). 
+* The [syllabus](./Syllabus.html) covers course details such as grading, office hours and required materials.
+* Additional set of slides containing instructions on how to download and install the required programs. 
+
+
+## Time Committment
+- CSUC and Federal policy states that "One hour of classroom or direct faculty instruction and a minimum of two hours of out-of-class student work each week for approximately fifteen weeks for one semester hour of credit". 
+- For a 3 unit course you should expect to spend 3 hours in direct contact with the instructor, and 9 hours outside of class. 
+- Completing the required readings and starting to work out problems in R prior to class time will make for a much more productive and useful class meeting time. We only have 50 minutes face to face, plan on making the most of it. 
+
+## Getting Help
+* Your first resource is each other. 
+* Use the class forum for R and Markdown debugging problems.
+* Come to the RUG meetings / open work sessions. 
+* I will **not** answer emails about any coding problems. Check the class discussion forum for a solution first. 
+* Another great resource is [StackOverflow](http://stackoverflow.com/questions/tagged/r) using the `r` or `markdown` tags. 
+* Prepare a [minimal working example](http://stackoverflow.com/questions/5963269/how-to-make-a-great-r-reproducible-example) of your problem on the forum, it may be helpful to include a screenshot of the problem. 
+
+## Plagerism
+* Working with others is expected, directly copying code and interpretations is not 
+* Completely unacceptable
+* Easily detected
+* Will result in 0 credit for all parties if observed
+* Does nothing but make it harder to understand the material and pass the class
+
+
+## Getting started!
+* Review the [Syllabus](Syllabus.html)
+* Install the necessary programs ([R](http://cran.r-project.org/), [R Studio](http://www.rstudio.com/products/rstudio/download/), [$\LaTeX$](http://www.latex-project.org/))
+* Join the [Piazza](https://piazza.com/mail.csuchico.edu/spring2016/math456) class forum and say hi. 
+* Bookmark the [course website](http://norcalbiostat.github.io/MATH456)
+* Read the course notes for [Week 1](wk01.html) and start preparing to get your hands dirty on Wednesday. 
+

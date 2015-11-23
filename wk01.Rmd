@@ -1,0 +1,28 @@
+---
+title: "Week 1"
+author: "MATH 456, Spring 2016"
+date: " `r Sys.Date()` "
+output: html_document
+---
+
+# Announcements
+
+
+# Prepare (Before class)
+* Review the [Syllabus](Syllabus.html)
+* Install the necessary programs ([R](http://cran.r-project.org/), [R Studio](http://www.rstudio.com/products/rstudio/download/), [$\LaTeX$](http://www.latex-project.org/))
+* Join the [Piazza](https://piazza.com/mail.csuchico.edu/spring2016/math456) class forum and say hi.  
+
+# Notes
+* Intro to the class - [[HTML]](notes/lec01_Intro.html)
+* Multiple Linear Regression - [[HTML]](notes/MLR.html)[[RMD]](notes/MLR.RMD)
+
+# Experience (During Class)
+
+
+# Data (as needed)
+
+
+# Practice (After Class)
+
+
