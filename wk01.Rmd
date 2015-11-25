@@ -6,19 +6,25 @@ output: html_document
 ---
 
 # Announcements
-
+Welcome to Applied Statistics II!
 
 # Prepare (Before class)
 * Review the [Syllabus](Syllabus.html)
+* Bookmark the [course website](http://norcalbiostat.github.io/MATH456)
 * Install the necessary programs ([R](http://cran.r-project.org/), [R Studio](http://www.rstudio.com/products/rstudio/download/), [$\LaTeX$](http://www.latex-project.org/))
 * Join the [Piazza](https://piazza.com/mail.csuchico.edu/spring2016/math456) class forum and say hi.  
 
+
 # Notes
 * Intro to the class - [[HTML]](notes/lec01_Intro.html)
-* Multiple Linear Regression - [[HTML]](notes/MLR.html)[[RMD]](notes/MLR.RMD)
+* Characterizing data - [[HTML]](notes/lec02_data_prep.html)[[PDF]](notes/lec02_data_prep.pdf)
+* Handout: Afifi Ch2
 
 # Experience (During Class)
-
+## Vocabulary
+1. Classify the following types of data by using Stevens's measurement system: decibels of noise level, father's occupation, parts per  million of an impurity in water, density of a piece of bone, rating of a wine by one judge, net profit of a firm, and score on an aptitude test.  
+2. Pose two possible research questions from the CORD study (Lung function data) and decide on the appropriate dependent and independent variables.  
+3. Give an example of nominal, ordinal, interval, and ratio variables from a field of application you are familiar with. 
 
 # Data (as needed)
 

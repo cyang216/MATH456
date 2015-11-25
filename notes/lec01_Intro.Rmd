@@ -1,0 +1,100 @@
+---
+title: "Introduction to the Class"
+author: "Robin Donatello"
+date: "Math 456 Spring 2016"
+output:
+  ioslides_presentation:
+    highlight: pygments
+  beamer_presentation:
+    colortheme: beaver
+    fonttheme: professionalfonts
+    highlight: pygments
+    theme: Warsaw
+  slidy_presentation:
+    highlight: pygments
+---
+
+## Introduction and Motivation
+
+- Who are you? 
+    - Name
+    - Why you are here?
+    - Are you an R user? If so, for how long? 
+    - What do you want to get out of this class? 
+
+## Class website
+http://norcalbiostat.github.io/MATH456
+
+* First stop for all class materials. 
+* Hosted by [GitHub](https://github.com/). 
+* The [syllabus](./Syllabus.html) covers course details such as grading, office hours and required materials.
+* Additional set of slides containing instructions on how to download and install the required programs. 
+
+## Structure of this class
+- Quasi flipped classroom. 
+- Students read lecture notes, book readings and start coding prior to class. 
+- Class time is devoted to working examples, discussing interpretations and limitations of methods learned.
+
+## General daily structure. 
+If we all keep to this time schedule it will make the most of our class time. 
+
+  - Housekeeping (5 min)  
+  - Discussion of current topic (20 min)  
+  - Hands on work (20 min)  
+  - Take home message (5 min)  
+    
+
+## Course Content Learning Outcomes
+
+* Understand the value of, and be able to create a codebook / data dictionary. 
+* Translate a research question into an appropriate statistical analysis plan. 
+* Prepare data for analysis by cleaning and transforming raw data. 
+* Perform select statistical analyses in a reproducible manner. 
+* Interpret the results of the statistical analysis in plain language. 
+* Use model selection techniques to build predictive models for continuous and categorical data types. 
+
+## Required Materials: Textbooks
+Practical Multivariate Analysis 5th Edition. Afifi, May, Clark ISBN 9781439816806  
+
+4th Edition should be OK, but the discussion of software is outdated and it does not include R. 
+
+## Required Materials: Computers
+* We will be using the statistical programming language R. 
+* Loaner laptops will be available for you to use during class time only.
+* You will eventually have to set up and bring your own laptop to class. 
+
+  - **R** http://cran.r-project.org/
+  - **R-Studio** http://www.rstudio.com/products/rstudio/download/
+  - **The typesetting environment LaTeX** http://www.latex-project.org/
+
+Download and install the required software within the first two weeks of class.
+
+
+## New to R - Your choices 
+
+1) Go through any number of self-paced free online tutorials. Recommended ones are [DataCamp](https://www.datacamp.com/courses/free-introduction-to-r), [TryR](http://tryr.codeschool.com/), and [R Tutorial](http://www.r-tutor.com/r-introduction).    
+2) Go through a self-paced online R Bootcamp specifically designed to provide just the basics needed for coursework in this class. This includes an introduction to Markdown. This Bootcamp can be found at http://norcalbiostat.github.io/R-Bootcamp/
+3) Plan on enrolling in the in-person version of this R Bootcamp at the start of the semester. This will be 2 hour classes, 2 nights/week, for the first 3 weeks. Specific enrollment details will be announced as they are finalized. 
+
+## Time Committment
+- CSUC and Federal policy states that "One hour of classroom or direct faculty instruction and a minimum of two hours of out-of-class student work each week for approximately fifteen weeks for one semester hour of credit". 
+- For a 3 unit course you should expect to spend 3 hours in direct contact with the instructor, and 9 hours outside of class. 
+- Completing the required readings and starting to work out problems in R prior to class time will make for a much more productive and useful class meeting time. We only have 50 minutes face to face, plan on making the most of it. 
+
+## Getting Help
+* Your first resource is each other. 
+* Use the class [Piazza](https://piazza.com/mail.csuchico.edu/spring2016/math456) forum for R and Markdown debugging problems.
+* Come to the RUG meetings / open work sessions. 
+* I will **not** answer emails about any coding problems. Check the class discussion forum for a solution first. 
+* Another great resource is [StackOverflow](http://stackoverflow.com/questions/tagged/r) using the `r` or `markdown` tags. 
+* Prepare a [minimal working example](http://stackoverflow.com/questions/5963269/how-to-make-a-great-r-reproducible-example) of your problem on the forum, it may be helpful to include a screenshot of the problem. 
+
+
+
+## Getting started!
+* Review the [Syllabus](Syllabus.html) for more details. 
+* Install ([R](http://cran.r-project.org/), [R Studio](http://www.rstudio.com/products/rstudio/download/), and  [$\LaTeX$](http://www.latex-project.org/))
+* Join the [Piazza](https://piazza.com/mail.csuchico.edu/spring2016/math456) class forum and say hi. 
+* Bookmark the [course website](http://norcalbiostat.github.io/MATH456)
+* Review the course notes for [Week 1](wk01.html) and be ready to discuss the material in class Wednesday. 
+

@@ -19,64 +19,88 @@ output:
 **Course Website:** http://norcalbiostat.github.io/MATH456/  
 **Piazza Forum:** https://piazza.com/mail.csuchico.edu/spring2016/math456
 
-## Course Usage of Blackboard Learn
-Blackboard Learn will be used for submission of assignments only. 
-Copies of the course syllabus and major assignments may be found on Blackboard Learn.  You are responsible for regularly checking the online resources, which is accessed through the Chico State Portal. [Insert applicable information regarding your online resources, and expectations for how students will use the system.]
-
 ## Course Description and Goals
 From the CSUC Course Catalog: Advanced topics in applied statistics including multiple regression, multivariate methods, nonparametrics, analysis of covariance, bootstrap methods and others as appropriate. Statistical computer packages are introduced and used. Appropriate for biology, agriculture, nutrition, business, psychology, social science and other maojrs. 3 hours discussion.
 
 
 ## Course Content Learning Outcomes
-Upon successful completion of this course, students will be able to:
+Upon successful completion of this course, students will be able to:  
 
+* Understand the value of, and be able to create a codebook / data dictionary. 
+* Translate a research question into an appropriate statistical analysis plan. 
+* Prepare data for analysis by cleaning and transforming raw data. 
+* Perform select statistical analyses in a reproducible manner. 
+* Interpret the results of the statistical analysis in plain language. 
+* Use model selection techniques to build predictive models for continuous and categorical data types. 
 
 ## Required Materials
 #### Textbooks
-TBD
+Practical Multivariate Analysis 5th Edition. Afifi, May, Clark ISBN 9781439816806  
+-- 4th Edition will be OK, but the discussion of software is outdated and it does not include R. 
 
 #### Computer Hardware and Software 
 We will be using the statistical programming language R. You are expected to have prior experience with this language. 
-
 Loaner laptops will be available for you to use during class time only. These systems will be set up properly and ready to go on day 1. You will eventually have to set up and bring your own laptop to class. There will not be sufficient time during class for you to complete the necessary work. All software programs we will use are free.  
+
+Download and install the following software within the first two weeks of class. We will not *really* be using LaTeX but having this installed will allow for the creation of work in PDF format. 
 
   - **R** http://cran.r-project.org/
   - **R-Studio** http://www.rstudio.com/products/rstudio/download/
   - **The typesetting environment LaTeX** http://www.latex-project.org/
-  - **A Piazza account** https://piazza.com/mail.csuchico.edu/spring2016/math456
 
-Here is a [slide deck](notes/xtra01_InstallPrograms.html) containing instructions on how to install these programs. _Notes are currently from a different class but main content remains unchanged_. 
+Here is a [slide deck](notes/xtra01_InstallPrograms.html) containing instructions on how to install R and R Studio. _Notes are currently from a different class, the Swirl lessons are not needed in this class_. 
 
 
 **If you have no prior experience with R you have some choices.**
 
 1) Go through any number of self-paced free online tutorials. Recommended ones are [DataCamp](https://www.datacamp.com/courses/free-introduction-to-r), [TryR](http://tryr.codeschool.com/), and [R Tutorial](http://www.r-tutor.com/r-introduction).    
-2) Go through a self-paced online R Bootcamp specifically designed by Dr. Donatello to provide just the basics needed for coursework in this class. This Bootcamp can be found at http://norcalbiostat.github.io/R-Bootcamp/
-2) Plan on enrolling in the in-person version of this R Bootcamp at the start of the semester. This will be 2 hour classes, 2 nights/week, for the first 3 weeks. Specific enrollment details will be announced as they are finalized. 
+2) Go through a self-paced online R Bootcamp specifically designed by Dr. Donatello to provide just the basics needed for coursework in this class. This includes an introduction to Markdown. This Bootcamp can be found at http://norcalbiostat.github.io/R-Bootcamp/
+3) Plan on enrolling in the in-person version of this R Bootcamp at the start of the semester. This will be 2 hour classes, 2 nights/week, for the first 3 weeks. Specific enrollment details will be announced as they are finalized. 
+
+## Online Component
+Blackboard Learn will be used for submission of assignments only. All course materials can be found on the course
+website listed at the top of this page. You are responsible for regularly checking the website for updates and announcements. The daily class schedule can be found [here](Schedule.html). This is an experimental course, so the list of topics and timings are subject to change. It is your responsibility to be aware of the current schedule. 
+
+[Piazza](https://piazza.com/mail.csuchico.edu/spring2016/math456). We will be using Piazza as the place for discussion outside of class. 
+
+
+## Assignments and Grading Policy
+The majority of the points available come from Exams and projects. 
+
+Practice problems will be assigned regularly and will be worked on during and outside of class time. An open note quiz will be administered at appropriate intervals, typically a day or two after a section or topic has been completed. Quiz questions will directly come from the practice problems, so it is in your best interest to have all problems completed and well-organized. 
+
+You will also be expected to participate in discussions during class, and outside of class on the forum board. 
+
+No Late work accepted without prior approval. 
+
+**Weights**: Midterm 15%, Final 15%; Projects (2): 20% each; Quizzes 15%; Participation 15%
+**Letter grade**: A [95-100), A- [90-94), B+ [87, 89), B [83-86), B- [80, 82), C+ [77-79), C [73-76), C- [79, 72), D+ [65, 69), D [60, 64), F < 60
+
+
+### Time Commitment
+It is not easy to write literate computer programs but the payoff is immeasurable. You will spend 3 hours in class discussing topics and working on code. Expect to spend around 6 hours outside of class to read, write, code and problem solve. For the best chance of success start assignments early, use the discussion forms, form study groups and come to office hours. You will get out of this class what you put into it.
+
+## Getting Help
+* Your first resource is each other. 
+* Use the class [Piazza](https://piazza.com/mail.csuchico.edu/spring2016/math456) forum for R and Markdown debugging problems.
+* Come to the RUG meetings / open work sessions. 
+* I will **not** answer emails about any coding problems. Check the class discussion forum for a solution first. 
+* Another great resource is [StackOverflow](http://stackoverflow.com/questions/tagged/r) using the `r` or `markdown` tags. 
+* Prepare a [minimal working example](http://stackoverflow.com/questions/5963269/how-to-make-a-great-r-reproducible-example) of your problem on the forum, it may be helpful to include a screenshot of the problem. 
 
 
 
+## University Policies and Campus Resources
 
 ## Dropping and Adding
 The last day to drop or add a course is 2/19/16. After this date, withdraws will only be allowed for serious and compelling reasons subject to department approval. You are responsible for understanding the policies and procedures about add/drops, academic renewal, etc., found in the CSU Chico University Catalog.  You should be aware of the new deadlines and penalties for adding and dropping classes. 
 
-## Assignments and Grading Policy
-Enumerate and briefly describe assignments for the course and indicate alignment with learning outcomes. Include information about due dates and assignment weights. Specify grading policies including how grades are determined, what grades are possible, whether extra credit are available, what the penalty is for late or missed word and what constitutes a passing grade for the course. 
-
-* Quizzes XX%
-* Assignments XX%
-* Midterm XX%
-* Final Exam XX%
-* Final Project XX%
-* Peer grading XX%
-* Participation XX% (i.e. in class/online discussions and attendance )
-
-Instructions and Guidelines for grading TBD. 
-
-
-## University Policies and Campus Resources
 ### Academic Integrity
 Students are expected to be familiar with the University's Academic Integrity Policy. Your own commitment to learning, as evidenced by your enrollment at California State University, Chico, and the University's Academic Integrity Policy requires you to be honest in all your academic course work. Faculty members are required to report all infractions to the Office of Student Judicial Affairs. The policy on academic integrity and other resources related to student conduct can be found on the  Student Judicial Affairs web site.
+
+## Plagerism
+Working with others is expected, directly copying code and interpretations is not. Plagerism is completely unacceptable and very easily detected. Will result in 0 credit for all parties if observed. Does nothing but make it harder to understand the material and pass the class
+
 
 ### IT Support Services
 Computer labs for student use are located on the first and fourth floor of the Meriam Library, Room 116 and 450, Tehama Hall Room 131, and the Bell Memorial Union (BMU) basement. You can get help using your computer from IT Support Services; contact them through the ITSS web site. There are loaner laptops available _during class time only_ in Holt 155. 
@@ -86,26 +110,6 @@ If you need course adaptations or accommodations because of a disability or chro
 
 ### Student Learning Center
 The mission of the Student Learning Center (SLC) is to provide services that will assist CSU, Chico students to become independent learners. The SLC prepares and supports students in their college course work by offering a variety of programs and resources to meet student needs. Specific of note for this course is that the University Writing Center has been combined with the Student Learning Center. It is advised that you utilize these services to continually improve your writing skills and habits. 
-
-
-
-### Course Description
-
-*Topics include*:
-
-
-### Time Commitment
-It is not easy to write literate computer programs but the payoff is immeasurable. You will spend 3 hours in class discussing topics and working on code. Expect to spend around 6 hours outside of class to read, write, code and problem solve. For the best chance of success start assignments early, use the discussion forms, form study groups and come to office hours. You will get out of this class what you put into it.
-
-### Tentative Daily Schedule
-The daily class schedule can be found [here](Schedule.html). This is an experimental course, so the list of topics and timings are subject to change. It is your responsibility to be aware of the current schedule. 
-
-
-
-**Getting a head start on R**  
-If you want to get a head start on learning R so we can get into the really kewl stuff, there are several ways to get started learning the basics right away. These topics will be covered in the first three weeks, most of the work you will be doing outside of class. 
-
-
 
 
 

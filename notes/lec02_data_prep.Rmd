@@ -1,0 +1,17 @@
+---
+title: "Preparing Data for Analysis"
+author: "_Use arrow keys for navigation_"
+date: "1/25/2016"
+output:
+  ioslides_presentation:
+    highlight: pygments
+  beamer_presentation:
+    colortheme: beaver
+    fonttheme: professionalfonts
+    highlight: pygments
+    theme: Warsaw
+  slidy_presentation:
+    highlight: pygments
+---
+
+## Data Types: A recap
