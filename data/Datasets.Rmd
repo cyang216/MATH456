@@ -35,3 +35,6 @@ table {
 ```{r results = 'asis', echo = FALSE}
 knitr::kable(dtab %>% select(Data, Codebook))
 ```
+
+### Additional files manually added
+* [RMD file for NC Births Codebook](NCBirthsCodebook.Rmd)

@@ -1,6 +1,6 @@
 ---
 title: "Preparing Data for Analysis"
-author: "_Use arrow keys for navigation_"
+author: "MATH 456"
 date: "1/25/2016"
 output:
   ioslides_presentation:
@@ -14,4 +14,107 @@ output:
     highlight: pygments
 ---
 
-## Data Types: A recap
+
+## Types of variables
+* **Continuous:** Things that can be measured
+    - Height, weight, density
+* **Discrete / Integer:** Can only hold whole number values
+    - counts of things
+* **Categorical:** Non-numeric characteristics
+    - Gender, ethnicity
+* **Binary:** Two categories only
+    - Gender
+* **Indicator:** A binary variable that is yes/no depending on a specified criteria
+    - Typically holds values of 1/0 or TRUE/FALSE
+    - Female, on medicare 
+
+
+## Stevens's classification of variables
+* **Nominal:** A.k.a categorical. Each observation belongs to one of several distinct categories. No inherent ordering.
+    - Gender (M/F), Ethnicity (White/AfAm/Hispanic)
+* **Ordinal:** Categorical variables with an inherent ordering. 
+    - First(1), second(2), third(3), Strongly agree(5), agree(4), neutral(3), disagree(2), strongly disagree(1)
+* **Interval:** Differences between successive values are always the same. 
+    - Temperature, calendar dates
+* **Ratio:** Interval variables with a natural zero point
+    - Height, weight, density, time duration
+    
+Q: Why is Temperature not ratio?
+
+
+## Data Types found in computer data sets
+* **Numerical:** `r round(pi,5)`
+* **Integer:** `r seq(0,5,1)`
+* **Character / String:** "Hello World", "Blue"
+* **Logical:** TRUE/FALSE
+
+
+
+## Describing relationships between variables
+Multiple names for the same concept
+
+* Response / Outcome / Dependent variable
+* Covariate / Explanatory / Predictor / Independent variable
+
+The direction of the relationship is situation dependent. 
+
+* We could use weight as an outcome variable with height, sex, age and diet as predictors  
+* We could use blood pressure as the outcome with weight, sex, age and diet as predictors
+
+## Practice - Vocabulary
+1. Classify the following types of data by using Stevens's measurement system: decibels of noise level, father's occupation, parts per  million of an impurity in water, density of a piece of bone, rating of a wine by one judge, net profit of a firm, and score on an aptitude test.  
+2. Pose two possible research questions from the CORD study (Lung function data) and decide on the appropriate dependent and independent variables.  
+3. Give an example of nominal, ordinal, interval, and ratio variables from a field of application you are familiar with. 
+
+
+
+## Research Pipeline
+
+![Repro](pipeline.png)
+
+Credits: Roger Peng
+
+## Reproducibility
+
+* You are your own collaborator 6 months from now. Make sure you will be able to understand what you were doing.
+* Investing the time to do things clearly and in a reproducible manner will make your future self happy.
+* Comment your code with explanations and instructions.
+    - How did you get from point A to B? 
+    - Why did you recode this variable in this manner? 
+* Use tools to aid reproducbility such as R Markdown.
+
+## Codebooks
+A **codebook** or **data dictionary** is a document that contains a description of each variable in the data set, including the variable name, data type, valid values and instructions on how the variable was created as applicable. 
+
+* [Open Intro: North Carolina Births Codebook](../data/NCBirthsCodebook.html)
+
+
+## Tidy Data
+
+```{r}
+head(iris[c(1,2,3,5)])
+```
+* One row per observation/case/individual
+* One column per characteristic
+* Variable names are short, yet descriptive (Ex:`depress.txt` vs `NCbirths.csv`)
+
+The `reshape2` and `tidyr` packages contain common functions and methods used to create tidy data. 
+
+## Practice
+The US Census can provide a lot of demographic and economic information organized by geographical regions across the united states. A lot of information is available, but it is typically not in an analyzable format. You are going to download some Census data on poverty rates in CA, create a codebook and start to tidy the data to make it into an analyzable format. 
+
+1. Go [here](https://cdph.data.ca.gov/Demographics/Poverty-Rate-defined-by-U-S-Census-by-California-R/pbut-di2i) and download (export) the data on Poverty rates by California regions from 2000-2010. Store this in your DATA folder.
+3. Download a copy of the NCBirths codebook Markdown template from the [Data page](../data/Datasets.html) of the class website. 
+4. Using this template, start to create a codebook for this data using the information available on the website. Be sure to include a description of the data. 
+
+
+## Processing Data
+Once the data has been collected, there are a number of steps that must occur before the data can be analyzed. 
+
+* Missing data identified
+* Outliers identified
+* Data edited to recode missing or outling values. 
+* New variables created using transformations of existing variables. 
+* Reshaping data to create Tidy Data
+
+
