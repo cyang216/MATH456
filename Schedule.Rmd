@@ -1,6 +1,8 @@
 ---
 title: "Daily Schedule"
-output: html_document
+output: 
+  html_document: 
+    theme: journal
 ---
 
 ```{r include = FALSE}
@@ -12,23 +14,15 @@ library(readr)
 ```{r include = FALSE}
 rawdat <- read_csv(file.path("admin", "lecture-notes.csv"))
 cdat <- rawdat %>% mutate(Date = format(as.Date(date, "%m/%d/%Y"), "%m/%d"), 
-                          Week = as.numeric(str_extract(wk, "([0-9]{2})")), 
+                          Week = paste(wk, "-", day, sep=""), 
                           notes = ifelse(grepl("^wk", wk) & raw_notes != "",
-                                  sprintf("%s: %s", wk, raw_notes), raw_notes))
-#glimpse(cdat)
+                                  sprintf("%s: %s", Week, raw_notes), raw_notes))
 
-## link to the class page of any class meetings where such exists
-## AND I want to link
-## year 1: we just filtered for presence of .html file
-## year 2: yes merge those but also filter on link_it for gradual reveal
 cmdat <- data_frame(html = list.files(pattern = '^wk.*html$'))
-cmdat <- cmdat %>% mutate(wk = str_extract(html, "wk[0-9]+"))
+cmdat <- cmdat %>% mutate(Week = str_replace(html, ".html", ""))
 cdat  <- cdat %>% full_join(cmdat)
 
-#cdat <- cdat %>%
-#  mutate(html_exists = !is.na(html)) %>% 
-
-cdat$notes[cdat$link_it] <- str_replace(cdat$notes[cdat$link_it], "(wk[0-9]{2})", '<a href="LINK">\\1</a>')
+cdat$notes[cdat$link_it] <- str_replace(cdat$notes[cdat$link_it], "(.*:)", '<a href="LINK">\\1</a>')
 cdat$Notes <- ifelse(cdat$link_it,  str_replace(cdat$notes, "LINK", cdat$html), cdat$notes)
 ```
 
@@ -42,5 +36,5 @@ table {
 ## Math 456: Applied Statistics II (Subject to adjustment)
 
 ```{r results = 'asis', echo = FALSE}
-knitr::kable(cdat %>% select(Week, Date, Notes))
+knitr::kable(cdat %>% select(Date, Notes))
 ```

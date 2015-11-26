@@ -1,0 +1,40 @@
+---
+title: "Data sets and codebooks"
+output: html_document
+---
+
+```{r include = FALSE}
+library(dplyr)
+library(stringr)
+library(readr)
+```
+
+```{r include = FALSE}
+# Get list of data sets
+files <- list.files()
+files <- files[-grep('html|Rmd', files)]
+idx <- seq(1,length(files),2)
+dtab  <- data.frame(d = files[idx], b = files[-idx])
+
+# Make these actual links
+dtab$Data <- paste('<a href="LINK">', dtab$d, '</a>', sep="")
+dtab$Data <- str_replace(dtab$Data, "LINK", dtab$d)
+dtab$Codebook <- paste('<a href="LINK">', dtab$b, '</a>', sep="")
+dtab$Codebook <- str_replace(dtab$Codebook, "LINK", dtab$b)
+
+```
+
+<!-- unholy hack to make following two tables less wide and the same wide -->
+<style type="text/css">
+table {
+   max-width: 50%;
+}
+</style>
+
+### `Left click` to open, `Right click` to download.
+```{r results = 'asis', echo = FALSE}
+knitr::kable(dtab %>% select(Data, Codebook))
+```
+
+### Additional files manually added
+* [RMD file for NC Births Codebook](NCBirthsCodebook.Rmd)

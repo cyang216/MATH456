@@ -1,19 +1,6 @@
 ---
 title: "Multiple Linear Regression"
-author: "_Use arrow keys for navigation_"
-date: "`r Sys.Date()`"
-output:
-  ioslides_presentation:
-    highlight: pygments
-  beamer_presentation:
-    colortheme: beaver
-    fonttheme: professionalfonts
-    highlight: pygments
-    theme: Warsaw
-  slidy_presentation:
-    highlight: pygments
+author: "MATH 456"
+date: "November 24, 2015"
+output: html_document
 ---
-
-## Motivation
-
-

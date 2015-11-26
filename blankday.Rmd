@@ -1,0 +1,25 @@
+---
+title: "Week X - "
+author: "MATH 456, Spring 2016"
+date: " xx"
+output: 
+  html_document: 
+    theme: journal
+---
+
+# Announcements
+
+
+# Prepare 
+
+
+# Notes
+
+# Experience 
+
+# Data 
+
+
+# Practice 
+
+
