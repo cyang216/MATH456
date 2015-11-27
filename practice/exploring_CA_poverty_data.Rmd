@@ -1,0 +1,103 @@
+---
+title: "Cleaning CA Poverty data"
+author: "Robin Donatello"
+date: "November 27, 2015"
+output: html_document
+---
+
+#### Read the raw data into R.
+```{r, warning=FALSE, message=FALSE}
+library(dplyr)
+raw <- read.csv("C:/GitHub/MATH456/data/Poverty_Rate__defined_by_U.S._Census__by_California_Regions__2000-2010.csv", header=TRUE)
+```
+
+#### Remove census tract information and concentrated poverty records. Drop records aggregated over 2006-10. Exclude the list of variables that are not needed. Rename `percent` to `PctPov` and `Poverty` to `PovType`.
+```{r}
+raw2 <- raw %>% 
+             filter(geotype!="CT", Poverty != "Concentrated", reportyear!="2006-2010") %>% 
+             mutate(PctPov = percent, PovType = Poverty) %>% 
+             select(reportyear, race_eth_name, geotype, county_name, region_name, 
+                    PovType, TotalPop, NumPov, PctPov, CA_RR)
+```
+
+### Examine the distribution of Poverty Rate. 
+```{r, warning=FALSE, message=FALSE}
+library(ggplot2)
+qplot(1:NROW(raw2), PctPov, data=raw2, geom="point", alpha=I(.8))
+```
+
+#### Identify and remove any potential outliers. 
+```{r}
+highpov <- raw2 %>% filter(PctPov==100) 
+highpov
+```
+In 2000, all 47 Asian children living in Yuba County were living in poverty. 
+
+```{r}
+clean <- raw2 %>% filter(PctPov < 100)
+```
+
+Check to make sure the filter worked. 
+```{r}
+table(clean$PctPov==100)
+```
+
+### Recreate the plot on top of page 6 in the Narrative Examples pdf.
+
+Extract the overall poverty rate for all etnicities for only the counties of interest. 
+```{r}
+county <- clean %>% filter(PovType == "Overall", race_eth_name == "Total", geotype == "CO", 
+                        county_name %in% c("Alamdeda", "Fresno", "Marin", "San Francisco", "San Joaquin", 
+                                           "San Mateo", "stanislaus", "Tulare"))
+```
+
+Extract the overall poverty rate for all ethnicities at the state level. 
+```{r}
+state <- clean %>% filter(PovType == "Overall", race_eth_name == "Total", geotype=="CA")
+```
+
+Add a county name label for overall california data. 
+```{r}
+state$county_name <- "California"
+```
+
+Combine the county and state level data into one region of interest (`roi`). 
+```{r}
+roi <- bind_rows(county,state) %>%  select(reportyear, county_name, PctPov)
+```
+
+Plot the poverty rate (y) against report year (x), grouped by `county_name`. 
+```{r, warning=FALSE}
+library(scales)
+qplot(y=PctPov/100, x=reportyear, data=roi, group=county_name, col=county_name, shape=county_name, 
+      geom=c('point', 'line'), ylab="Percent Poverty", xlab="Reporting Year") +
+      scale_y_continuous(labels=percent, limits=c(0,.35), breaks=seq(0,.35, by=.05)) + 
+      scale_color_discrete(name="") + scale_shape_discrete(name="") + 
+  ggtitle("Overall Poverty Rate in Selected Counties of the
+Bay Area and the San Joaquin Valley, California
+2000, 2005-2007, 2008-2010")
+```
+
+### Create a plot like this for the regions of the North State.
+```{r}
+a <- clean %>%  filter(PovType == "Overall", race_eth_name == "Total", geotype == "RE")
+table(a$region_name)
+
+north_state <- a %>% filter(region_name %in% c("Butte", "North Coast", 
+                          "Northern Sacramento Valley", "Sacramento Area", "Shasta"))
+
+state$region_name <- "California"
+
+roi2 <- bind_rows(north_state,state) %>%  select(reportyear, region_name, PctPov)
+```
+
+```{r}
+qplot(y=PctPov/100, x=reportyear, data=roi2, group=region_name, col=region_name, shape=region_name, 
+      geom=c('point', 'line'), ylab="Percent Poverty", xlab="Reporting Year") +
+      scale_y_continuous(labels=percent, limits=c(0,.25)) + 
+      scale_color_discrete(name="") + scale_shape_discrete(name="") + 
+  ggtitle("Overall Poverty Rate in Selected Regions of the North state
+2000, 2005-2007, 2008-2010")
+```
+
+

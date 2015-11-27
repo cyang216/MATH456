@@ -1,7 +1,7 @@
 wk,day,date,link_it,raw_notes
 wk01,M,1/25/2016,TRUE,Intro to the course. Vocabulary
 wk01,W,1/27/2016,TRUE,"Preparing data for analysis- Tidy data, codebooks, reproducibility"
-wk01,F,1/29/2016,FALSE,"Preparing data for analysis- Outliers, missing data, recodes, transformations"
+wk01,F,1/29/2016,TRUE,"Preparing data for analysis- Outliers, missing data, recodes, transformations"
 wk02,M,2/1/2016,FALSE,Choosing the appropriate analysis
 wk02,W,2/3/2016,FALSE,Multiple Linear Regression - Analysis and interpretation
 wk02,F,2/5/2016,FALSE,Multiple Linear Regression - Model fit & Predictions

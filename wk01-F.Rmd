@@ -8,8 +8,8 @@ output:
 ---
 
 ```{r, echo=FALSE}
-prv <- "wk02-M.html"
-nxt <- "wk01-W.html"
+prv <- "wk01-W.html"
+nxt <- "wk02-M.html"
 ```
 [[Prev]](`r prv `) [[Next]](`r nxt `)
 
@@ -17,7 +17,10 @@ nxt <- "wk01-W.html"
 
 
 # Prepare (Before class)
-
+Learn `dplyr` by either going through 
+- The [Data Camp](https://www.datacamp.com/courses/dplyr-data-manipulation-r-tutorial) tutorial
+- The [R Bootcamp](http://norcalbiostat.github.io/R-Bootcamp/labs/Lab7-DataCleaning.html) tutorial
+- Or any of the **Additional Resources** listed at the bottom of the Bootcamp web page. 
 
 # Notes
 * Preparing data for Analysis [[HTML]](notes/lec02_data_prep.html)[[PDF]](notes/lec02_data_prep.pdf)
@@ -31,5 +34,11 @@ Cleaning up US Census data -- Continued.
 
 
 # Practice (After Class)
+Explore the CA Poverty data set. 
 
+1. Create a scatterplot of `PctPov` against the row index. 
+2. Identify and exclude any outliers on percent overall poverty. 
+3. Recreate the plot on top of page 6 in the Narrative Examples pdf _Overall Poverty Rate in Selected Counties of the Bay Area and San Joaquin Valley, California 2000, 2005-2007, 2008-2010_.
+4. Redo this plot for the **regions** north of, and including Sacramento. 
 
+[Solutions](practice/exploring_CA_poverty_data.html)
