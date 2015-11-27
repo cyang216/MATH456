@@ -7,6 +7,12 @@ output:
     theme: journal
 ---
 
+```{r, echo=FALSE}
+prv <- "wk01-M.html"
+nxt <- "wk01-F.html"
+```
+[[Prev]](`r prv `) [[Next]](`r nxt `)
+
 # Announcements
 
 
@@ -14,7 +20,7 @@ output:
 * Create a MATH456 folder in an easy to find place on your computer or flash drive. All files related to this class will go in there.
     - Create a sub-folder in here, called DATA. You can guess what will go in here. 
 * Read Guide to sharing data by Jeff Leek: https://github.com/jtleek/datasharing
-* The spreadsheet error and austerity - as seen through [The Colbert Report](http://thecolbertreport.cc.com/videos/kbgnf0/austerity-s-spreadsheet-error---thomas-herndon)'s eyes. Moral of this story: ask for the data and question results that look too good to be true. 
+* Watch the spreadsheet error and austerity - as seen through [The Colbert Report](http://thecolbertreport.cc.com/videos/kbgnf0/austerity-s-spreadsheet-error---thomas-herndon)'s eyes. Moral of this story: ask for the data and question results that look too good to be true. 
 
 # Notes
 * Preparing data for Analysis [[HTML]](notes/lec02_data_prep.html)[[PDF]](notes/lec02_data_prep.pdf)

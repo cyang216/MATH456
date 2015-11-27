@@ -7,6 +7,12 @@ output:
     theme: journal
 ---
 
+```{r, echo=FALSE}
+prv <- "Schedule.html"
+nxt <- "wk01-W.html"
+```
+[[Prev]](`r prv `) [[Next]](`r nxt `)
+
 # Announcements
 Welcome to Applied Statistics II!
 
