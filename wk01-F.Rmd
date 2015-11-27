@@ -1,0 +1,35 @@
+---
+title: "Week 1 - Friday "
+author: "MATH 456, Spring 2016"
+date: "1/29/16"
+output: 
+  html_document: 
+    theme: journal
+---
+
+```{r, echo=FALSE}
+prv <- "wk02-M.html"
+nxt <- "wk01-W.html"
+```
+[[Prev]](`r prv `) [[Next]](`r nxt `)
+
+# Announcements
+
+
+# Prepare (Before class)
+
+
+# Notes
+* Preparing data for Analysis [[HTML]](notes/lec02_data_prep.html)[[PDF]](notes/lec02_data_prep.pdf)
+
+
+# Experience (During Class)
+Cleaning up US Census data -- Continued. 
+
+# Data (as needed)
+* Rates of Poverty in CA: https://cdph.data.ca.gov/Demographics/Poverty-Rate-defined-by-U-S-Census-by-California-R/pbut-di2i
+
+
+# Practice (After Class)
+
+
