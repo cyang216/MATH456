@@ -251,7 +251,81 @@
 <li>Data edited to recode missing or outling values.</li>
 <li>New variables created using transformations of existing variables.</li>
 <li>Reshaping data to create Tidy Data</li>
-</ul></article></slide>
+</ul>
+
+</article></slide><slide class=''><hgroup><h2>Missing data identified</h2></hgroup><article  id="missing-data-identified">
+
+<ul>
+<li>Missing data in <code>R</code> is denoted as <code>NA</code></li>
+<li>Arithmetic functions on missing data will return missing</li>
+</ul>
+
+<pre class = 'prettyprint lang-r'>x &lt;- c(1,2,3,NA,5)
+mean(x)</pre>
+
+<pre >## [1] NA</pre>
+
+<ul>
+<li>The <code>summary()</code> function will alway show missing.</li>
+</ul>
+
+<pre class = 'prettyprint lang-r'>summary(x)</pre>
+
+<pre >##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA&#39;s 
+##    1.00    1.75    2.50    2.75    3.50    5.00       1</pre>
+
+</article></slide><slide class=''><hgroup><h2>Missing data identified (cont.)</h2></hgroup><article  id="missing-data-identified-cont.">
+
+<ul>
+<li>The function <code>table()</code> will not show NA by default.</li>
+</ul>
+
+<pre class = 'prettyprint lang-r'>table(x)</pre>
+
+<pre >## x
+## 1 2 3 5 
+## 1 1 1 1</pre>
+
+<pre class = 'prettyprint lang-r'>table(x, useNA=&quot;always&quot;)</pre>
+
+<pre >## x
+##    1    2    3    5 &lt;NA&gt; 
+##    1    1    1    1    1</pre>
+
+<p>Look at <code>?table</code> for other options to the <code>useNA</code> argument.</p>
+
+</article></slide><slide class=''><hgroup><h2>Dealing with missing data</h2></hgroup><article  id="dealing-with-missing-data">
+
+<ul>
+<li>Option 1 - Ignore it. Drop all records with missing data
+
+<ul>
+<li>Complete case analysis.</li>
+<li>Do this for now.</li>
+</ul></li>
+</ul>
+
+<pre class = 'prettyprint lang-r'>mean(x, na.rm=TRUE)</pre>
+
+<pre >## [1] 2.75</pre>
+
+<ul>
+<li>Option 2 - Fill in missing values with data to elimintate missing
+
+<ul>
+<li>a.k.a Imputation</li>
+<li>Method of imputation is important</li>
+<li>Will cover imputation methods later</li>
+</ul></li>
+</ul>
+
+</article></slide><slide class=''><hgroup><h2>Outliers identified</h2></hgroup><article  id="outliers-identified">
+
+</article></slide><slide class=''><hgroup><h2>Data edited to recode missing or outling values</h2></hgroup><article  id="data-edited-to-recode-missing-or-outling-values">
+
+</article></slide><slide class=''><hgroup><h2>New varaibles created using transformations of existing variables</h2></hgroup><article  id="new-varaibles-created-using-transformations-of-existing-variables">
+
+</article></slide><slide class=''><hgroup><h2>Reshaping data to create Tidy Data</h2></hgroup><article  id="reshaping-data-to-create-tidy-data"></article></slide>
 
 
   <slide class="backdrop"></slide>

@@ -117,4 +117,62 @@ Once the data has been collected, there are a number of steps that must occur be
 * New variables created using transformations of existing variables. 
 * Reshaping data to create Tidy Data
 
+## Missing data identified
+* Missing data in `R` is denoted as `NA`
+* Arithmetic functions on missing data will return missing
+```{r}
+library(MASS)
+head(survey$Pulse)
+mean(survey$Pulse)
+```
+
+* The `summary()` function will alway show missing.
+```{r}
+summary(survey$Pulse)
+```
+
+## Missing data identified (cont.)
+* The function `table()` will not show NA by default. 
+```{r}
+table(survey$M.I)
+table(survey$M.I, useNA="always")
+```
+Look at `?table` for other options to the `useNA` argument. 
+
+
+## Dealing with missing data - Option 1
+* Complete case analysis
+    - Ignore it. Drop all records with missing data
+    - Do this for now.
+```{r}
+mean(survey$Pulse, na.rm=TRUE) # complete case on a single variable
+survey <- survey[!is.na(survey$Pulse),]
+library(dplyr)
+survey <- survey %>% !is.na(Pulse) 
+survey <- na.omit(survey)
+```
+
+
+## Dealing with missing data - Option 2
+* Imputation. 
+    - Fill in missing values with data to elimintate missing
+    - Method of imputation is important
+    - Will cover imputation methods later 
+
+## Outliers identified
+
+
+
+## Data edited to recode missing or outling values
+
+
+
+
+## New varaibles created using transformations of existing variables
+
+
+
+## Reshaping data to create Tidy Data
+
+
 
