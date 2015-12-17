@@ -1,0 +1,17 @@
+week,date,link_it,Topics,Reading,Details
+wk01,1/25/2016,TRUE,Intro to the course. Preparing data for analysis.,Ch 1-5,"Tidy data, codebooks, reproducibility, outliers, missing data, recodes, transformations"
+wk02,2/1/2016,FALSE,Multiple Linear Regression,Ch 7,"Analysis, interpretation, model fit"
+wk03,2/8/2016,FALSE,Multiple Linear Regression,Ch 7,"Transformations, colinearity, predictions"
+wk04,2/15/2016,FALSE,Variable Selection,Ch 8,"Manual, forward/backward, best subsets, penalized functions"
+wk05,2/22/2016,FALSE,Dimension Reduction - PCA,Ch 14,
+wk06,2/29/2016,FALSE,Dimension Reduction - Factor Analysis,Ch 15,
+wk07,3/7/2016,FALSE,Project 1. Model Building,,
+wk08,3/14/2016,FALSE,Spring Break - No Class,,
+wk09,3/21/2016,FALSE,Discriminant Analysis,Ch 11,Classification
+wk10,3/28/2016,FALSE,Discriminant Analysis,Ch 12,"Model fit, predictions"
+wk11,4/4/2016,FALSE,Logistic regression,Ch 12,"Analysis, interpretation"
+wk12,4/11/2016,FALSE,Logistic regression,Ch 12,"Model fit, predictions"
+wk13,4/18/2016,FALSE,Generalized Linear Models,Ch 12,
+wk14,4/25/2016,FALSE,CART / Random Forests,,
+wk15,5/2/2016,FALSE,Missing Data,,"Identification, imputations, MICE"
+wk16,5/9/2016,FALSE,Project 2. Predictive Modeling,,

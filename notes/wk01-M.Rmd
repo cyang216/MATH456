@@ -1,5 +1,5 @@
 ---
-title: "Week 1 - Monday"
+title: "Week 1"
 author: "MATH 456, Spring 2016"
 date: " 1/25/16"
 output: 
@@ -9,7 +9,7 @@ output:
 
 ```{r, echo=FALSE}
 prv <- "Schedule.html"
-nxt <- "wk01-W.html"
+nxt <- "wk02.html"
 ```
 [[Prev]](`r prv `) [[Next]](`r nxt `)
 
@@ -17,7 +17,6 @@ nxt <- "wk01-W.html"
 Welcome to Applied Statistics II!
 
 # Prepare (Before class)
-Nothing it's day 1!
 
 
 # Notes
@@ -26,7 +25,7 @@ Nothing it's day 1!
 * Day 1 Handouts: Afifi Ch2
 
 # Experience (During Class)
-1. Classify the following types of data by using Stevens's measurement system: decibels of noise level, father's occupation, parts per  million of an impurity in water, density of a piece of bone, rating of a wine by one judge, net profit of a firm, and score on an aptitude test.  
+1. Classify the following types of data by using Stevens's measurement system: decibels of noise level, father's occupation, parts per million of an impurity in water, density of a piece of bone, rating of a wine by one judge, net profit of a firm, and score on an aptitude test.  
 2. Pose two possible research questions from the CORD study (Lung function data) and decide on the appropriate dependent and independent variables.  
 3. Give an example of nominal, ordinal, interval, and ratio variables from a field of application you are familiar with. 
 
