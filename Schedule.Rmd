@@ -38,3 +38,13 @@ table {
 ```{r results = 'asis', echo = FALSE}
 knitr::kable(cdat %>% select(Date, Notes))
 ```
+
+## Useful links
+
+* http://reganmian.net/blog/2014/10/14/starting-data-analysiswrangling-with-r-things-i-wish-id-been-told/
+* http://www.cookbook-r.com
+
+## R packages used
+
+
+

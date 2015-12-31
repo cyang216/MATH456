@@ -59,7 +59,6 @@ Here is a [slide deck](notes/xtra01_InstallPrograms.html) containing instruction
 
 ## Online Component
 * All course materials can be found on the [course website](http://norcalbiostat.github.io/MATH456/).  
-* We will use Google Drive for assignment submission. Grade records may or may not be done via BBLearn.   
 * We will be using [Piazza](https://piazza.com/mail.csuchico.edu/spring2016/math456) as the place for discussion outside of class.   
 * You are responsible for regularly checking Piazza for updates and announcements.  
 * The daily class schedule can be found on the class website [here](Schedule.html).  
@@ -73,7 +72,7 @@ You will also be expected to participate in discussions during class, and outsid
 
 No Late work accepted without prior approval. 
 
-**Weights**:  Quizzes 15%; Participation 15%; Homework 20%; Midterm Report 25%; Final Report 25%  
+**Weights**:  Quizzes 20%; Homework 20%; Midterm Report 15%; Final Report 15%; Midterm Exam 15%, Final Exam 15%
 **Letter grade**: A [95-100), A- [90-94), B+ [87, 89), B [83-86), B- [80, 82), C+ [77-79), C [73-76), C- [79, 72), D+ [65, 69), D [60, 64), F < 60
 
 

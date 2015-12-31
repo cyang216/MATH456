@@ -1,0 +1,92 @@
+---
+title: "Missing Data"
+date: "`r format(Sys.time(), '%b %d, %Y')`"
+output: html_document
+---
+
+This document covers briefly how to identify and remove or impute missing data in R. 
+```{r, echo=FALSE}
+library(knitr)
+opts_chunk$set(warning=FALSE, message=FALSE, fig.height=3, fig.width=3) 
+```
+
+# Identification 
+* Missing data in `R` is denoted as `NA`
+* Arithmetic functions on missing data will return missing
+```{r}
+library(MASS)
+head(survey$Pulse)
+mean(survey$Pulse)
+```
+
+The `summary()` function will always show missing.
+```{r}
+summary(survey$Pulse)
+```
+
+The `is.na()` function is helpful to identify rows with missing data
+```{r}
+table(is.na(survey$Pulse))
+```
+
+The function `table()` will not show NA by default. 
+```{r}
+table(survey$M.I)
+table(survey$M.I, useNA="always")
+```
+Look at `?table` for other options to the `useNA` argument. 
+
+
+# Options for handling data sets containing missing data. 
+
+## Option 1: Pretend it never happened and delete it. 
+
+### Single variable complete case analysis
+Drop all records with missing data **on the variable of interest**. 
+
+```{r}
+mean(survey$Pulse, na.rm=TRUE) 
+```
+
+Create a new data set that contains only records with no missing data **on the variable of interest**. 
+
+Option 1: use bracket notation. 
+```{r}
+survey1 <- survey[!is.na(survey$Pulse),] 
+```
+
+Option 2: Use the `subset` function. 
+```{r}
+survey2 <- subset(survey, !is.na(survey$Pulse))
+```
+
+Option 3: Use the `filter` function found in the `dplyr` library. 
+```{r}
+library(dplyr)
+survey3 <- survey %>% filter(!is.na(Pulse)) 
+```
+
+Check your work by comparing the dimension of the data sets before and after records were dropped. Recall there were 45 records missing data on the `Pulse` variable. 
+
+`dim(survey)` = `r dim(survey)`   
+237 - 45 = 192. So all new data sets should have 192 records.   
+`dim(survey1)` = `r dim(survey1)`  
+`dim(survey2)` = `r dim(survey2)`  
+`dim(survey3)` = `r dim(survey3)`
+
+And they do. 
+
+
+### Multivariable complete case analysis. 
+Drop ALL rows with missing on ANY variable
+```{r}
+survey4 <- na.omit(survey) 
+dim(survey4)
+```
+
+Unless the data is Missing Completely At Random (MCAR), ignoring the missing data and excluding it from the analysis has been proven to bias your results and is not recommended as a solution for cases where you have more than 10% missing data. 
+
+## Option 2: Imputation
+- Fill in missing values with data to eliminate missing
+- Method of imputation is important
+- Will cover imputation methods later 

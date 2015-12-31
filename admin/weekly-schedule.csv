@@ -1,5 +1,6 @@
 week,date,link_it,Topics,Reading,Details
-wk01,1/25/2016,TRUE,Intro to the course. Preparing data for analysis.,Ch 1-5,"Tidy data, codebooks, reproducibility, outliers, missing data, recodes, transformations"
+wk01,1/25/2016,TRUE,Intro to the Class,,
+wk01,1/25/2016,TRUE,Preparing data for analysis.,Ch 1-5,"Tidy data, codebooks, reproducibility, outliers, missing data, recodes, transformations"
 wk02,2/1/2016,FALSE,Multiple Linear Regression,Ch 7,"Analysis, interpretation, model fit"
 wk03,2/8/2016,FALSE,Multiple Linear Regression,Ch 7,"Transformations, colinearity, predictions"
 wk04,2/15/2016,FALSE,Variable Selection,Ch 8,"Manual, forward/backward, best subsets, penalized functions"

@@ -1,0 +1,18 @@
+Package,InstallFrom,Usage
+knitr,,Additional options for knitting Markdown documents in R
+rmarkdown,,Additional Markdown controls
+ggplot2,CRAN,Data visualization
+dplyr,CRAN,Data manipulation
+car,CRAN,Recoding functions
+readxl,,Importing data stored as an .xlsx data file
+,,
+,,
+,,
+,,
+,,
+,,
+,,
+,,
+,,
+,,
+,,
