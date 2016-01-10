@@ -1,0 +1,36 @@
+---
+title: "Week 2"
+author: "MATH 459, Spring 2016"
+date: " 2/1/16"
+output: html_document
+---
+```{r results="asis", echo=FALSE}
+source("C:/Github/MATH456/stylesheets/custom.R")
+```
+[[Week 2]](wk01.html) [[Week 3]](wk03.html)
+
+## Announcements
+
+
+### Notes and Materials
+* Lec 01: Preparing Data for Analysis [[PDF]](notes/lec01_data_prep.pdf)[[HTML]](notes/lec01_data_prep.html)
+
+
+## Experience (During Class)
+### Monday
+**Prepare:** Read Afifi Ch 4. 
+
+* Homework submission
+* Lec 01: Data screening and transformations. 
+
+### Wednesday
+**Prepare:** Read Afifi Ch 5. 
+
+* Lec 01: Selecting Appropriate Analysis
+  
+
+### Friday
+**Prepare:** 
+
+## Homework (After class)
+

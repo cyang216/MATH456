@@ -8,7 +8,11 @@ output:
     theme: spacelab
 ---
 
-# Science and Statistics
+```{r results="asis", echo=FALSE}
+source("C:/Github/MATH456/stylesheets/custom.R")
+```
+
+## Science and Statistics
 1. Scientific questions
 2. Study Design
 3. Data Collection
@@ -39,43 +43,23 @@ Upon successful completion of this course, students will be able to:
 
 ## Structure of this class
 - Quasi flipped classroom. 
-- Students read the book, review lecture notes and start coding prior to class. 
-- Class time is devoted to reviewing the material, answering questions, working examples, discussing interpretations and limitations of methods learned.
-
-## General schedule. 
-- Monday  
-    * Quiz or Homework submission. 
-    * Lecture & Discussion.
-- Wednesday  
-    * Lecture & Discussion.
-    * Start computer examples. 
-- Friday   
-    * Computer work day. 
-    * Homework is assigned on Friday during class and due before class on the following Friday. 
-
-Details on weekly topics can be found on the [schedule](./Schedule.html) on the course website.  
-
-* Exam 1: Monday of Week 7
-* Exam 2: Finals week
-* Report 1: End of Week 7
-* Report 2: End of Finals week
+- Students read the book, review lecture notes and work on practice coding
+  prior to class. 
+- Class time is devoted to reviewing the material, answering questions, 
+  working examples, discussing interpretations and limitations of methods 
+  learned.
+- Mondays will have either a quiz or homework submission. 
+- Expect to bring your laptop every day to class. 
 
 ## Class materials
 * Class website: http://norcalbiostat.github.io/MATH456
 * First stop for all class materials. 
+* Details on weekly topics can be found on the [schedule](./Schedule.html).
 * The [syllabus](./Syllabus.html) covers course details such as grading, office hours and required materials. Spend 5 minutes to read that now. 
 * Questions? 
 
-## Computer Programming
-* If you do not already have R & R Studio installed, check out a laptop. 
-* Hands on Intro to R Studio and Markdown. 
 
-## Prepare for Wednesday
-* Read Afifi Ch 1-3
-* Afifi problem 2.5 - Be prepared to share these with the class on Wednesday. Recommended to write up responses in Markdown. 
-
-
-# Helpful web resources for learning R
+## Helpful web resources for learning R
 * R Programming blog http://rprogramming.net
 * Quick-R http://www.statmethods.net/
 * Cookbook for R http://www.cookbook-r.com/

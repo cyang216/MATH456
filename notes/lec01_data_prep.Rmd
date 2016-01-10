@@ -1,7 +1,6 @@
 ---
-title: "Preparing Data for Analysis"
+title: "Lec 01: Preparing Data for Analysis"
 author: "MATH 456 - Spring 2016"
-date: "Week 1"
 output:
   html_document:
     highlight: pygments
@@ -12,19 +11,24 @@ output:
 library(knitr); library(rmarkdown);
 opts_chunk$set(warning=FALSE, message=FALSE) 
 ```
+
+```{r results="asis", echo=FALSE}
+source("C:/Github/MATH456/stylesheets/custom.R")
+```
+
 # Week 1 Reading
 Afifi: Chapters 1-5
 
 # Characterizing Data for Analysis. (_Afifi Ch 2_)
 
-#### Problem 2.5
+##### On Your Own: Afifi Problem 2.5
 From a field of statistical application (perhaps your own field of specialty), 
 describe a data set and repeat the procedures described in problem 2.3. That 
 is, classify each variable according to Steven's scale and according to whether 
 it is discrete or continuous. Pose two possible research questions and decide 
 on the appropriate dependent and independent variables. 
 
-# Preparing Data for Analysis. (_Afifi Ch 3_)
+# Data wrangling, munging, recoding, editing, cleaning (_Afifi Ch 3_)
 
 ![PrepareData](Afifi_Fig3_1.png)
 
@@ -205,7 +209,7 @@ summary(depress$AGE)
 Looks like it worked. 
 
 
-* * * 
+##### On Your Own
 
 1.  Using the depression data set, create a new variable that collapses the 
     first three education levels. Confirm your recode by displaying a 
@@ -248,6 +252,7 @@ Looks like it worked.
     
 # Data screening and transformations (_Afifi Ch 4_)
 Recall the aim of data preparation, screening, wrangling, or transforming is to 
+
 * Identify outliers and inconsistent values
 * Assess normality of the distribution
 * Assess independence of observations
@@ -330,7 +335,7 @@ qqnorm(loginc, main = "Natural Log"); qqline(loginc, col="blue")
 qqnorm(xincome, main="-1/cuberoot(income)"); qqline(xincome, col="blue")
 ```
 
-* * * 
+##### On Your Own
 
 1.  Take the logarithm of the CESD score plus 1 and compare the histograms
 of CESD and log(CESD+1). Describe the distribution of each. 
@@ -398,7 +403,7 @@ Do multiple and compare results.
   types. 
 
 
-* * * 
+##### On Your Own
 Using Afifi Table 5.2 (p75) to help your decision making, work with 
 a partner to answer problems 5.1-5.7, 5.10-13, 5.15. It is recommended
 that you write your responses in either this markdown document, or a new
