@@ -5,7 +5,7 @@ date: " 2/1/16"
 output: html_document
 ---
 ```{r results="asis", echo=FALSE}
-source("C:/Github/MATH456/stylesheets/custom.R")
+source("~/Github/MATH456/stylesheets/custom.R")
 ```
 [[Week 2]](wk01.html) [[Week 3]](wk03.html)
 
@@ -20,17 +20,15 @@ source("C:/Github/MATH456/stylesheets/custom.R")
 ### Monday
 **Prepare:** Read Afifi Ch 4. 
 
-* Homework submission
-* Lec 01: Data screening and transformations. 
+* Homework 1 submission - Selected On Your Own problems from last week. 
+* Data screening and transformations. 
 
 ### Wednesday
 **Prepare:** Read Afifi Ch 5. 
 
-* Lec 01: Selecting Appropriate Analysis
+* Selecting Appropriate Analysis
   
 
 ### Friday
-**Prepare:** 
-
-## Homework (After class)
-
+**Prepare:** Read Afifi Ch 6.
+* Review of Correlation and Simple Linear Regression

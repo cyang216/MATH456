@@ -13,10 +13,10 @@ opts_chunk$set(warning=FALSE, message=FALSE)
 ```
 
 ```{r results="asis", echo=FALSE}
-source("C:/Github/MATH456/stylesheets/custom.R")
+source("~/Github/MATH456/stylesheets/custom.R")
 ```
 
-# Week 1 Reading
+# Assigned Reading
 Afifi: Chapters 1-5
 
 # Characterizing Data for Analysis. (_Afifi Ch 2_)
@@ -209,7 +209,8 @@ summary(depress$AGE)
 Looks like it worked. 
 
 
-##### On Your Own
+##### On Your Own: Data Wrangling
+Write your responses in a new Markdown file named *userid_ch3.rmd*.
 
 1.  Using the depression data set, create a new variable that collapses the 
     first three education levels. Confirm your recode by displaying a 
@@ -335,7 +336,8 @@ qqnorm(loginc, main = "Natural Log"); qqline(loginc, col="blue")
 qqnorm(xincome, main="-1/cuberoot(income)"); qqline(xincome, col="blue")
 ```
 
-##### On Your Own
+##### On Your Own: Data Transformations
+Write your responses in a new Markdown file named *userid_ch4.rmd*.
 
 1.  Take the logarithm of the CESD score plus 1 and compare the histograms
 of CESD and log(CESD+1). Describe the distribution of each. 
@@ -404,9 +406,10 @@ Do multiple and compare results.
 
 
 ##### On Your Own
+Write your responses in a new Markdown file named *userid_ch5.rmd*.
+
 Using Afifi Table 5.2 (p75) to help your decision making, work with 
-a partner to answer problems 5.1-5.7, 5.10-13, 5.15. It is recommended
-that you write your responses in either this markdown document, or a new
-document called _Chapter 5 homework_. 
+a partner to answer problems 5.1-5.7, 5.10-13, 5.15. One submission 
+per pair, include both names in the Author field. 
 
  
