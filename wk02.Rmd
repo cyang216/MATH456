@@ -10,7 +10,7 @@ source("~/Github/MATH456/stylesheets/custom.R")
 [[Week 2]](wk01.html) [[Week 3]](wk03.html)
 
 ## Announcements
-
+** Homework Due:** Homework 1 submission - Selected On Your Own problems from last week. 
 
 ### Notes and Materials
 * Lec 01: Preparing Data for Analysis [[PDF]](notes/lec01_data_prep.pdf)[[HTML]](notes/lec01_data_prep.html)
@@ -19,13 +19,10 @@ source("~/Github/MATH456/stylesheets/custom.R")
 ## Experience (During Class)
 ### Monday
 **Prepare:** Read Afifi Ch 4. 
-
-* Homework 1 submission - Selected On Your Own problems from last week. 
 * Data screening and transformations. 
 
 ### Wednesday
 **Prepare:** Read Afifi Ch 5. 
-
 * Selecting Appropriate Analysis
   
 
