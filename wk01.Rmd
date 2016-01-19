@@ -1,0 +1,47 @@
+---
+title: "Week 1"
+author: "MATH 459, Spring 2016"
+date: " 1/25/16"
+output: html_document
+---
+```{r results="asis", echo=FALSE}
+source("C:/Github/MATH456/stylesheets/custom.R")
+```
+[[Schedule]](Schedule.html) [[Week 2]](wk02.html)
+
+## Announcements
+Welcome to MATH 456 - Applied Statistics II
+
+### Notes and Materials
+* The class [Syllabus](./Syllabus.html). 
+* Intro to the Class [[PDF]](notes/lec00_Intro.pdf)[[HTML]](notes/lec00_Intro.html)
+* Preparing Data for Analysis [[PDF]](notes/lec01_data_prep.pdf)[[HTML]](notes/lec01_data_prep.html)
+
+
+## Experience (During Class)
+### Monday
+* Intro to the class
+* Review of the syllabus
+* Independent work 
+    - Prep for Wednesday (Read, Afifi 2.5, write code in lecture notes)
+    - Installing required computing programs 
+
+### Wednesday
+**Prepare:** Read Afifi Ch 1-3. Complete Afifi problem 2.5. 
+  Recommended to write up responses in Markdown. 
+
+* Preparing Data for Analysis
+    - Characterizing Data for Analysis
+    - Data wrangling, munging, recoding, editing, cleaning
+* Discuss and share answers to Afifi Problem 2.5
+
+
+### Friday
+**Prepare:** If not done yet, complete your code file with all code 
+  from the lecture code worked through. 
+
+* Finish data wrangling, munging, recoding, editing, cleaning.
+
+## Homework (After class)
+* The "_On Your Own_" problems for Ch 3
+

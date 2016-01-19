@@ -1,0 +1,51 @@
+---
+title: "Lec 02: Linear Regression Analysis"
+author: "MATH 456 - Spring 2016"
+output:
+  html_document:
+    highlight: pygments
+    theme: spacelab
+  pdf_document: default
+---
+```{r,echo=FALSE, warning=FALSE, message=FALSE}
+library(knitr); library(rmarkdown);
+opts_chunk$set(warning=FALSE, message=FALSE) 
+```
+
+```{r results="asis", echo=FALSE}
+source("~/Github/MATH456/stylesheets/custom.R")
+```
+
+# Assigned Reading
+Afifi: Chapters 6-7
+
+# Simple Regression and Correlation (_Afifi Ch 6_)
+
+## Aims
+* Describe the relationship between an independent variable X and a continuous
+  dependent variable $Y$ as a straight line. The textbook discusses two cases: 
+    - Fixed-$X$: values of $X$ are preselected by investigator
+    - Variable-$X$: have random sample of $(X,Y)$ values
+    - Calculations are the same, 
+* Draw inferences regarding this relationship
+* Predict value of $Y$ for a given value of $X$
+
+## Mathmatical Model
+* The mean of $Y$ values at any given $X$ is $\alpha + \beta X$
+* The variance of $Y$ values at any $X$ is $\sigma^2$ (same for all X)
+* $Y$ values are normally distributed at any given $X$ (need for inference)
+
+
+
+##### On Your Own: 
+Write your responses in a new Markdown file named *userid_ch6.rmd*.
+
+
+
+# Multiple Regression and Correlation (_Afifi Ch 7_)
+
+
+##### On Your Own
+Write your responses in a new Markdown file named *userid_ch7.rmd*.
+
+

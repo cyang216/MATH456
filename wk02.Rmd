@@ -1,0 +1,31 @@
+---
+title: "Week 2"
+author: "MATH 459, Spring 2016"
+date: " 2/1/16"
+output: html_document
+---
+```{r results="asis", echo=FALSE}
+source("~/Github/MATH456/stylesheets/custom.R")
+```
+[[Week 2]](wk01.html) [[Week 3]](wk03.html)
+
+## Announcements
+** Homework Due:** Homework 1 submission - Selected On Your Own problems from last week. 
+
+### Notes and Materials
+* Lec 01: Preparing Data for Analysis [[PDF]](notes/lec01_data_prep.pdf)[[HTML]](notes/lec01_data_prep.html)
+
+
+## Experience (During Class)
+### Monday
+**Prepare:** Read Afifi Ch 4. 
+* Data screening and transformations. 
+
+### Wednesday
+**Prepare:** Read Afifi Ch 5. 
+* Selecting Appropriate Analysis
+  
+
+### Friday
+**Prepare:** Read Afifi Ch 6.
+* Review of Correlation and Simple Linear Regression

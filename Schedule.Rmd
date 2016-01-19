@@ -1,5 +1,5 @@
 ---
-title: "Daily Schedule"
+title: "Math 456 Daily Schedule (subject to adjustment)"
 output: 
   html_document: 
     theme: journal
@@ -11,19 +11,37 @@ library(stringr)
 library(readr)
 ```
 
+```{r results="asis", echo=FALSE}
+source("C:/Github/MATH456/stylesheets/custom.R")
+```
+
 ```{r include = FALSE}
 rawdat <- read_csv(file.path("admin", "lecture-notes.csv"))
-cdat <- rawdat %>% mutate(Date = format(as.Date(date, "%m/%d/%Y"), "%m/%d"), 
-                          Week = paste(wk, "-", day, sep=""), 
-                          notes = ifelse(grepl("^wk", wk) & raw_notes != "",
-                                  sprintf("%s: %s", Week, raw_notes), raw_notes))
+cdat   <- rawdat %>% mutate(Date = format(as.Date(date, "%m/%d/%Y"), "%m/%d"), 
+                            Outline = ifelse(grepl("^wk", Week) & Outline != "",
+                                      sprintf("%s: %s", Week, Outline), Outline)) 
 
+# Link to weekly topic outline
 cmdat <- data_frame(html = list.files(pattern = '^wk.*html$'))
 cmdat <- cmdat %>% mutate(Week = str_replace(html, ".html", ""))
 cdat  <- cdat %>% full_join(cmdat)
 
-cdat$notes[cdat$link_it] <- str_replace(cdat$notes[cdat$link_it], "(.*:)", '<a href="LINK">\\1</a>')
-cdat$Notes <- ifelse(cdat$link_it,  str_replace(cdat$notes, "LINK", cdat$html), cdat$notes)
+cdat$topic[cdat$link_it] <- str_replace(cdat$Outline[cdat$link_it], "(.*:)", '<a href="LINK">\\1</a>')
+cdat$Topic <- ifelse(cdat$link_it,  str_replace(cdat$topic, "LINK", cdat$html), cdat$Outline)
+cdat <- cdat %>% select(Week, Day, Date, Topic, raw_notes, Evaluations, link_it)
+
+# Add direct links to notes
+lmdat <- data_frame(html = list.files(path="notes/", pattern = '^lec.*html$'))
+lmdat <- lmdat %>% mutate(raw_notes = str_replace(html, ".html", ""), 
+                          link = paste("notes/", html, sep=""))
+lcdat <- cdat %>% full_join(lmdat)
+
+lcdat$notes[lcdat$link_it] <- str_replace(lcdat$raw_notes[lcdat$link_it], "(.*)", '<a href="LINK">\\1</a>')
+lcdat$Notes <- ifelse(lcdat$link_it,  str_replace(lcdat$notes, "LINK", lcdat$link), lcdat$raw_notes)
+clean <- lcdat %>% mutate(Topic=ifelse(is.na(Topic), '-', Topic), 
+                          Notes=ifelse(is.na(Notes), '-', Notes),
+                          Evaluations=ifelse(is.na(Evaluations), '-', Evaluations)) %>% 
+               select(Date, Day, Topic, Notes, Evaluations)
 ```
 
 <!-- unholy hack to make following two tables less wide and the same wide -->
@@ -33,18 +51,7 @@ table {
 }
 </style>
 
-## Math 456: Applied Statistics II (Subject to adjustment)
 
 ```{r results = 'asis', echo = FALSE}
-knitr::kable(cdat %>% select(Date, Notes))
+knitr::kable(clean)
 ```
-
-## Useful links
-
-* http://reganmian.net/blog/2014/10/14/starting-data-analysiswrangling-with-r-things-i-wish-id-been-told/
-* http://www.cookbook-r.com
-
-## R packages used
-
-
-
