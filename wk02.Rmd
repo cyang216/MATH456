@@ -5,12 +5,15 @@ date: " 2/1/16"
 output: html_document
 ---
 ```{r results="asis", echo=FALSE}
-source("~/Github/MATH456/stylesheets/custom.R")
+source("C:/Github/MATH456/stylesheets/custom.R")
 ```
-[[Week 2]](wk01.html) [[Week 3]](wk03.html)
+[[Week 1]](wk01.html) [[Week 3]](wk03.html)
 
 ## Announcements
-** Homework Due:** Homework 1 submission - Selected On Your Own problems from last week. 
+**Homework Due:**  
+
+* Homework 1 submission - Ch3 On Your Own problems.  
+* A random set of 1-3 problems will be graded using the [Homework rubric](admin/rubric.html)
 
 ### Notes and Materials
 * Lec 01: Preparing Data for Analysis [[PDF]](notes/lec01_data_prep.pdf)[[HTML]](notes/lec01_data_prep.html)
@@ -18,14 +21,22 @@ source("~/Github/MATH456/stylesheets/custom.R")
 
 ## Experience (During Class)
 ### Monday
-**Prepare:** Read Afifi Ch 4. 
+**Prepare:** Read Afifi Ch 4. Replicate code in lecture notes. 
+
 * Data screening and transformations. 
 
 ### Wednesday
-**Prepare:** Read Afifi Ch 5. 
+**Prepare:** Read Afifi Ch 5. Replicate code in lecture notes. 
+
 * Selecting Appropriate Analysis
   
 
 ### Friday
-**Prepare:** Read Afifi Ch 6.
-* Review of Correlation and Simple Linear Regression
+* Consulting Experience: Introduction to Recruitment Database
+* Finish Ch 4 & 5
+
+
+## Looking Ahead
+* Quiz on Monday. Ch 4 and Ch 5. Will come directly from the _On Your Own_ questions. 
+* Starting Simple and Multiple Linear Regression next week. 
+

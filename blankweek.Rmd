@@ -1,22 +1,21 @@
 ---
 title: "Week X"
-author: "MATH 459, Spring 2016"
+author: "MATH 456, Spring 2016"
 date: " X/XX/16"
 output: html_document
 ---
 ```{r results="asis", echo=FALSE}
 source("C:/Github/MATH456/stylesheets/custom.R")
 ```
-[[Schedule]](wk01.html) [[Week 2]](wk03.html)
+[[wk0x]](wk0x.html) [[Week x]](wk0x.html)
 
 ## Announcements
 
-## Prepare (Before class)
 
 ### Notes and Materials
 
 
-## Experience (During Class)
+## Experience 
 ### Monday
 
 
@@ -26,15 +25,7 @@ source("C:/Github/MATH456/stylesheets/custom.R")
 ### Friday
 
 
-## Homework (After class)
-
-### Due Wednesday X/X
-
-
-### Due Friday x/x
-
-
-### Due Monday X/X
+## Looking Ahead
 
 
 ## Links and References
