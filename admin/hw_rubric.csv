@@ -1,0 +1,4 @@
+Criteria,Needs Work (1pt),Satisfactory (2pts),Proficient (3 pts)
+Technical,Most answers incorrect.,Most of the answers are correct.,All given answers are correct. 
+Interpretation,"Not full english sentences, difficult to read. Either english or code portions of the response are missing. ",Few grammatical or spelling errors but clarity of overall writing is acceptable. Statements made are attempted or partially linked directly to displayed output. ,Well thought out and clearly stated answers to all problems. All statements made in answer are clearly linked to displayed output. 
+Visual,"Difficult to find problems, no formatting used, code and responses disjoint. ",Some formatting applied,"Easy to navigate, visually clean and organized. R output aligned with content. "

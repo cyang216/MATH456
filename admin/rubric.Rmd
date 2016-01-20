@@ -1,0 +1,32 @@
+---
+title: "Homework Information"
+author: "MATH 456: Spring 2016"
+output: html_document
+---
+
+```{r results="asis", echo=FALSE}
+source("C:/Github/MATH456/stylesheets/custom.R")
+```
+
+```{r include = FALSE}
+library(readr)
+#rubric <- read_csv(file.path("admin", "hw_rubric.csv"))
+rubric <- read_csv("hw_rubric.csv")
+```
+
+## How to submit homework
+* Homework will be submitted approximately every other week.
+* Homework will be submitted either via BBLearn or the shared Google Drive (TBD)
+
+
+## How homework will be graded
+* A random set of 1-3 problems will be chosen to be graded. 
+* Grading will be done by using the rubric below. 
+* The full assignment is worth 10 pts.
+    - 3 criteria worth up to 3 pts. 
+    - 1 pt for a complete assignment. 
+
+
+```{r results = 'asis', echo = FALSE}
+knitr::kable(rubric)
+```
