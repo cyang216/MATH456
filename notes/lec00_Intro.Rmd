@@ -3,10 +3,10 @@ title: "Preliminaries and Logistics"
 author: "MATH 456 - Spring 2016"
 date: "1/25/16"
 output:
+  pdf_document: default
   html_document:
     highlight: pygments
     theme: spacelab
-  pdf_document: default
 ---
 
 ```{r results="asis", echo=FALSE}

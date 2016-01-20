@@ -1,11 +1,11 @@
 ---
-title: "Lec 01: Preparing Data for Analysis"
+title: 'Lec 01: Preparing Data for Analysis'
 author: "MATH 456 - Spring 2016"
 output:
+  pdf_document: default
   html_document:
     highlight: pygments
     theme: spacelab
-  pdf_document: default
 ---
 ```{r,echo=FALSE, warning=FALSE, message=FALSE}
 library(knitr); library(rmarkdown);
@@ -61,7 +61,8 @@ R using `read.table()`, load the `dplyr` and `ggplot2` libraries.
 options to the code chunk starter line. ` ```{r, message=FALSE, warning=FALSE}`. 
 
 ```{r}
-library(dplyr);library(ggplot2)  
+library(dplyr)
+library(ggplot2)  
 depress <- read.table("C:/GitHub/MATH456/data/Depress.txt", sep="\t", header=TRUE)  
 ```
 
@@ -402,10 +403,7 @@ Analysis options
 - Logistic regression: Categorize dependent variable: high, low
 - Survival analysis: IF dependent variable is time to an event
 
-Do multiple and compare results. 
-
-* Make up variables for this situation that fit each of the 5 analysis 
-  types. 
+Unsure? Do several and compare results. 
 
 
 ##### On Your Own
