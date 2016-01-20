@@ -1,21 +1,25 @@
 ---
-title: "Week X"
+title: "Week 3"
 author: "MATH 456, Spring 2016"
-date: " X/XX/16"
+date: " 02/08/16"
 output: html_document
 ---
 ```{r results="asis", echo=FALSE}
 source("C:/Github/MATH456/stylesheets/custom.R")
 ```
-[[wk0x]](wk0x.html) [[Week x]](wk0x.html)
+[[wk02]](wk02.html) [[Week 4]](wk04.html)
 
 ## Announcements
+**Quiz**  
 
+* Quiz on material from Ch4 and Ch 5. Questions will come directly 
+
+## Prepare (Before class)
 
 ### Notes and Materials
 
 
-## Experience 
+## Experience (During Class)
 ### Monday
 
 
@@ -23,9 +27,6 @@ source("C:/Github/MATH456/stylesheets/custom.R")
 
 
 ### Friday
-
-
-## Looking Ahead
 
 
 ## Links and References

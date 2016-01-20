@@ -7,7 +7,7 @@ output: html_document
 ```{r results="asis", echo=FALSE}
 source("C:/Github/MATH456/stylesheets/custom.R")
 ```
-[[Week 2]](wk01.html) [[Week 3]](wk03.html)
+[[Week 1]](wk01.html) [[Week 3]](wk03.html)
 
 ## Announcements
 **Homework Due:**  
@@ -34,3 +34,9 @@ source("C:/Github/MATH456/stylesheets/custom.R")
 ### Friday
 * Consulting Experience: Introduction to Recruitment Database
 * Finish Ch 4 & 5
+
+
+## Looking Ahead
+* Quiz on Monday. Ch 4 and Ch 5. Will come directly from the _On Your Own_ questions. 
+* Starting Simple and Multiple Linear Regression next week. 
+
