@@ -10,17 +10,18 @@ source("C:/Github/MATH456/stylesheets/custom.R")
 [[wk02]](wk02.html) [[Week 4]](wk04.html)
 
 ## Announcements
-**Quiz**  
+**Quiz this week**  
 
-* Quiz on material from Ch4 and Ch 5. Questions will come directly 
 
 ## Prepare (Before class)
 
 ### Notes and Materials
-
+* Lec 02: Linear Regression [[PDF]](notes/lec02_LinReg.pdf)[[HTML]](notes/lec02_LinReg.html)
 
 ## Experience (During Class)
 ### Monday
+* Quiz on material from Ch4 and Ch 5. 
+* Review of Simple Linear Regression
 
 
 ### Wednesday
