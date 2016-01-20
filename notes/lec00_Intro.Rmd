@@ -2,10 +2,11 @@
 title: "Preliminaries and Logistics"
 author: "MATH 456 - Spring 2016"
 date: "1/25/16"
-output: 
-  html_document: 
+output:
+  html_document:
     highlight: pygments
     theme: spacelab
+  pdf_document: default
 ---
 
 ```{r results="asis", echo=FALSE}
@@ -55,7 +56,8 @@ Upon successful completion of this course, students will be able to:
 * Class website: http://norcalbiostat.github.io/MATH456
 * First stop for all class materials. 
 * Details on weekly topics can be found on the [schedule](./Schedule.html).
-* The [syllabus](./Syllabus.html) covers course details such as grading, office hours and required materials. Spend 5 minutes to read that now. 
+* The [syllabus](./Syllabus.html) covers course details such as grading, office hours and required materials. 
+* Shared [Google Drive](https://drive.google.com/a/mail.csuchico.edu/folderview?id=0B83Z8_sNw3KPcnVrYzVFRHUtcHM&usp=sharing) Folder: I will use this to store and share data, and possibly submit homework (TBD)
 * Questions? 
 
 

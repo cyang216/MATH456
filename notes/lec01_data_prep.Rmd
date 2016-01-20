@@ -13,7 +13,7 @@ opts_chunk$set(warning=FALSE, message=FALSE)
 ```
 
 ```{r results="asis", echo=FALSE}
-source("~/Github/MATH456/stylesheets/custom.R")
+source("C:/Github/MATH456/stylesheets/custom.R")
 ```
 
 # Assigned Reading
@@ -48,12 +48,11 @@ make your future self happy.
 Figure Credits: [Roger Peng](http://www.biostat.jhsph.edu/~rpeng/)
 
 
-## Practice
+## Practice (in class)
 
 ### Reading data into R
 
-* Download the Depression data set `depress` and codebook from the 
-[Data page](../data/Datasets.html) of the class website. 
+* Download the Depression data set `depress` and codebook from the [Google Drive](https://drive.google.com/a/mail.csuchico.edu/folderview?id=0B83Z8_sNw3KPcnVrYzVFRHUtcHM&usp=sharing) Data folder. 
 * Save these into a **Data** sub-folder in your **MATH456** folder. 
 This is a tab-delimited text file.  
 * Start a new Markdown file and in the first code chunk, read the data set into 
@@ -113,8 +112,12 @@ For unbiased and accurate results of a statistical analysis, sufficient data
 has to be present. Often times once you start slicing and dicing the data to
 only look at certain groups, or if you are interested in the behavior of
 certain variables across levels of another variable, sometimes you start to
-run into small sample size problems. Take Marital status as an example,
-there are only 13 people who report being separated. 
+run into small sample size problems. For example, consider marital status. 
+```{r}
+table(depress$MARITAL)
+```
+There are only 13 people who report being separated. This could potentially be
+too small of a group size for valid statistical analysis. 
 
 One way to deal with insufficient data within a certain category is to
 collapse categories. The following code uses the `recode()` function from 

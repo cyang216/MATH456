@@ -1,10 +1,10 @@
 Week,Day,date,link_it,Outline,raw_notes,Evaluations,
-wk01,M,1/25/2016,TRUE,Introduction to the class,lec00_Intro,,
+wk01,M,1/25/2016,TRUE,Introduction to the class,lec00_Intro,,QFOCUS - Preparing Data for Analysis
 wk01,W,1/27/2016,TRUE,"Characterizing Data, Data cleaning",lec01_data_prep,,
 wk01,F,1/29/2016,TRUE,Data cleaning,lec01_data_prep,,
 wk02,M,2/1/2016,TRUE,Data screening and Transformations,lec01_data_prep,Homework Due,
 wk02,W,2/3/2016,TRUE,Selecting Appropriate Analysis,lec01_data_prep,,
-wk02,F,2/5/2016,FALSE,Review of Simple Linear Regression,lec02_LinReg,,QFOCUS - SLR
+wk02,F,2/5/2016,FALSE,Review of Simple Linear Regression,lec02_LinReg,,
 wk03,M,2/8/2016,FALSE,Multiple Linear Regression - Model fitting,lec02_LinReg,Quiz 1,
 wk03,W,2/10/2016,FALSE,"MLR - Transformations, Colinearity, predictions",lec02_LinReg,,
 wk03,F,2/12/2016,FALSE,,,,QFOCUS - Variable selection
