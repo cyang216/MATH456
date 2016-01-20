@@ -17,7 +17,7 @@ output:
 **Class days and times:** MWF 2-2:50, Holt 155  
 **Prerequisites:** MATH 315/615 at Chico State or instructor permission.  
 **Course Website:** http://norcalbiostat.github.io/MATH456/  
-**Piazza Forum:** https://piazza.com/mail.csuchico.edu/spring2016/math456
+**Disucssion Forum:** https://groups.google.com/forum/#!forum/csuc_stat
 
 ## Course Description and Goals
 From the CSUC Course Catalog: Advanced topics in applied statistics including multiple regression, multivariate methods, nonparametrics, analysis of covariance, bootstrap methods and others as appropriate. Statistical computer packages are introduced and used. Appropriate for biology, agriculture, nutrition, business, psychology, social science and other maojrs. 3 hours discussion.
@@ -59,8 +59,8 @@ Here is a [slide deck](notes/xtra01_InstallPrograms.html) containing instruction
 
 ## Online Component
 * All course materials can be found on the [course website](http://norcalbiostat.github.io/MATH456/).  
-* We will be using [Piazza](https://piazza.com/mail.csuchico.edu/spring2016/math456) as the place for discussion outside of class.   
-* You are responsible for regularly checking Piazza for updates and announcements.  
+* We will be using a [Google Group](https://groups.google.com/forum/#!forum/csuc_stat) as the place for discussion outside of class.  
+* You are responsible for regularly checking this forum for updates and announcements.  
 * The daily class schedule can be found on the class website [here](Schedule.html).  
 * It is your responsibility to be aware of the current schedule.  
 
@@ -85,7 +85,7 @@ Completing the required readings and starting to work out problems in R prior to
 
 ## Getting Help
 * Your first resource is each other. 
-* Use the class [Piazza](https://piazza.com/mail.csuchico.edu/spring2016/math456) forum for R and Markdown debugging problems.
+* Use the [Google Group](https://groups.google.com/forum/#!forum/csuc_stat) forum for R and Markdown debugging problems.
 * Come to the RUG meetings / open work sessions. 
 * I will **not** answer emails about any coding problems. Check the class discussion forum for a solution first. 
 * Another great resource is [StackOverflow](http://stackoverflow.com/questions/tagged/r) using the `r` or `markdown` tags. 
