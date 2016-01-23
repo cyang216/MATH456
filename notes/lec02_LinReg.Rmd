@@ -31,10 +31,49 @@ Afifi: Chapters 6-7
 * Predict value of $Y$ for a given value of $X$
 
 ## Mathmatical Model
-* The mean of $Y$ values at any given $X$ is $\alpha + \beta X$
+* The mean of $Y$ values at any given $X$ is $\beta_{0} + \beta_{1} X$
 * The variance of $Y$ values at any $X$ is $\sigma^2$ (same for all X)
 * $Y$ values are normally distributed at any given $X$ (need for inference)
 
+![Figure 6.2](slr_graph.png)
+
+## Parameter Estimates
+* Estimate the slope $\beta_{1}$ and intercept $\beta_{0}$ using least-squares methods.
+* The residual mean squared error (RMSE) is an estimate of the variance $s^{2}$
+* Typically interested in inference on $\beta_{1}$
+    - Assume no relationship between $X$ and $Y$ $(H_{0}: \beta_{1}=0)$ 
+      until there is reason to believe there is one 
+      $(H_{0}: \beta_{1} \neq 0)$
+
+## Interval estimation
+* Everything is estimated with some degree of error
+* Confidence intervals for the mean of $Y$
+* Prediction intervals for an individual $Y$ 
+
+Which one is wider? Why?
+
+## Corelation Coefficient
+* The correlation coefficient $\rho$ measures the strength of association
+  between $X$ and $Y$ in the _population_.
+* $\sigma^{2} = VAR(Y|X)$ is the variance of $Y$ for a specific $X$.
+* $\sigma_{y}^{2} = VAR(Y)$ is the variance of $Y$ for all $X$'s.
+
+$$ \sigma^{2} = \sigma_{y}^{2}(1-\rho^{2})$$
+$$ \rho^{2} = \frac{\sigma_{y}^{2} - \sigma^{2}}{\sigma_{y}^{2}}$$
+
+* $\rho^{2}$ = reduction in variance of Y associated with knowledge of X/original variance of Y
+* **Coefficient of Determiniation**: $100\rho^{2}$ = % of variance of Y “associated with X” or “explained by X”
+* Caution: association vs. causation.
+
+### Example: Lung Function
+Data were from an epidemiological study of households living in four areas with
+different amounts and types of air pollution.
+
+
+
+We use only the data taken on the fathers, all are nonsmokers:
+X = height in inches
+Y = forced expiratory volume in one second (FEV1)
 
 
 ##### On Your Own: 
