@@ -91,10 +91,16 @@ cols.num <- c("MCSEX", "MCAGE", "MCHEIGHT", "MCWEIGHT", "MCFVC", "MCFEV1",
 fev[cols.num] <- sapply(fev[cols.num],as.numeric)
 str(fev)
 ```
+4a. While we're cleaning the raw data we need to make a few more edits. The FEV1 
+    measurements were erroneously recoded in the data set at 100x their real value. 
+```{r}
+fev[c("FFEV1", "MFEV1", "OCFEV1", "MCFEV1", "YCFEV1")] <- fev[c("FFEV1", "MFEV1", "OCFEV1", "MCFEV1", "YCFEV1")]/100
+head(fev$FFEV1)
+```
 
 5. Save this data as a tab-delimited text file onto your computer for later use. 
 ```{r}
-write.table("fev", file="C:/Github/MATH456/data/Lung.txt", sep="\t")
+write.table(fev, file="C:/Github/MATH456/data/Lung.txt", sep="\t")
 ```
 
 6. Create a scatterplot of FEV versus height for fathers. 
@@ -109,8 +115,8 @@ qplot(y=FFEV1, x=FHEIGHT, geom="point", data=fev, xlab="Height", ylab="FEV1",
       of FEV1 Versus Height for Fathers.") + 
       geom_smooth(method="lm", se=FALSE, col="blue") + 
       geom_smooth(se=FALSE, col="red") 
-  
 ```
+
 There does appear to be a tendency for taller men to have higher FEV1. 
 
 7. Fit a linear model and report the regression parameter estimates. 
@@ -118,15 +124,64 @@ There does appear to be a tendency for taller men to have higher FEV1.
 model <- lm(FFEV1 ~ FHEIGHT, data=fev)
 summary(model)
 ```
-The least squares equation is 
-$$ Y = -408.67 + 11.8X $$
-For ever inch taller a father is, his FEV1 measurement increases by 11.8. 
+The least squares equation is $Y = -4.087 + 0.118X$.
+
+8. Test for a significant relationship between height and FEV. Include a p-value and 
+a confidence interval for the parameter estimate in your conclusion. 
+```{r}
+confint(model)
+```
+For ever inch taller a father is, his FEV1 measurement significantly increases by .12 (95%CI: .09, .15, p<.0001).  
+The correlation between FEV1 and height is $\sqrt{.2544}$ = 0.5. 
+
+9. Predict the FEV for a 6' and 6'4" male. 
+```{r}
+newdata <- data.frame(FHEIGHT=c(60, 64))
+predict(model, newdata, interval="confidence")
+predict(model, newdata, interval="prediction")
+```
+
+Why didn't I create a prediction for the 5' male? Hint, look at the range of height values below. 
+```{r}
+summary(fev$FHEIGHT)
+```
+
+## Assumptions of Linear Regression
+* Homogeneity of variance (same $\sigma^{2}$)
+    - Not extremely serious
+    - Can use transformations to achieve it
+* Normal residuals
+    - Slight departures OK
+    - Can use transformations to achieve it
+* Randomness / Independence
+    - Very serious
+    - Can use hierarchical models for clustered samples
+* Linear relationship
+    - Slight departures OK
+    - Can use transformations to achieve it
+
+Assess the model fit and assumptions using graphical measures. 
+```{r}
+par(mfrow=c(2,2))
+plot(model)
+```
+
+## What to watch out for
+* Representative sample 
+* Range of prediction should match observed range of X in sample
+* Use of nominal or ordinal, rather than interval or ratio data
+* Errors-in-variables
+* Correlation does not imply causation 
+* Violation of assumptions
+* Influential points 
+* Appropriate model
+
 
 
 ##### On Your Own: 
 Write your responses in a new Markdown file named *userid_ch6.rmd*.
 
-
+Problem 6.2, 6.7, 
 
 # Multiple Regression and Correlation (_Afifi Ch 7_)
 
