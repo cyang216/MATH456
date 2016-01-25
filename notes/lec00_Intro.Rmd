@@ -52,6 +52,7 @@ Upon successful completion of this course, students will be able to:
 - Mondays will have either a quiz or homework submission. 
 - Expect to bring your laptop every day to class. 
 
+
 ## Class materials
 * Class website: http://norcalbiostat.github.io/MATH456
 * First stop for all class materials. 

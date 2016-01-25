@@ -14,17 +14,21 @@ source("C:/Github/MATH456/stylesheets/custom.R")
 Welcome to MATH 456 - Applied Statistics II
 
 ### Notes and Materials
-* The class [Syllabus](./Syllabus.html). 
 * lec00: Intro to the Class [[PDF]](notes/lec00_Intro.pdf)[[HTML]](notes/lec00_Intro.html)
+* The class [Syllabus](./Syllabus.html). 
 * lec01: Preparing Data for Analysis [[PDF]](notes/lec01_data_prep.pdf)[[HTML]](notes/lec01_data_prep.html)
-* [Recruitment database](https://drive.google.com/a/mail.csuchico.edu/file/d/0B83Z8_sNw3KPUG15QTEtSXpZODA/view?usp=sharing)
+
 
 ## Experience (During Class)
 ### Monday
-* Intro to the class
-* Review of webpage layout
-* Q-Focus Activity 
+* Class logistics, preliminaries, expecations, syllabus
+* Review of webpage layout and location of course materials
+* Group assignments, seating and screen viewing logistics
+* Introduction to the Question Formulation Technique (QFT)
+* Computer setup?
 
+### Tuesday
+* OH to help get required programs set up. Suggested times? 
 
 ### Wednesday
 **Prepare:**  Read Afifi Ch 1-3. "_On Your Own_" problems for Ch 2.

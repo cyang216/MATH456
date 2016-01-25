@@ -7,7 +7,6 @@ The master branch of this repository provides all the files for the course webpa
 ToDo
 * Update schedule page to include links to RMD and HTML files.  
 * Update data page to include links to correct data files.  
-* Update schedule page to include a table of R packages used. 
 
 Parts of the course design and auto-creating of the daily schedule pulled from @jennybc 's STAT545 course. https://github.com/STAT545-UBC/STAT545-UBC.github.io
 
