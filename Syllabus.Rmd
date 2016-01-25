@@ -54,8 +54,10 @@ Here is a [slide deck](notes/xtra01_InstallPrograms.html) containing instruction
 **If you have no prior experience with R you have some choices.**
 
 1) Go through any number of self-paced free online tutorials. Recommended ones are [DataCamp](https://www.datacamp.com/courses/free-introduction-to-r), [TryR](http://tryr.codeschool.com/), and [R Tutorial](http://www.r-tutor.com/r-introduction).    
-2) Go through a self-paced online R Bootcamp specifically designed by Dr. Donatello to provide just the basics needed for coursework in this class. This includes an introduction to Markdown. This Bootcamp can be found at http://norcalbiostat.github.io/R-Bootcamp/
-3) Plan on enrolling in the in-person version of this R Bootcamp at the start of the semester. This will be 2 hour classes, 2 nights/week, for the first 3 weeks. Specific enrollment details will be announced as they are finalized. 
+2) Go through a self-paced online R Bootcamp specifically designed by me to provide just the basics needed for coursework in this class. This includes an introduction to Markdown. This Bootcamp can be found at http://norcalbiostat.github.io/R-Bootcamp/
+3) Enrolling in either 
+   - A the in-person version of this R Bootcamp at the start of the semester. Tue/Thu 5-7pm from 1/28 to 2/18 in Holt 171
+   - A full fledged R course (Math 398, MW 3-4:15 Holt 155).
 
 ## Online Component
 * All course materials can be found on the [course website](http://norcalbiostat.github.io/MATH456/).  
