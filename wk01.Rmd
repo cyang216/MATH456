@@ -1,8 +1,8 @@
 ---
 title: "Week 1"
 author: "MATH 459, Spring 2016"
-date: " 1/25/16"
-output: html_document
+date: ' 1/25/16'
+output: pdf_document
 ---
 ```{r results="asis", echo=FALSE}
 #source("~/Github/MATH456/stylesheets/custom.R")
@@ -25,7 +25,6 @@ Welcome to MATH 456 - Applied Statistics II
 * Review of webpage layout and location of course materials
 * Group assignments, seating and screen viewing logistics
 * Introduction to the Question Formulation Technique (QFT)
-* Computer setup?
 
 ### Tuesday
 * OH to help get required programs set up. Suggested times? 

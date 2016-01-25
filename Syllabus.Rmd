@@ -56,8 +56,8 @@ Here is a [slide deck](notes/xtra01_InstallPrograms.html) containing instruction
 1) Go through any number of self-paced free online tutorials. Recommended ones are [DataCamp](https://www.datacamp.com/courses/free-introduction-to-r), [TryR](http://tryr.codeschool.com/), and [R Tutorial](http://www.r-tutor.com/r-introduction).    
 2) Go through a self-paced online R Bootcamp specifically designed by me to provide just the basics needed for coursework in this class. This includes an introduction to Markdown. This Bootcamp can be found at http://norcalbiostat.github.io/R-Bootcamp/
 3) Enrolling in either 
-   - A the in-person version of this R Bootcamp at the start of the semester. Tue/Thu 5-7pm from 1/28 to 2/18 in Holt 171
-   - A full fledged R course (Math 398, MW 3-4:15 Holt 155).
+   - The in-person version of this R Bootcamp (Math 199-10 1/28-2/18 TR 5-7pm Holt 171).
+   - The full fledged R course (Math 398, MW 3-4:15 Holt 155).
 
 ## Online Component
 * All course materials can be found on the [course website](http://norcalbiostat.github.io/MATH456/).  
@@ -68,13 +68,14 @@ Here is a [slide deck](notes/xtra01_InstallPrograms.html) containing instruction
 
 
 ## Assignments and Grading Policy
-Practice problems will be assigned regularly and will be worked on during and outside of class time. An open note quiz will be administered at appropriate intervals, typically a day or two after a section or topic has been completed. Quiz questions will directly come from the practice problems, so it is in your best interest to have all problems completed and well-organized. 
+Practice problems will be assigned regularly and will be worked on during and outside of class time. An open note quiz will be administered at appropriate intervals. Quiz questions will directly come from the practice problems, so it is in your best interest to have all problems completed and well-organized. Quiz questions and homework problems will be graded using the following [Rubric](admin/rubric.html). 
 
-You will also be expected to participate in discussions during class, and outside of class on the forum board. 
+You are also expected to participate in discussions during class, and outside of class on the discussion board. If you have no questions of your own, then help answer other people's questions. 
 
 No Late work accepted without prior approval. 
 
-**Weights**:  Quizzes 20%; Homework 20%; Midterm Report 15%; Final Report 15%; Midterm Exam 15%, Final Exam 15%
+**Weights**:  Quizzes & Homework 25%; Participation 15%; Reports(2) 30%; Exams(2) 30%
+
 **Letter grade**: A [95-100), A- [90-94), B+ [87, 89), B [83-86), B- [80, 82), C+ [77-79), C [73-76), C- [79, 72), D+ [65, 69), D [60, 64), F < 60
 
 
