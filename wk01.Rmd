@@ -21,13 +21,11 @@ Welcome to MATH 456 - Applied Statistics II
 
 ## Experience (During Class)
 ### Monday
+**In class:**
 * Class logistics, preliminaries, expecations, syllabus
 * Review of webpage layout and location of course materials
 * Group assignments, seating and screen viewing logistics
 * Introduction to the Question Formulation Technique (QFT)
-
-### Tuesday
-* OH to help get required programs set up. Suggested times? 
 
 
 ### Wednesday
@@ -62,3 +60,17 @@ Welcome to MATH 456 - Applied Statistics II
 * Finish data wrangling, munging, recoding, editing, cleaning.
 * Start "_On Your Own_" problems for Ch 3 in a new markdown file 
 
+### Other
+The images I took from the Question focus activity done on Monday can be found
+in a [Google Slides presentation](https://drive.google.com/open?id=1VofDG-p_Df42qsYDg9HgaKgKs_7UfDeXofA0HJen8so) 
+in our shared Google Drive. Since we did not get to share very much during
+class I encourage you to look them over and see what questions other groups 
+came up with.
+
+## Participation Opportunity
+Contribute to this set of slides by either  
+
+* Adding a common theme in the questions that you notice. 
+* Providing rational as to why your group chose that question as your priority question. 
+  
+  
