@@ -1,9 +1,9 @@
 ---
 title: "California State University Chico \n Department of Mathematics and Statistics"
 output:
-  pdf_document: default
   html_document:
     highlight: pygments
+  pdf_document: default
 ---
 
 # MATH 456, Applied Statistics II, Section 01, Spring 2016
@@ -46,7 +46,7 @@ Download and install the following software within the first two weeks of class.
 
   - **R** http://cran.r-project.org/
   - **R-Studio** http://www.rstudio.com/products/rstudio/download/
-  - **The typesetting environment LaTeX** http://www.latex-project.org/
+  - **The typesetting environment LaTeX** http://www.latex-project.org/ftp.html (This is a 1.8G+ file. It is not advised to download it on the campus wifi.)
 
 Here is a [slide deck](notes/xtra01_InstallPrograms.html) containing instructions on how to install R and R Studio. _Notes are currently from a different class, the Swirl lessons are not needed in this class_. 
 

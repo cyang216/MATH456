@@ -16,10 +16,20 @@ rubric <- read_csv("hw_rubric.csv")
 
 ## How to submit homework
 * Homework will be submitted approximately every other week.
-* Homework will be submitted either via BBLearn or the shared Google Drive (TBD)
+* The file name of your submission should follow this format: _userid_assigment_
+    - For example my markdown document for chapter 3 would be _rdonatello_ch3.Rmd_
+* Double check the notes and blackboard learn to see what file exactly is to be uploaded. 
+    - rmd/word/html/pdf 
+* The requested file should be submitted via BBLearn by the due date. 
+  Late homework is generall not accepted. 
+* Grading will be video recorded. The markedup document and video recording 
+  will be put into your personal MATH456 Google Drive folder that you shared with me. 
 
-
+      
 ## How homework will be graded
+* If you submit a code file then I will download your code file, and compile
+  it on my machine. What is generated is what I grade. 
+  Make sure it looks good before you upload it. 
 * A random set of 1-3 problems will be chosen to be graded. 
 * Grading will be done by using the rubric below. 
 * The full assignment is worth 10 pts.
