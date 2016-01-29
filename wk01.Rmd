@@ -58,8 +58,13 @@ Welcome to MATH 456 - Applied Statistics II
   
 **In class:**
 
+- Review How to submit [homework](admin/rubric.html)
 * Finish data wrangling, munging, recoding, editing, cleaning.
 * Start "_On Your Own_" problems for Ch 3 in a new markdown file 
+    - Due Monday 2/1 midnight
+    - Upload **the RMD** file ONLY BBlearn
+    - Make sure it's named *userid_ch3.rmd* 
+    
 
 
 ## Participation Opportunities
