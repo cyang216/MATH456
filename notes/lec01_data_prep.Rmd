@@ -105,7 +105,7 @@ it is helpful to visualize the location of the mean as well as the median.
 to the current plot. 
 ```{r}
 qplot(y=INCOME, x=MARITAL, data=depress, geom="boxplot") + 
-   stat_summary(fun.y=mean, colour="blue", size=3, geom="point", show_guide = FALSE)
+   stat_summary(fun.y=mean, colour="blue", size=3, geom="point")
 ```
 
 ### Recoding variables
@@ -139,21 +139,26 @@ have the value of `Sep/Div` for `MARITAL2` (columns).
 
 
 Now let's examine the relationship between income against marital status by
-creating a dotplot. This is a situation where _jittering_  or _dodging_ 
-the points is helpful to avoid overplotting of points. The `grid.arrange` 
-function from the `gridExtra` package is used to display these plots side
-by side. 
+creating a boxplot. This is a situation where _jittering_  or _dodging_ 
+the points is helpful to avoid overplotting of points. Note that the full
+`ggplot` code had to be used here, not the simpler `qplot` methods. 
+Furthermore, the `grid.arrange` function from the `gridExtra` package is used 
+to display these plots side by side. 
 ```{r, fig.width=10, fig.height=4}
 library(gridExtra)
 a <- qplot(x=MARITAL2, y=INCOME, data=depress, col=MARITAL2, geom="point", main = "Without jittering") + 
            coord_flip() + theme(legend.position="none")
-b <- qplot(x=MARITAL2, y=INCOME, data=depress, col=MARITAL2, geom="point", position='jitter', 
-           main = "With jittering")+ coord_flip()+ theme(legend.position="none")
+b <- ggplot(depress, aes(x=INCOME, y=MARITAL2, color=MARITAL2), main="With jittering") +
+            geom_point(position=position_jitter()) + theme(legend.position="none")
 grid.arrange(a, b, ncol=2)
 ```
 
-* What do you think `coord_flip()` and `theme(legend.position="none")` did? 
-Try removing them and see what happens. 
+* What do you think `coord_flip()` does? Look at the differnce in the X and Y values between
+  plot a and plot b. 
+
+* What do you think `theme(legend.position="none")` does? 
+
+_Hint:_ Try removing them and see what happens. 
 
 * What can you say about the relationship between Income and maritial status? 
 
@@ -414,3 +419,9 @@ a partner to answer problems 5.1-5.7, 5.10-13, 5.15. One submission
 per pair, include both names in the Author field. 
 
  
+# Session Info
+This document was compiled on `Sys.time()` and with the following system
+information:
+```{r}
+sessionInfo()
+```
