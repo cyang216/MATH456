@@ -2,10 +2,10 @@
 title: 'Lec 01: Preparing Data for Analysis'
 author: "MATH 456 - Spring 2016"
 output:
+  pdf_document: default
   html_document:
     highlight: pygments
     theme: spacelab
-  pdf_document: default
 ---
 ```{r,echo=FALSE, warning=FALSE, message=FALSE}
 library(knitr); library(rmarkdown);
@@ -259,7 +259,10 @@ Write your responses in a new Markdown file named *userid_ch3.rmd*.
     ```
     - Edit the codebook to add the variable name you choose to use
     for each subscale. 
-    
+
+<span style="color: Red">SOLUTIONS</span> [[HTML]](./solutions/01_data_prep_solutions.html)[[PDF]](./solutions/01_data_prep_solutions.pdf)
+
+
 # Data screening and transformations (_Afifi Ch 4_)
 Recall the aim of data preparation, screening, wrangling, or transforming is to 
 
@@ -420,7 +423,7 @@ per pair, include both names in the Author field.
 
  
 # Session Info
-This document was compiled on `Sys.time()` and with the following system
+This document was compiled on `r Sys.time()` and with the following system
 information:
 ```{r}
 sessionInfo()
