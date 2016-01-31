@@ -26,16 +26,6 @@ depress <- read.table("C:/GitHub/MATH456/data/Depress.txt", sep="\t", header=TRU
 hiv     <- read_excel("C:/GitHub/MATH456/data/Parhiv.xlsx")
 ```
 
-## Optional, but typical. Data management
-Perform some data management on the depression data set as discussed in the
-lecture notes, and then save the cleaned data with a new date.
-```{r}
-# Fix the age typo as discussed in the lecture notes
-depress$AGE[depress$AGE==9] <- 19
-write.table(depress, "C:/GitHub/MATH456/data/depress_013116", sep="\t", row.names=FALSE, col.names=FALSE)
-```
-From here on out this cleaned data set is the one that should be used for
-any analysis. 
 
 #### <span style="color: LimeGreen">On Your Own: Data Wrangling</span>
 1.  **Using the depression data set, create a new variable that collapses the 
@@ -104,9 +94,55 @@ point.
 3.  **Determine if any variables in the depression data set have observations
     that do not fall within the ranges given in the codebook. If there are any, 
     decide what to do with those values and implement your decision.**
+There are a lot of variables in the Depression data set, so (for me) the easiest
+way to visually confirm that all values are within the expected range is to do
+a summary of the entire data set. This produces a lot of output, but I can then
+go through each variable one by one, and cross-check the data against what is
+written in the codebook.
+
+Notice now that `SEX` is still being treated as numeric with values 1 and 2, 
+but `EDUCAT` now is being displayed properly as a categorical variable with
+our specified labels. 
+```{r}
+summary(depress)
+```
+
+Right away, at the end of the first line I notice that `RELIG` has a max value
+of 6, when there is no 6th category acording to the codebook. 
+```{r}
+table(depress$RELIG)
+```
+Without any other information to indicate what the correct response should have
+been, these values are set to missing. 
+
+The easiest way to perform a recode when there is only two options (or one
+simple logical statement) is to use the `ifelse()` function. This has three
+pieces: `ifelse(logical statement, value if TRUE, value if FALSE)`. 
+```{r}
+depress$RELIG <- ifelse(depress$RELIG == 6, NA, depress$RELIG)
+```
+Let's break down each piece to help you understand the logic. 
+
+<span style="color: blue">depress$RELIG<- </span> 
+
+<span style="color: red">ifelse(depress$RELIG == 6, </span> 
+
+<span style="color: green">NA, </span> 
+
+<span style="color: purple"> depress$RELIG)</span> 
 
 
+This line of code says that <span style="color: red">if the religion variable
+is 6 (logical statement)</span>, then <span style="color: blue">assign the value of this variable</span>
+to be <span style="color: green">missing (value if the logical statment is TRUE)</span>, 
+<span style="color: purple">otherwise don't change the variable from it's current 
+value (value if the logical statement is FALSE)</span>. 
 
+Then, always, confirm your recodes. It worked becuase the 2 cases that were
+under category 6 are now set as NA (missing). 
+```{r}
+table(depress$RELIG, useNA="always")
+```
 
 
 4.  **Update the Parental HIV data set by creating all the subscales listed at 
@@ -118,7 +154,7 @@ point.
 **Use the `write.table()` function to write this data set as a tab-delimited 
   text file using the current date in the file name.**
 ```{r}
-write.table(hiv, "C:/GitHub/MATH456/data/PARHIV_013116", sep="\t", row.names=FALSE, col.names=FALSE)
+write.table(hiv, "C:/GitHub/MATH456/data/PARHIV_013116.txt", sep="\t", row.names=FALSE, col.names=FALSE)
 ```
     
 # Session Info
