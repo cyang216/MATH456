@@ -153,14 +153,14 @@ b <- ggplot(depress, aes(x=INCOME, y=MARITAL2, color=MARITAL2), main="With jitte
 grid.arrange(a, b, ncol=2)
 ```
 
-* What do you think `coord_flip()` does? Look at the differnce in the X and Y values between
+* What do you think `coord_flip()` does? Look at the difference in the X and Y values between
   plot a and plot b. 
 
 * What do you think `theme(legend.position="none")` does? 
 
 _Hint:_ Try removing them and see what happens. 
 
-* What can you say about the relationship between Income and maritial status? 
+* What can you say about the relationship between Income and marital status? 
 
 ### Detecting and recoding Outliers and/or inconsistent data. 
 Let's look at the age variable in the depression data set. 
@@ -171,7 +171,7 @@ hist(depress$AGE)
 ```
 
 Just looking at the data graphically raises no red flags. The boxplot shows no
-outlying values and the histogram does not look widly skewed. This is where 
+outlying values and the histogram does not look wildly skewed. This is where 
 knowledge about the data set is essential. The codebook does not provide a valid 
 range for the data, but the description of the data starting on page 3 in the 
 textbook clarifies that this data set is on adults. In the research world, 
@@ -185,7 +185,7 @@ summary(depress$AGE)
 ```
 
 The minimum value is a 9, which is outside the range of valid values for
-this variable. This is where you, as a statistician, data analyist or
+this variable. This is where you, as a statistician, data analyst or
 researcher goes back to the PI and asks for advice. Should this data 
 be set to missing, or edited in a way that changes this data point into
 a valid piece of data. 
@@ -273,7 +273,12 @@ Recall the aim of data preparation, screening, wrangling, or transforming is to
 
 
 In the previous section we looked at outliers and inconsistent values. 
-Now let's look at normality and independence. 
+Now let's look at normality and independence using the cleaned depression
+data set. 
+```{r}
+rm(depress) # remove the current version that was used in the previous part of this markdown file
+depress <- read.table("C:/GitHub/MATH456/data/Depress_020116.txt", sep="\t", header=TRUE)  
+```
 
 Describe the distribution of `INCOME`. Be sure to write out your description
 in paragraph form and discuss the location (measures of center), spread (measures
@@ -293,9 +298,9 @@ summary(depress$INCOME)
 The distribution of annual income is slightly skewed right with a mean of $20.5k
 per year and a median of $15k per year income. The range of values goes from $2k 
 to $65k. Reported income above $40k appear to have been rounded to the nearest 
-$10k, because there are noticible peaks at $40k, $50k, and $60k. 
+$10k, because there are noticeable peaks at $40k, $50k, and $60k. 
 
-In general, transforamtions are more effective when the the standard deviation
+In general, transformations are more effective when the the standard deviation
 is large relative to the mean. One rule of thumb is if the sd/mean ratio is less 
 than 1/4, a transformation may not be necessary. 
 ```{r}
@@ -358,13 +363,17 @@ of CESD and log(CESD+1). Describe the distribution of each.
 2.  Why was the +1 added to CESD prior to taking the log?
 
 
-3.  Create a new variable that categorizes income into the following income
-ranges: <30, [30, 40), [40,50), [50, 60), 60+. 
+3.  Create a new variable that categorizes income into the following 
+ranges: <30, [30, 40), [40,50), [50, 60), 60+.   
+_Hint: Two options include using several `ifelse()` functions, or the 
+`cut2()` function in the `Hmisc` package._
 
-
-4.  Conduct an ANOVA to determine if the mean transformed `CESD` (from #1)
-differs across income catgeory (from #3). 
-
+4.  Replace the placeholder values in the code below with the real variable
+names to conduct an ANOVA to determine if the mean transformed `CESD` (from #1)
+differs across income category (from #3). 
+```{r, eval=FALSE}
+summary(aov(continuous variable ~  categorical variable, data=_____))
+```
 
 
 5. Using the Parental HIV data set, plot a histogram, boxplot, and a normal
