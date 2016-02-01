@@ -2,10 +2,10 @@
 title: 'Solutions to Ch3: Data Preparation'
 author: "MATH 456 - Spring 2016"
 output:
+  pdf_document: default
   html_document:
     highlight: pygments
     theme: spacelab
-  pdf_document: default
 ---
 
 Right click the link and choose "save link as" to download the 
@@ -158,7 +158,7 @@ of a method that would work easily for the variable at hand, that I had not alre
 demonstrated. Some methods are more advanced than others. You will find the method(s)
 that work best for you. 
 
-#### Method 1: Reverse code all sub items that require it by making new variables. Then take the mean of the list of variables. 
+#### Method 1: Reverse code all sub items that require it by making new variables. Then apply the mean function across that matrix (`cbind`) of variables. 
 
 ```{r}
 rpb02 <- recode(hiv$PB02, '1=4; 2=3; 3=2; 4=1') # using recode()
@@ -169,15 +169,18 @@ rpb16 <- 5-hiv$PB16
 rpb18 <- 5-hiv$PB18
 rpb24 <- 5-hiv$PB24
 
-hiv$parent_care <- mean(c(hiv$PB01, rpb02, rpb04, hiv$PB05, hiv$PB06, hiv$PB11, hiv$PB12, 
-                          rpb14, rpb16, hiv$PB17, rpb18, rpb24))
+hiv$parent_care <- apply(cbind(hiv$PB01, rpb02, rpb04, hiv$PB05, hiv$PB06, hiv$PB11, hiv$PB12, 
+                          rpb14, rpb16, hiv$PB17, rpb18, rpb24), 1, mean)
+# confirm recode
+summary(hiv$parent_care)
 ```
 
-#### Method 2: Reverse code sub-items inside the mean() function directly.
+#### Method 2: Reverse code sub-items at the time of combining (`cbind`). 
 ```{r}
-hiv$parent_overprotection <- mean(c(5-hiv$PB03, 5-hiv$PB07, hiv$PB08, hiv$PB09, hiv$PB10, 
-                                    hiv$PB13, 5-hiv$PB15, hiv$PB19, hiv$PB20, 5-hiv$PB21, 
-                                    5-hiv$PB22, hiv$PB23, 5-hiv$PB25))
+hiv$parent_overprotection <- apply(cbind(5-hiv$PB03, 5-hiv$PB07, hiv$PB08, hiv$PB09, hiv$PB10, 
+                                         hiv$PB13, 5-hiv$PB15, hiv$PB19, hiv$PB20, 5-hiv$PB21, 
+                                         5-hiv$PB22, hiv$PB23, 5-hiv$PB25), 1, mean)
+summary(hiv$parent_overprotection)
 ```
 
 #### Method 3: Take the row-wise mean across columns with a variable name that starts with BSI
