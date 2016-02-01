@@ -8,6 +8,9 @@ output:
   pdf_document: default
 ---
 
+Right click the link and choose "save link as" to download the 
+[[RMD]](ch3_solutions.RMD) file that created these solutions. 
+
 # Intial setup
 It is good practice (and good coding form) to load all libraries and read in all 
 data sets used in the document in the first code chunk. This is also where

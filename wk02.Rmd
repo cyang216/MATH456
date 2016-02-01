@@ -18,7 +18,9 @@ source("C:/Github/MATH456/stylesheets/custom.R")
   random problem will be graded using the [Homework rubric](admin/rubric.html)
 
 ### Notes and Materials
-* Lec 01: Preparing Data for Analysis [[PDF]](notes/lec01_data_prep.pdf)[[HTML]](notes/lec01_data_prep.html)
+* Lec 01: Preparing Data for Analysis [[PDF]](notes/lec01_data_prep.pdf)
+[[HTML]](notes/lec01_data_prep.html)
+[[RMD]](notes/lec01_data_prep.rmd)
 
 
 ## Experience (During Class)
