@@ -13,7 +13,9 @@ source("C:/Github/MATH456/stylesheets/custom.R")
 **Homework Due:**  
 
 * Homework 1 submission - Ch3 On Your Own problems.  
-* A random set of 1-3 problems will be graded using the [Homework rubric](admin/rubric.html)
+* [Solutions](notes/solutions/ch3_solutions.html) were posted on 1/31/16 around 4pm. 
+* This homework will be reviewed for completeness and a **single** 
+  random problem will be graded using the [Homework rubric](admin/rubric.html)
 
 ### Notes and Materials
 * Lec 01: Preparing Data for Analysis [[PDF]](notes/lec01_data_prep.pdf)[[HTML]](notes/lec01_data_prep.html)
