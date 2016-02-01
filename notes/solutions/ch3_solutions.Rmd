@@ -221,7 +221,7 @@ hiv <- hiv %>%
               BSI_psycho = mean(c(BSI03, BSI14, BSI34, BSI44, BSI53))
               )
 summary(cbind(hiv$BSI_interp, hiv$BSI_depress, hiv$BSI_anxiety, hiv$BSI_hostil, hiv$BSI_phobic, 
-          hiv$BSI_paranoid, hiv$BSI_psycho))
+        hiv$BSI_paranoid, hiv$BSI_psycho))
 ```
 The column names here are listed as V1-V7, which is fine. This was just for the
 `summary()` information. Nothing that we are going to keep. You can confirm that the

@@ -16,6 +16,7 @@ source("C:/Github/MATH456/stylesheets/custom.R")
 * [Solutions](notes/solutions/ch3_solutions.html) were posted on 1/31/16 around 4pm. 
 * This homework will be reviewed for completeness and a **single** 
   random problem will be graded using the [Homework rubric](admin/rubric.html)
+* Get your Google Drive folder shared with me! Name the folder MATH456_name
 
 ### Notes and Materials
 * Lec 01: Preparing Data for Analysis [[PDF]](notes/lec01_data_prep.pdf)
@@ -27,7 +28,13 @@ source("C:/Github/MATH456/stylesheets/custom.R")
 ### Monday
 **Prepare:** Read Afifi Ch 4. Replicate code in lecture notes. 
 
-* Data screening and transformations. 
+* 
+* Typo in dplyr code - proof that mistakes happen and QC is important. 
+* Raw vs. clean data sets. 
+    - Why have both and how to get there in a reproducible manner?
+    - Right click and save the [dm_depress](notes/dm_depress.RMD) RMD file into your class folder. 
+      Use this as a starting place to clean the depression data set. 
+* Data screening and transformations using the cleaned depression data. 
 
 ### Wednesday
 **Prepare:** Read Afifi Ch 5. Replicate code in lecture notes. 
