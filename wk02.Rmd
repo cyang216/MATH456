@@ -32,7 +32,7 @@ source("C:/Github/MATH456/stylesheets/custom.R")
 * Typo in dplyr code - proof that mistakes happen and QC is important. 
 * Raw vs. clean data sets. 
     - Why have both and how to get there in a reproducible manner?
-    - Right click and save the [dm_depress](notes/dm_depress.RMD) RMD file into your class folder. 
+    - Right click and save the [dm_depress](notes/dm_depress.rmd) RMD file into your class folder. 
       Use this as a starting place to clean the depression data set. 
 * Data screening and transformations using the cleaned depression data. 
 

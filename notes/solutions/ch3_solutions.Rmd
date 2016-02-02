@@ -9,7 +9,7 @@ output:
 ---
 
 Right click the link and choose "save link as" to download the 
-[[RMD]](ch3_solutions.RMD) file that created these solutions. 
+[[RMD]](ch3_solutions.Rmd) file that created these solutions. 
 
 # Intial setup
 It is good practice (and good coding form) to load all libraries and read in all 
