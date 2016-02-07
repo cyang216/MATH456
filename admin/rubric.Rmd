@@ -8,6 +8,10 @@ output: html_document
 source("C:/Github/MATH456/stylesheets/custom.R")
 ```
 
+Navbar: [[Home]](../index.html) [[Schedule]](../Schedule.html) [[Google Group]](https://groups.google.com/forum/#!forum/csuc_stat)  [[Google Drive]](https://drive.google.com/a/mail.csuchico.edu/folderview?id=0B83Z8_sNw3KPcnVrYzVFRHUtcHM&usp=sharing)
+
+
+
 ```{r include = FALSE}
 library(readr)
 #rubric <- read_csv(file.path("admin", "hw_rubric.csv"))

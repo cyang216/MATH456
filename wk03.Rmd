@@ -7,16 +7,21 @@ output: html_document
 ```{r results="asis", echo=FALSE}
 source("C:/Github/MATH456/stylesheets/custom.R")
 ```
-[[Week 2]](wk02.html) [[Week 4]](wk04.html)
+[[Schedule]](Schedule.html)  [[Week 2]](wk02.html) [[Week 4]](wk04.html)
 
 ## Announcements
 * Quiz on Ch 4 & 5 on Monday
-* Initial look at recruitment data due wednesday
+* Initial look at recruitment data due Wednesday
 
 
 ## Prepare 
 * Complete Ch 4 & 5 HW. 
-* Read Afifi Ch 6 & 7. Replicate code in lecture notes. 
+* Read Afifi Ch 6 & 7. 
+* Download the raw [Lungraw](https://drive.google.com/open?id=0B83Z8_sNw3KPS29hZ1p3eXk4dmc) 
+  data set, its [Codebook](https://drive.google.com/open?id=0B83Z8_sNw3KPNHpjZDRfaTR1LTQ) 
+  from the Google Drive, and the [data management code file](data/dm_lung.Rmd) 
+  to read in clean this data. 
+* Replicate code in lecture notes for Simple Linear Regression. 
 
 ### Notes and Materials
 * Lec 02: Linear Regression [[PDF]](notes/lec02_LinReg.pdf)[[HTML]](notes/lec02_LinReg.html)
