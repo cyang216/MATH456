@@ -21,7 +21,7 @@ source("C:/Github/MATH456/stylesheets/custom.R")
 ### Notes and Materials
 * Lec 01: Preparing Data for Analysis [[PDF]](notes/lec01_data_prep.pdf)
 [[HTML]](notes/lec01_data_prep.html)
-[[RMD]](notes/lec01_data_prep.rmd)
+[[RMD]](notes/lec01_data_prep.Rmd)
 
 
 ## Experience (During Class)
@@ -32,7 +32,7 @@ source("C:/Github/MATH456/stylesheets/custom.R")
 * Typo in dplyr code - proof that mistakes happen and QC is important. 
 * Raw vs. clean data sets. 
     - Why have both and how to get there in a reproducible manner?
-    - Right click and save the [dm_depress](notes/dm_depress.RMD) RMD file into your class folder. 
+    - Right click and save the [dm_depress](notes/dm_depress.Rmd) Rmd file into your class folder. 
       Use this as a starting place to clean the depression data set. 
 * Data screening and transformations using the cleaned depression data. 
 
