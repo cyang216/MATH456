@@ -66,44 +66,17 @@ $$ \rho^{2} = \frac{\sigma_{y}^{2} - \sigma^{2}}{\sigma_{y}^{2}}$$
 * Caution: association vs. causation.
 
 ### Example: Lung Function
+_Note: The data management markdown file for this data set can be found [here](data/dm_lung.Rmd).
+you will need to download the raw data, and this data management file, update the file locations
+and run it on your machine to create the analysis data set._
+
 _Section 6.3_
-
-1. Download the [Lungraw](https://drive.google.com/open?id=0B83Z8_sNw3KPS29hZ1p3eXk4dmc) 
-   data set and its [LungCodebook](https://drive.google.com/open?id=0B83Z8_sNw3KPNHpjZDRfaTR1LTQ) 
-   from the Google Drive. 
-2. Open this file. What is the first problem you encounter? 
-3. Read in the data into R using `read.delim()` and use the codebook to fix the variable names.
+1. Read in the analysis data set for the lung function. 
 ```{r}
-fev <- read.delim("C:/GitHub/MATH456/data/Lungraw.txt", sep=" ", header=FALSE, stringsAsFactors = FALSE)
-names(fev) <- c("ID", "AREA", "FSEX", "FAGE", "FHEIGHT", "FWEIGHT", "FFVC", "FFEV1", 
-                            "MSEX", "MAGE", "MHEIGHT", "MWEIGHT", "MFVC", "MFEV1", 
-                            "OCSEX", "OCAGE", "OCHEIGHT", "OCWEIGHT", "OCFVC", "OCFEV1",
-                            "MCSEX", "MCAGE", "MCHEIGHT", "MCWEIGHT", "MCFVC", "MCFEV1",
-                            "YCSEX", "YCAGE", "YCHEIGHT", "YCWEIGHT", "YCFVC", "YCFEV1")
-```
-4. Use `str(fev)` to check to see if all the variables are the correct data types. 
-   Fix any that are not. 
-   [Link to the Stack Overflow post that I googled to find a solution](http://stackoverflow.com/questions/22772279/converting-multiple-columns-from-character-to-numeric-format-in-r)
-```{r}
-str(fev)
-cols.num <- c("MCSEX", "MCAGE", "MCHEIGHT", "MCWEIGHT", "MCFVC", "MCFEV1",
-              "YCSEX", "YCAGE", "YCHEIGHT", "YCWEIGHT", "YCFVC", "YCFEV1")
-fev[cols.num] <- sapply(fev[cols.num],as.numeric)
-str(fev)
-```
-4a. While we're cleaning the raw data we need to make a few more edits. The FEV1 
-    measurements were erroneously recoded in the data set at 100x their real value. 
-```{r}
-fev[c("FFEV1", "MFEV1", "OCFEV1", "MCFEV1", "YCFEV1")] <- fev[c("FFEV1", "MFEV1", "OCFEV1", "MCFEV1", "YCFEV1")]/100
-head(fev$FFEV1)
+fev <- read.delim("C:/GitHub/MATH456/data/Lung_020716.txt", sep="\t", header=TRUE)
 ```
 
-5. Save this data as a tab-delimited text file onto your computer for later use. 
-```{r}
-write.table(fev, file="C:/Github/MATH456/data/Lung.txt", sep="\t")
-```
-
-6. Create a scatterplot of FEV versus height for fathers. 
+2. Create a scatterplot of FEV versus height for fathers. 
    Add a blue linear regression line and red lowess line.
    Add appropriate plot titles and axes labels.
    [R Cookbook reference](http://www.cookbook-r.com/Graphs/Scatterplots_(ggplot2)/)
