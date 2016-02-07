@@ -16,6 +16,8 @@ opts_chunk$set(warning=FALSE, message=FALSE)
 source("C:/Github/MATH456/stylesheets/custom.R")
 ```
 
+Navbar: [[Home]](../index.html) [[Schedule]](../Schedule.html) [[Week 3 Overview]](../wk03.html) [[HW Rubric]](../admin/rubric.html)  [[Google Group]](https://groups.google.com/forum/#!forum/csuc_stat)  [[Google Drive]](https://drive.google.com/a/mail.csuchico.edu/folderview?id=0B83Z8_sNw3KPcnVrYzVFRHUtcHM&usp=sharing)
+
 # Assigned Reading
 Afifi: Chapters 6-7
 
@@ -123,21 +125,53 @@ summary(fev$FHEIGHT)
 * Homogeneity of variance (same $\sigma^{2}$)
     - Not extremely serious
     - Can use transformations to achieve it
+    - Graphical assessment: Plot the residuals against the x variable, add a lowess line. 
+      This assumption is upheld if there is no relationship/trend between the residuals and
+      the predictor. 
+```{r}
+plot(model$residuals ~ fev$FHEIGHT)
+lines(lowess(model$residuals ~ fev$FHEIGHT), col="red")
+```
+
 * Normal residuals
     - Slight departures OK
     - Can use transformations to achieve it
+    - Graphical assessment: normal qqplot of the model residuals. 
+```{r}
+qqnorm(model$residuals)
+qqline(model$residuals, col="red")
+```
+    
 * Randomness / Independence
     - Very serious
     - Can use hierarchical models for clustered samples
+    - Graphical assessment: Plot the residuals against the index (row number), add a lowess line. 
+      This assumption **may** upheld if there is no relationship/trend seen. 
+```{r}
+plot(model$residuals)
+lines(lowess(model$residuals ~ 1:NROW(fev)), col="red")
+```
+    
 * Linear relationship
     - Slight departures OK
     - Can use transformations to achieve it
-
-Assess the model fit and assumptions using graphical measures. 
+    - Graphical assessment: Simple scatterplot of $y$ vs $x$. 
+      Looking for linearity in the relationship. 
+      Should be done prior to any analysis. 
 ```{r}
+plot(fev$FFEV1 ~ fev$FHEIGHT)
+lines(lowess(fev$FFEV1 ~ fev$FHEIGH), col="red")
+```
+
+
+Some of these plots can be displayed by simply plotting the model
+output. The advantage of this is that the observations that are
+potential outliers are labeled with their row number.
+```{r, fig.height=8, fig.width=8}
 par(mfrow=c(2,2))
 plot(model)
 ```
+
 
 ## What to watch out for
 * Representative sample 
@@ -146,9 +180,13 @@ plot(model)
 * Errors-in-variables
 * Correlation does not imply causation 
 * Violation of assumptions
-* Influential points 
+* Influential points
 * Appropriate model
 
+
+The book goes into more detail about influential points, and how
+outliers can have different affects on the model results depending
+on if they are an outlier in $Y$ vs an outlier in $X$ (or both). 
 
 
 ##### On Your Own: Afifi Problem 6.2 (modified). 
@@ -158,17 +196,18 @@ Don't forget to use the _analysis_ data set for this problem.
 1. Perform a regression analysis of weight on height for fathers  
      a. Determine the correlation coefficient and the regression equation.   
      b. Interpret the coefficients in context of the problem.   
-2. Test that the coeffcients are signiffcantly different from zero. 
+2. Test that the coeffcients are significantly different from zero. 
 3. Assess model fit graphically. Comment on any outliers. 
 4. Repeat 1 -3 for mothers.   
 5. Discuss why the correlation for fathers appears higher than that for mothers.
 
 
 
-# Multiple Regression and Correlation (_Afifi Ch 7_)
+<!-- # Multiple Regression and Correlation (_Afifi Ch 7_)
 
 
 ##### On Your Own
 Write your responses in a new Markdown file named *userid_ch7.rmd*.
 
+-->
 
