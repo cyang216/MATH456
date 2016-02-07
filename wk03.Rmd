@@ -7,27 +7,34 @@ output: html_document
 ```{r results="asis", echo=FALSE}
 source("C:/Github/MATH456/stylesheets/custom.R")
 ```
-[[wk02]](wk02.html) [[Week 4]](wk04.html)
+[[Week 2]](wk02.html) [[Week 4]](wk04.html)
 
 ## Announcements
-**Quiz this week**  
+* Quiz on Ch 4 & 5 on Monday
+* Initial look at recruitment data due wednesday
 
 
-## Prepare (Before class)
+## Prepare 
+* Complete Ch 4 & 5 HW. 
+* Read Afifi Ch 6 & 7. Replicate code in lecture notes. 
 
 ### Notes and Materials
 * Lec 02: Linear Regression [[PDF]](notes/lec02_LinReg.pdf)[[HTML]](notes/lec02_LinReg.html)
 
-## Experience (During Class)
+## Experience
 ### Monday
+
 * Quiz on material from Ch4 and Ch 5. 
-* Review of Simple Linear Regression
+* Review of Simple Linear Regression - Ch 6
 
 
 ### Wednesday
+* Multiple Linear Regression - Introduction and Model Fitting
 
 
 ### Friday
+* Multiple Linear Regression - Transformations, colinearity, predictions. 
 
+## Looking Ahead
+* Variable selection
 
-## Links and References
