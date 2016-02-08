@@ -13,7 +13,7 @@ opts_chunk$set(warning=FALSE, message=FALSE)
 ```
 
 ```{r results="asis", echo=FALSE}
-source("C:/Github/MATH456/stylesheets/custom.R")
+source("~/Github/MATH456/stylesheets/custom.R")
 ```
 
 Navbar: [[Home]](../index.html) [[Schedule]](../Schedule.html) [[Week 3 Overview]](../wk03.html) [[HW Rubric]](../admin/rubric.html)  [[Google Group]](https://groups.google.com/forum/#!forum/csuc_stat)  [[Google Drive]](https://drive.google.com/a/mail.csuchico.edu/folderview?id=0B83Z8_sNw3KPcnVrYzVFRHUtcHM&usp=sharing)
@@ -75,7 +75,7 @@ and run it on your machine to create the analysis data set._
 _Section 6.3_
 1. Read in the analysis data set for the lung function. 
 ```{r}
-fev <- read.delim("C:/GitHub/MATH456/data/Lung_020716.txt", sep="\t", header=TRUE)
+fev <- read.delim("~/GitHub/MATH456/data/Lung_020716.txt", sep="\t", header=TRUE)
 ```
 
 2. Create a scatterplot of FEV versus height for fathers. 
@@ -265,7 +265,7 @@ create interactive, spinning 3D scatterplots.
 ```{r, fig.width=10}
 library(gridExtra)
 a <- qplot(y=FFEV1, x=FAGE, color=FHEIGHT, data=fev)
-b <- qplot(y=FFEV1, x=FHEIGHT, color=FAGE, size=FAGE, data=fev)
+b <- qplot(y=FFEV1, x=FHEIGHT, size=FAGE, data=fev)
 grid.arrange(a, b, ncol=2)
 ```
 
@@ -280,6 +280,36 @@ obvious trend observed.
 model <- lm(FFEV1 ~ FHEIGHT + FAGE, data=fev)
 summary(model)
 ```
+
+Both height and age are significantly associated with FEV in fathers (p<.0001 each).
+Was our model improved by the addition of this variable? Let's check the $R^{2}$. 
+Recall this is calculated as the amount of variance explained by the model divided
+by the total variance. 
+```{r}
+summary(aov(model))
+(16.05317+5.00380)/(16.05317+5.00380+42.04133)
+```
+This number is displayed as the **Multiple R-squared** value in the linear model 
+output. But what about that other value, the **Adjusted R-squared**? Observe
+what happens to these two variables when we put a variable into the model
+that is not associated with the outcome, mothers weight.
+
+```{r}
+summary(lm(FFEV1 ~ FHEIGHT + FAGE + MWEIGHT, data=fev))
+```
+
+Adding more predictors to the model will always increase the $R^{2}$!
+
+**Adjusted R^{2}**
+$$ 1 - (1-R^{2})\frac{n-1}{n-p-1} $$
+
+
+
+## Values of regression coefficients
+* Problem: Values of $B_{i}$’s are NOT directly comparable.
+* Solution: Standardized coefficients:
+$$B_{i} = B_{i} \frac{\sigma_{x_{i}}}{\sigma_{Y}}$$
+
 
 
 ##### On Your Own
