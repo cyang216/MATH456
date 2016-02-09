@@ -27,18 +27,23 @@ source("C:/Github/MATH456/stylesheets/custom.R")
 * Lec 02: Linear Regression [[PDF]](notes/lec02_LinReg.pdf)[[HTML]](notes/lec02_LinReg.html)
 
 ## Experience
-### Monday
+### Monday 2/8/16
 
 * Quiz on material from Ch4 and Ch 5. 
 * Review of Simple Linear Regression - Ch 6
 
+### Wednesday 2/10/16
+* 
+* Finish Simple Linear Regression
+    - Predictions
+    - Assumptions
+* Complete Ch 6 _On Your Own_ problems.  
 
-### Wednesday
-* Multiple Linear Regression - Introduction and Model Fitting
 
 
 ### Friday
-* Multiple Linear Regression - Transformations, colinearity, predictions. 
+* Consulting Meeting: Dr. Jim Downing from College of Business
+* Multiple Linear Regression - Introduction and Model Fitting
 
 ## Looking Ahead
 * Variable selection

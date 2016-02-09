@@ -68,7 +68,7 @@ $$ \rho^{2} = \frac{\sigma_{y}^{2} - \sigma^{2}}{\sigma_{y}^{2}}$$
 * Caution: association vs. causation.
 
 ### Example: Lung Function
-_Note: The data management markdown file for this data set can be found [here](data/dm_lung.Rmd).
+_Note: The data management markdown file for this data set can be found [here](../data/dm_lung.Rmd).
 you will need to download the raw data, and this data management file, update the file locations
 and run it on your machine to create the analysis data set._
 
@@ -201,7 +201,6 @@ Don't forget to use the _analysis_ data set for this problem.
 4. Repeat 1 -3 for mothers.   
 5. Discuss why the correlation for fathers appears higher than that for mothers.
 
-<!---
 
 # Multiple Regression and Correlation (_Afifi Ch 7_)
 
@@ -302,7 +301,6 @@ Adding more predictors to the model will always increase the $R^{2}$!
 
 **Adjusted R^{2}**
 $$ 1 - (1-R^{2})\frac{n-1}{n-p-1} $$
-
 
 
 ## Values of regression coefficients
