@@ -22,9 +22,9 @@ Navbar: [[Home]](../index.html) [[Schedule]](../schedule.html)
 rawdat <- read_csv("Datasets.csv")
 
 # location of files
-cdat  <- rawdat %>% mutate(dataloc = paste("data/", filename, sep=""), 
-                           codeloc = paste("data/", codebook, sep=""), 
-                           dmloc   = paste("data/", dm, sep=""),
+cdat  <- rawdat %>% mutate(dataloc = filename, 
+                           codeloc = codebook, 
+                           dmloc   = dm,
                            Updated = format(file.info(dm)$mtime), "%m-%d-%y")
 
 # Add link to the data file, codebook, data management code file
