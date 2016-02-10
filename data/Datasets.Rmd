@@ -1,6 +1,8 @@
 ---
-title: "Data sets and codebooks"
-output: html_document
+title: "List of Datasets used"
+output: 
+  html_document: 
+    theme: journal
 ---
 
 ```{r include = FALSE}
@@ -9,18 +11,31 @@ library(stringr)
 library(readr)
 ```
 
-```{r include = FALSE}
-# Get list of data sets
-files <- list.files()
-files <- files[-grep('html|Rmd', files)]
-idx <- seq(1,length(files),2)
-dtab  <- data.frame(d = files[idx], b = files[-idx])
+```{r results="asis", echo=FALSE}
+source("C:/Github/MATH456/stylesheets/custom.R")
+```
 
-# Make these actual links
-dtab$Data <- paste('<a href="LINK">', dtab$d, '</a>', sep="")
-dtab$Data <- str_replace(dtab$Data, "LINK", dtab$d)
-dtab$Codebook <- paste('<a href="LINK">', dtab$b, '</a>', sep="")
-dtab$Codebook <- str_replace(dtab$Codebook, "LINK", dtab$b)
+Navbar: [[Home]](../index.html) [[Schedule]](../schedule.html)
+
+
+```{r include = FALSE}
+rawdat <- read_csv("Datasets.csv")
+
+# location of files
+cdat  <- rawdat %>% mutate(dataloc = paste("data/", filename, sep=""), 
+                           codeloc = paste("data/", codebook, sep=""), 
+                           dmloc   = paste("data/", dm, sep=""),
+                           Updated = format(file.info(dm)$mtime), "%m-%d-%y")
+
+# Add link to the data file, codebook, data management code file
+cdat2 <- cdat %>% mutate(File = paste('<a href="', cdat$dataloc, '">', cdat$filename, '</a>', sep=""), 
+                         Codebook = ifelse(is.na(codebook), "-", paste('<a href="', codeloc, '">', codebook, '</a>', sep="")), 
+                         `Data Management` = ifelse(is.na(dm), "-", paste('<a href="', dmloc, '">', dm, '</a>', sep="")), 
+                         Notes = ifelse(is.na(Notes), "-",Notes),
+                         Updated = ifelse(is.na(Updated), "-",Updated))
+
+# Select vars to display
+clean <- cdat2 %>% select(Data, File, Codebook, `Data Management`, Updated, Notes)
 
 ```
 
@@ -30,11 +45,11 @@ table {
    max-width: 50%;
 }
 </style>
+All data sets listed are in their raw format. Codebooks and data management
+files are supplied as available. The **Last Updated** column represents the
+last time the data management file was edited. You should ensure that
+you always have the most up to date data management file. 
 
-### `Left click` to open, `Right click` to download.
 ```{r results = 'asis', echo = FALSE}
-knitr::kable(dtab %>% select(Data, Codebook))
+knitr::kable(clean)
 ```
-
-### Additional files manually added
-* [RMD file for NC Births Codebook](NCBirthsCodebook.Rmd)

@@ -17,10 +17,7 @@ source("C:/Github/MATH456/stylesheets/custom.R")
 ## Prepare 
 * Complete Ch 4 & 5 HW. 
 * Read Afifi Ch 6 & 7. 
-* Download the raw [Lungraw](https://drive.google.com/open?id=0B83Z8_sNw3KPS29hZ1p3eXk4dmc) 
-  data set, its [Codebook](https://drive.google.com/open?id=0B83Z8_sNw3KPNHpjZDRfaTR1LTQ) 
-  from the Google Drive, and the [data management code file](data/dm_lung.Rmd) 
-  to read in clean this data. 
+* Download the [[Data]](data/Datasets.html), codebook and data management code file for the Lung function data. 
 * Replicate code in lecture notes for Simple Linear Regression. 
 
 ### Notes and Materials
@@ -33,12 +30,9 @@ source("C:/Github/MATH456/stylesheets/custom.R")
 * Review of Simple Linear Regression - Ch 6
 
 ### Wednesday 2/10/16
-* 
-* Finish Simple Linear Regression
-    - Predictions
-    - Assumptions
-* Complete Ch 6 _On Your Own_ problems.  
-
+* Return & Discuss Quiz
+* Questions on Simple Linear Regression?
+* Complete Ch 6 _On Your Own_ problems. (Due Monday) 
 
 
 ### Friday
@@ -46,5 +40,6 @@ source("C:/Github/MATH456/stylesheets/custom.R")
 * Multiple Linear Regression - Introduction and Model Fitting
 
 ## Looking Ahead
+* Sunday 2/14 - Homework due: Ch 6 on your own problems.
 * Variable selection
 
