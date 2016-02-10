@@ -27,8 +27,7 @@ and ordering applied.
 ```{r}
 depress$MARITAL <- factor(depress$MARITAL, 
                           labels = c("Never Married", "Married", "Divorced", "Separated", "Widowed"))
-depress$EDUCAT <- factor(depress$EDUCAT, 
-                          levels = c("<HS", "Some HS", "HS Grad", "Some college", "BS", "MS", "PhD"),
+depress$EDUCAT2 <- factor(depress$EDUCAT, 
                           labels = c("<HS", "Some HS", "HS Grad", "Some college", "BS", "MS", "PhD"))
 ```
 

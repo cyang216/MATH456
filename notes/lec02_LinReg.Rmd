@@ -309,7 +309,9 @@ $$ 1 - (1-R^{2})\frac{n-1}{n-p-1} $$
 $$B_{i} = B_{i} \frac{\sigma_{x_{i}}}{\sigma_{Y}}$$
 
 
+##### To be continued
 
+<!--
 ##### On Your Own
 Write your responses in a new Markdown file named *userid_ch7.rmd*.
 
