@@ -1,0 +1,286 @@
+---
+title: "Lec 02: Linear Regression Analysis"
+author: "MATH 456 - Spring 2016"
+output:
+  html_document:
+    highlight: pygments
+    theme: spacelab
+  pdf_document: default
+---
+```{r,echo=FALSE, warning=FALSE, message=FALSE}
+library(knitr); library(rmarkdown);library(ggplot2)
+opts_chunk$set(warning=FALSE, message=FALSE) 
+```
+
+```{r results="asis", echo=FALSE}
+source("C:/Github/MATH456/stylesheets/custom.R")
+```
+
+Navbar: [[Home]](../index.html) [[Schedule]](../Schedule.html) [[Data]](../data/Datasets.html) [[Week 4 Overview]](../wk04.html) [[HW Rubric]](../admin/rubric.html)  [[Google Group]](https://groups.google.com/forum/#!forum/csuc_stat)  [[Google Drive]](https://drive.google.com/a/mail.csuchico.edu/folderview?id=0B83Z8_sNw3KPcnVrYzVFRHUtcHM&usp=sharing)
+
+# Assigned Reading
+Afifi: Chapter 7
+
+# Multiple Regression and Correlation (_Afifi Ch 7_)
+Other references: http://www.statmethods.net/stats/regression.html
+
+## Aims
+* Extend simple linear regression.
+* Describe linear relationship between a single continuous $Y$ variable, 
+  and several $X$ variables.
+* Draw inferences regarding this relationship.
+* Predict $Y$ from $X_{1}, X_{2}, \ldots , X_{P}$.
+
+Now it's no longer a 2D regression _line_, but a $p$ dimensional 
+regression plane. 
+
+![Figure 7.1](regression_plane.png)
+
+## Types of X variables
+* Fixed: The levels of $X$ are selected in advance with the intent to measure
+  the affect on an outcome $Y$. 
+* Variable: Random sample of individuals from the population is taken and $X$
+  and $Y$ are measured on each individual. 
+* X's can be continuous or discrete (categorical)
+* X's can be transformations of other X's, e.g., polynomial regression
+
+## Mathematical Model
+* Mean of $Y$ values at any given $X$ is: $\beta_{0} + \beta_{1}x_{1} + \ldots + \beta_{p}x_{p}$
+* Variance of $Y$ values at any set of values of $X$'s is $\sigma^2$ (same
+  for all X's)
+* $Y$ values are normally distributed at any given $X$ (need for inference)
+
+
+The regression model relates $y$ to a function of $\textbf{X}$ and $\mathbf{\beta}$, 
+where $\textbf{X}$ is a $nxp$ matrix of $p$ covariates on $n$ observations and 
+$\mathbf{\beta}$ is a length $p$ vector of regression coefficients. 
+
+$$ \textbf{y} = \textbf{X} \mathbf{\beta} + \mathbf{\epsilon} $$
+
+### Estimation of parameters
+The goal of regression analysis is to minimize the residual error. 
+That is, to minimize the difference between the value of the dependent
+variable predicted by the model and the true value of the dependent variable.
+
+$$ \epsilon_{i} = \hat{y_{i}} - y_{i}$$
+
+The method of least squares accomplishes this by finding parameter estimates 
+$\beta_{0}$ and $\beta_{1}$ that minimized the sum of the squared residuals:
+
+$$ \sum_{i=1}^{n} \epsilon_{i} $$
+
+For simple linear regression these are found to be 
+$$ \hat{\beta_{0}} = \bar{y} * \hat{\beta_{1}}\bar{x} \quad \mbox{  and  } \quad  \hat{\beta_{1}} = r\frac{s_{y}}{s_{x}} $$
+
+For multiple linear regression the function to minimize is
+
+$$ \sum_{i=1}^{n} |y_{i} - \sum_{i=1}^{p}X_{ij}\beta_{j}|^{2}$$
+
+Or in matrix notation
+
+$$ || \mathbf{y} - \mathbf{X}\mathbf{\beta} ||^{2} $$ 
+
+The details of methods to solve these minimization functions are left to a
+course in mathematical statistics, however we will return to this notation. 
+
+### Continued Example: Lung Function
+In Chapter 6 the data for fathers from the lung function data set were 
+analyzed. These data fit the variable-X case. Height was used as the 
+$X$ variable in order to predict `FEV`. 
+
+```{r}
+fev <- read.delim("C:/GitHub/MATH456/data/Lung_020716.txt", sep="\t", header=TRUE)
+summary(lm(FFEV1 ~ FHEIGHT , data=fev))
+```
+This output shows that height is significantly associated with FEV, 
+specifically as height increases so does FEV (p<.0001). Looking
+at the multiple $R^{2}$ (correlation of determination), this simple
+model explains 25% of the variance seen in the outcome $y$. 
+
+However, FEV tends to decrease with age for adults, so we should be able
+to predict it better if we use both height and age as independent variables
+in a multiple regression equation. 
+
+First let's see different ways to graphically explore the relationship between
+three characteristics simultaneously.
+
+#### 3D scatterplots
+```{r}
+library(scatterplot3d)
+scatterplot3d(x=fev$FHEIGHT, y=fev$FAGE, z=fev$FFEV1, 
+              xlab="Height", ylab="Age", zlab="FEV", 
+              main="Relationship between FEV1, height and age for fathers.")
+```
+
+See http://www.statmethods.net/graphs/scatterplot.html for two simple ways to
+create interactive, spinning 3D scatterplots. 
+
+#### Controlling the color, or size of points using the third characteristic
+```{r, fig.width=10}
+library(gridExtra)
+a <- qplot(y=FFEV1, x=FAGE, color=FHEIGHT, data=fev)
+b <- qplot(y=FFEV1, x=FHEIGHT, size=FAGE, data=fev)
+grid.arrange(a, b, ncol=2)
+```
+
+The scatterplot of FEV against age demonstrates the decreasing trend of
+FEV as age increases, and the increasing trend of FEV as height increases. 
+The third color however is pretty scattered across the plot. There is no
+obvious trend observed.
+
+*  What direction do you expect the slope coefficient for age to be? For height? 
+
+### Model fitting
+Fitting a regression model in R with more than 1 predictor is trivial. Just add
+each variable to the right hand side of the model notation connected with a `+`. 
+
+```{r}
+mv_model <- lm(FFEV1 ~ FAGE + FHEIGHT, data=fev)
+summary(mv_model)
+```
+Both height and age are significantly associated with FEV in fathers (p<.0001 each).
+
+### Predictions
+What is the predicted FEV1 for a 30-year-old male whose height was 70 inches?
+There are multiple ways to evaluate this calculation. 
+
+1. Manual calculation by plugging in the value of each variable individually
+```{r}
+betas <- mv_model$coefficients
+betas
+betas[1] + betas[2]*30 + betas[3]*70
+```
+
+_Interpretation:_ We would expect a a 30-year-old male whose height was 70
+inches to have an FEV1 value of 4.45 liters.
+
+2. In matrix notation a new vector `x.new` is created and multiplied
+by the vector of coefficients. 
+```{r}
+x.new <- c(1, 30, 70)
+x.new %*% betas
+```
+
+3. Using the `predict()` function. This requires the `newdat` input to be a
+a `data.frame` object. 
+```{r}
+x.pred <- data.frame(cbind(FAGE = 30, FHEIGHT = 70))
+predict(mv_model, newdata=x.pred)
+```
+
+Compare this value to the single predictor equation with just height:
+```{r}
+slr.mod <- lm(FFEV1 ~ FHEIGHT, data=fev)
+predict(slr.mod, newdata = data.frame(FHEIGHT=70))
+```
+
+### Interpretation of regression coefficients
+
+This value of `r round(predict(slr.mod, newdata = data.frame(FHEIGHT=70)),2) `
+is the rate of change of FEV1 for fathers as a function of height when no other
+variables are taken into account. For the model that includes age, the 
+coefficient for  height is now `r round(mv_model$coefficients[3],2)`, which is
+interpreted as the rate of change of FEV1 as a function of height **after adjusting
+for age**. This is also called the **partial regression coefficient** of FEV1 on 
+height after adjusting for age. 
+
+* Problem: Values of $B_{i}$’s are NOT directly comparable.
+* Solution: Standardized coefficients:
+$$B_{i} = B_{i} \frac{\sigma_{x_{i}}}{\sigma_{Y}}$$
+
+### Interlude: Making tables in Markdown
+There are not many options for making readable tables in Markdown.
+For better control you would be best suited by switching to LaTeX and
+Sweave (both can be done in R Studio). Here is a reference webpage
+that shows three basic options. 
+http://kbroman.org/knitr_knutshell/pages/figs_tables.html 
+
+Here is an example using `xtable`. 
+I first ruond the results of the table to 2 digits, then format the
+p-value to read <.0001 instead of a super small digit. Then I wrap
+`xtable()` around that output. 
+```{r, results="asis"}
+library(xtable)
+coeff.out <- round(summary(mv_model)$coef, 2)
+coeff.out[,4] <- ifelse(coeff.out[,4]<.0001, "<.0001", coeff.out[,4])
+tab <- xtable(coeff.out)
+names(tab)[3:4] <- c("t", "p-value")
+print(tab, type="html")
+```
+
+_R specifics_:  Rounding has to come first because the `ifelse()` changed the 
+data type in the entire matrix from numeric to character, and once it's a 
+character you can't round. There are ways around this but I am not going
+to discuss it here. 
+
+
+### Other parameters estimated (Afifi pg 126)
+For the variable-X case, several additional parameters are needed to characterize
+the full joint distribution $f(x, y)$. The correlation matrix can be obtained
+in R by
+```{r}
+vcov(mv_model)
+```
+
+### Model fit
+
+Was our model improved by the addition of this variable? Let's check the $R^{2}$. 
+Recall this is calculated as the amount of variance explained by the model divided
+by the total variance. 
+```{r}
+summary(aov(mv_model))
+(16.05317+5.00380)/(16.05317+5.00380+42.04133)
+```
+This number is displayed as the **Multiple R-squared** value in the linear model 
+output. But what about that other value, the **Adjusted R-squared**? Observe
+what happens to these two variables when we put a variable into the model
+that is not associated with the outcome, mothers weight.
+
+```{r}
+summary(lm(FFEV1 ~ FHEIGHT + FAGE + MWEIGHT, data=fev))
+```
+
+Adding more predictors to the model will always increase the $R^{2}$!
+
+**Adjusted R^{2}**
+$$ 1 - (1-R^{2})\frac{n-1}{n-p-1} $$
+
+
+
+
+## Model fit diagnostics (7.7)
+
+## Regression diagnostics and transformations (7.8)
+
+### Examining the residuals
+
+### Transformations
+
+### Polynomial regression
+
+### Interactions
+
+## Other options (7.9)
+
+### Multicollinearity
+
+
+### Stratificationn 
+
+
+
+
+##### On Your Own
+Write your responses in a new Markdown file named *userid_ch7.rmd*.
+
+1. Fit the regression model for the fathers using FFVC as the 
+dependent variable and age and height as the independent variables.
+Write the results for this regression model so they would be suitable
+for inclusion in a report. Include a table of results. 
+
+
+2. Fit a regression model for mothers using MFVC as the dependent 
+variable and age and height as the independent variables. Summarize 
+the results in a tabular form. Test whether the effect of age and 
+height for mothers and fathers are significantly different. 
+
