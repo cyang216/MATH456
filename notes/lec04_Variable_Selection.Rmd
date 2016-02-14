@@ -1,0 +1,53 @@
+---
+title: "Lec 04: Variable Selecdtion"
+author: "MATH 456 - Spring 2016"
+output:
+  html_document:
+    highlight: pygments
+    theme: spacelab
+  pdf_document: default
+---
+```{r,echo=FALSE, warning=FALSE, message=FALSE}
+library(knitr); library(rmarkdown);library(ggplot2)
+opts_chunk$set(warning=FALSE, message=FALSE) 
+```
+
+```{r results="asis", echo=FALSE}
+source("C:/Github/MATH456/stylesheets/custom.R")
+```
+
+Navbar: [[Home]](../index.html) [[Schedule]](../Schedule.html) [[Data]](../data/Datasets.html) [[Week 5 Overview]](../wk05.html) [[HW Rubric]](../admin/rubric.html)  [[Google Group]](https://groups.google.com/forum/#!forum/csuc_stat)  [[Google Drive]](https://drive.google.com/a/mail.csuchico.edu/folderview?id=0B83Z8_sNw3KPcnVrYzVFRHUtcHM&usp=sharing)
+
+# Assigned Reading
+
+# Stuff
+
+## Goodness of fit
+
+### Coefficient of determiniation
+Was our model improved by the addition of this variable? Let's check the $R^{2}$. 
+Recall this is calculated as the amount of variance explained by the model divided
+by the total variance. 
+```{r}
+summary(aov(mv_model))
+(16.05317+5.00380)/(16.05317+5.00380+42.04133)
+```
+This number is displayed as the **Multiple R-squared** value in the linear model 
+output. But what about that other value, the **Adjusted R-squared**? Observe
+what happens to these two variables when we put a variable into the model
+that is not associated with the outcome, mothers weight.
+
+```{r}
+summary(lm(FFEV1 ~ FHEIGHT + FAGE + MWEIGHT, data=fev))
+```
+
+Adding more predictors to the model will always increase the $R^{2}$!
+
+**Adjusted R^{2}**
+$$ 1 - (1-R^{2})\frac{n-1}{n-p-1} $$
+
+
+
+
+##### On Your Own
+

@@ -23,13 +23,13 @@ source("C:/Github/MATH456/stylesheets/custom.R")
 
 ## Experience
 ### Monday 2/15/16
-* Model fitting
+* Multiple linear regression
 
 ### Wednesday 2/17/16
-* Model diagnostics
+* Multiple linear regression
 
 ### Friday 2/18/16
-* 
+* Multiple linear regression
 * Consulting reflection assignment due EOD
 
 
@@ -37,4 +37,12 @@ source("C:/Github/MATH456/stylesheets/custom.R")
 ## Looking Ahead
 * Quiz on Ch 7 - BBLearn due Sunday
 * Variable selection
+
+
+## Additional references
+Not fully random links to other websites demonstrating regression modeling in R
+
+* http://ww2.coastal.edu/kingw/statistics/R-tutorials/multregr.html
+* http://www.gardenersown.co.uk/education/lectures/r/regression.htm 
+* https://www.youtube.com/watch?v=q1RD5ECsSB0
 
