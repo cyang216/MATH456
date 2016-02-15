@@ -19,19 +19,18 @@ source("C:/Github/MATH456/stylesheets/custom.R")
 * Replicate code in lecture notes for Multiple Linear Regression. 
 
 ### Notes and Materials
-* Lec 03: Linear Regression [[PDF]](notes/lec03_MultLinReg.pdf)[[HTML]](notes/lec03_MultLinReg.html)
+* Lec 03: Multiple Linear Regression [[PDF]](notes/lec03_MultLinReg.pdf)[[HTML]](notes/lec03_MultLinReg.html)
 
 ## Experience
 ### Monday 2/15/16
-* Multiple linear regression
+* Multiple linear regression - Model fitting, predictions, interpretations
 
 ### Wednesday 2/17/16
-* Multiple linear regression
+* Multiple linear regression - Interactions
 
 ### Friday 2/18/16
-* Multiple linear regression
+* Multiple linear regression - Stratification
 * Consulting reflection assignment due EOD
-
 
 
 ## Looking Ahead
