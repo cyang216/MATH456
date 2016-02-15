@@ -1,0 +1,616 @@
+---
+title: "Lec 03: Multiple Linear Regression Analysis"
+author: "MATH 456 - Spring 2016"
+output:
+  html_document:
+    highlight: pygments
+    theme: spacelab
+    toc: yes
+  pdf_document: default
+---
+```{r,echo=FALSE, warning=FALSE, message=FALSE}
+library(knitr); library(rmarkdown);library(ggplot2)
+opts_chunk$set(warning=FALSE, message=FALSE) 
+```
+
+```{r results="asis", echo=FALSE}
+source("C:/Github/MATH456/stylesheets/custom.R")
+```
+
+Navbar: [[Home]](../index.html) [[Schedule]](../Schedule.html) [[Data]](../data/Datasets.html) [[Week 4 Overview]](../wk04.html) [[HW Rubric]](../admin/rubric.html)  [[Google Group]](https://groups.google.com/forum/#!forum/csuc_stat)  [[Google Drive]](https://drive.google.com/a/mail.csuchico.edu/folderview?id=0B83Z8_sNw3KPcnVrYzVFRHUtcHM&usp=sharing)
+
+# Assigned Reading
+Afifi: Chapter 7
+
+# Multiple Regression and Correlation (_Afifi Ch 7_)
+
+## Aims
+* Extend simple linear regression.
+* Describe linear relationship between a single continuous $Y$ variable, 
+  and several $X$ variables.
+* Draw inferences regarding this relationship.
+* Predict $Y$ from $X_{1}, X_{2}, \ldots , X_{P}$.
+
+Now it's no longer a 2D regression _line_, but a $p$ dimensional 
+regression plane. 
+
+![Figure 7.1](regression_plane.png)
+
+## Types of X variables
+* Fixed: The levels of $X$ are selected in advance with the intent to measure
+  the affect on an outcome $Y$. 
+* Variable: Random sample of individuals from the population is taken and $X$
+  and $Y$ are measured on each individual. 
+* X's can be continuous or discrete (categorical)
+* X's can be transformations of other X's, e.g., polynomial regression
+
+## Mathematical Model
+[[top]](lec03_MultLinReg.html)
+
+* Mean of $y$ values at any given $x_{i}$ is: $E(y|x_{i}) = \beta_{0} + \beta_{1}x_{1} + \ldots + \beta_{p}x_{p}$
+* Variance of $Y$ values at any set of values of $X$'s is $\sigma^2$ (same
+  for all X's)
+* $Y$ values are normally distributed at any given $X$ (need for inference)
+
+
+The regression model relates $y$ to a function of $\textbf{X}$ and $\mathbf{\beta}$, 
+where $\textbf{X}$ is a $nxp$ matrix of $p$ covariates on $n$ observations and 
+$\mathbf{\beta}$ is a length $p$ vector of regression coefficients. 
+
+$$ \textbf{y} = \textbf{X} \mathbf{\beta} + \mathbf{\epsilon} $$
+
+### Estimation of parameters
+The goal of regression analysis is to minimize the residual error. 
+That is, to minimize the difference between the value of the dependent
+variable predicted by the model and the true value of the dependent variable.
+
+$$ \epsilon_{i} = \hat{y_{i}} - y_{i}$$
+
+The method of least squares accomplishes this by finding parameter estimates 
+$\beta_{0}$ and $\beta_{1}$ that minimized the sum of the squared residuals:
+
+$$ \sum_{i=1}^{n} \epsilon_{i} $$
+
+For simple linear regression these are found to be 
+$$ \hat{\beta_{0}} = \bar{y} * \hat{\beta_{1}}\bar{x} \quad \mbox{  and  } \quad  \hat{\beta_{1}} = r\frac{s_{y}}{s_{x}} $$
+
+For multiple linear regression the function to minimize is
+
+$$ \sum_{i=1}^{n} |y_{i} - \sum_{i=1}^{p}X_{ij}\beta_{j}|^{2}$$
+
+Or in matrix notation
+
+$$ || \mathbf{y} - \mathbf{X}\mathbf{\beta} ||^{2} $$ 
+
+The details of methods to solve these minimization functions are left to a
+course in mathematical statistics, however we will return to this notation. 
+
+### Continued Example: Lung Function
+[[top]](lec03_MultLinReg.html)
+
+In Chapter 6 the data for fathers from the lung function data set were 
+analyzed. These data fit the variable-X case. Height was used as the 
+$X$ variable in order to predict `FEV`. 
+
+```{r}
+fev <- read.delim("C:/GitHub/MATH456/data/Lung_020716.txt", sep="\t", header=TRUE)
+summary(lm(FFEV1 ~ FHEIGHT , data=fev))
+round(confint(lm(FFEV1 ~ FHEIGHT , data=fev)),2)
+```
+This model concludes that FEV1 in fathers significantly increases by 0.12 (95% CI:
+0.09, 0.15) liters per additional inch in height (p<.0001). Looking at the 
+multiple $R^{2}$ (correlation of determination), this simple model explains 
+25% of the variance seen in the outcome $y$. 
+
+However, FEV tends to decrease with age for adults, so we should be able
+to predict it better if we use both height and age as independent variables
+in a multiple regression equation. 
+
+First let's see different ways to graphically explore the relationship between
+three characteristics simultaneously.
+
+#### 3D scatterplots
+```{r}
+library(scatterplot3d)
+scatterplot3d(x=fev$FHEIGHT, y=fev$FAGE, z=fev$FFEV1, 
+              xlab="Height", ylab="Age", zlab="FEV", 
+              main="Relationship between FEV1, height and age for fathers.")
+```
+
+See http://www.statmethods.net/graphs/scatterplot.html for two simple ways to
+create interactive, spinning 3D scatterplots. 
+
+#### Controlling the color, or size of points using the third characteristic
+```{r, fig.width=10}
+library(gridExtra)
+a <- qplot(y=FFEV1, x=FAGE, color=FHEIGHT, data=fev)
+b <- qplot(y=FFEV1, x=FHEIGHT, size=FAGE, data=fev)
+grid.arrange(a, b, ncol=2)
+```
+
+The scatterplot of FEV against age demonstrates the decreasing trend of
+FEV as age increases, and the increasing trend of FEV as height increases. 
+The third color however is pretty scattered across the plot. There is no
+obvious trend observed.
+
+*  What direction do you expect the slope coefficient for age to be? For height? 
+
+## Model fitting
+[[top]](lec03_MultLinReg.html)
+
+Fitting a regression model in R with more than 1 predictor is trivial. Just add
+each variable to the right hand side of the model notation connected with a `+`. 
+
+```{r}
+mv_model <- lm(FFEV1 ~ FAGE + FHEIGHT, data=fev)
+summary(mv_model)
+```
+Both height and age are significantly associated with FEV in fathers (p<.0001 each).
+
+### ANOVA for regression
+For a global test to see whether or not the regression model is helpful in 
+predicting the values of $y$, we can use an ANOVA. This is the same as testing
+that all $\beta_{j}, j=1, \ldots, p$ are all equal to 0. Let's look at what
+we get if we wrap the ANOVA function, `aov()` around the linear model results. 
+
+```{r}
+summary(aov(mv_model))
+```
+
+We get the sums of squares (SS) for each predictor individually, not combined
+into a SS for regression and a SS residuals. So where do we find this
+global test that this model is better than using no predictors at all? 
+At the very last line in the summary of the linear model results. 
+
+```{r}
+summary(mv_model)
+```
+
+## Predictions
+[[top]](lec03_MultLinReg.html)
+
+What is the predicted FEV1 for a 30-year-old male whose height was 70 inches?
+There are multiple ways to evaluate this calculation. 
+
+1. Manual calculation by plugging in the value of each variable individually
+```{r}
+betas <- mv_model$coefficients
+betas
+betas[1] + betas[2]*30 + betas[3]*70
+```
+
+_Interpretation:_ We would expect a a 30-year-old male whose height was 70
+inches to have an FEV1 value of 4.45 liters.
+
+2. In matrix notation a new vector `x.new` is created and multiplied
+by the vector of coefficients. 
+```{r}
+x.new <- c(1, 30, 70)
+x.new %*% betas
+```
+
+3. Using the `predict()` function. This requires the `newdat` input to be a
+a `data.frame` object. 
+```{r}
+x.pred <- data.frame(cbind(FAGE = 30, FHEIGHT = 70))
+predict(mv_model, newdata=x.pred)
+```
+
+Compare this value to the single predictor equation with just height:
+```{r}
+slr.mod <- lm(FFEV1 ~ FHEIGHT, data=fev)
+predict(slr.mod, newdata = data.frame(FHEIGHT=70))
+```
+
+## Interpretation of regression coefficients
+[[top]](lec03_MultLinReg.html)
+
+This value of `r round(predict(slr.mod, newdata = data.frame(FHEIGHT=70)),2) `
+is the rate of change of FEV1 for fathers as a function of height when no other
+variables are taken into account. For the model that includes age, the 
+coefficient for  height is now `r round(mv_model$coefficients[3],2)`, which is
+interpreted as the rate of change of FEV1 as a function of height **after adjusting
+for age**. This is also called the **partial regression coefficient** of FEV1 on 
+height after adjusting for age. 
+
+* Problem: Values of $\hat{\beta_{j}}$’s are NOT directly comparable for any $j=1, \ldots, p$. 
+* Solution: Standardized coefficients:
+$$\hat{\beta}_{j} = \hat{\beta}_{j} \frac{s_{x_{j}}}{s_{y}}$$
+* These coefficients are the same as if you standardized the data X and
+  Y prior to conducting the regression. 
+* The larger the magnitude of the standardized coefficient, 
+  the more $X_{i}$ directly contributes to the prediction of $y$. 
+* The standardized slope coefficient is the amount of change in the mean of
+  the standardized $y$ values when the value of $X$ is increased by one
+  standard deviation, keeping the other $X$ variables constant. 
+
+
+### Interlude: Reporting regression coefficients using tables in Markdown
+There are not many options for making readable tables in Markdown.
+For better control you would be best suited by switching to LaTeX and
+Sweave (both can be done in R Studio). Here is a reference webpage
+that shows three basic options. 
+http://kbroman.org/knitr_knutshell/pages/figs_tables.html 
+
+Here is an example using `xtable`. 
+I first ruond the results of the table to 2 digits, then format the
+p-value to read <.0001 instead of a super small digit. Then I wrap
+`xtable()` around that output. 
+```{r, results="asis"}
+library(xtable)
+coeff.out <- round(summary(mv_model)$coef, 2)
+coeff.out[,4] <- ifelse(coeff.out[,4]<.0001, "<.0001", coeff.out[,4])
+tab <- xtable(coeff.out)
+names(tab)[3:4] <- c("t", "p-value")
+print(tab, type="html")
+```
+
+_R specifics_:  Rounding has to come first because the `ifelse()` changed the 
+data type in the entire matrix from numeric to character, and once it's a 
+character you can't round. There are ways around this but I am not going
+to discuss it here. 
+
+
+## Other parameters estimated
+[[top]](lec03_MultLinReg.html)
+
+For the variable-X case, several additional parameters are needed to characterize
+the full joint distribution $f(x, y)$. A matrix of the estimated covariances 
+between the parameter estimates $\beta{j}$'s can be obtained in R by using the `vcov()` 
+function on the model output. 
+
+```{r}
+round(vcov(mv_model), digits=3)
+```
+
+**Note:** This is NOT the same as the variance-covariance matrix of the actual
+data. This can be found using the variance `var()` function. For the sake of 
+example I put a third covariate in the list: `FWEIGHT`. 
+
+```{r}
+library(dplyr)
+x.vars <- fev %>% select(FAGE, FHEIGHT, FWEIGHT, FFEV1) # requires dplyr
+round(var(x.vars), digits=3)
+```
+
+* The variances $\sigma^{2}_{1}, \sigma^{2}_{2}, \ldots, \sigma^{2}_{p}$ are
+  found down the diagonal.
+* The covariances $\sigma_{ij}$ are found on the off diagonal entries.  
+* This matrix is symmetric
+
+Similarly the correlation matrix can be found using the `cor()` function.
+```{r}
+round(cor(x.vars), digits=3)
+```
+
+* The correlation of a variable with itself is always 1, hence the 1's down the
+  diagonal.
+* Each entry on the off diagonal is the simple correlation value: $\rho_{12}$. 
+* This matrix is also symmetric. 
+
+
+
+
+## Regression diagnostics and transformations
+[[top]](lec03_MultLinReg.html)
+
+The same set of regression diagnostics can be examined to identify
+any potential influential points, outliers or other problems with
+the linear model. 
+
+```{r}
+par(mfrow=c(2,2))
+plot(mv_model)
+```
+
+The textbook provides more details about tools to detect 
+outliers and influential points by examining the following
+measures:
+
+* studentized residuals
+* leverage
+* DFFITS
+* Cooks distance
+
+At least one reference website on how to visualize these 
+measures can be found here: 
+http://www.statmethods.net/stats/rdiagnostics.html
+
+
+### Multicollinearity
+
+* Occurs when some of the X variables are highly intercorrelated.
+* Affects estimates and their SE’s (p. 143)
+* Look at tolerance, and its inverse, the Variance Inflation Factor (VIF)
+* Need tolerance < 0.01, or VIF > 100.
+
+```{r}
+library(car)
+vif(mv_model)
+tolerance = 1/vif(mv_model)
+tolerance
+```
+
+* Solution: use variable selection to delete some X variables.
+* Alternatively, use Principal Components (Ch. 14)
+
+## Interactions between variables
+[[top]](lec03_MultLinReg.html)
+
+Consider a model with only two predictors: $X_{i}$ and $x_{j}$.
+
+$$E(y|x_{i}) = \beta_{0} + \beta_{1}x_{1} + \beta_{2}x_{2} $$
+
+A model of this form is said to be_additive_
+
+If the additive terms for these variables do not completely specify their
+effects on the dependent variable &
+
+
+For demonstration purposes, consider the situation where the data came to us
+as _long_ format with a separate variable for gender instead of in _wide_
+format with separate variables for mother and father characteristics. 
+Here I combine height, FEV and age for both males and females into a single 
+long data set. 
+```{r}
+fev2 <- data.frame(gender = c(fev$FSEX, fev$MSEX), 
+                   FEV = c(fev$FFEV1, fev$MFEV1), 
+                   ht = c(fev$FHEIGHT, fev$MHEIGHT), 
+                   age = c(fev$FAGE, fev$MAGE))
+fev2$gender <- factor(fev2$gender, labels=c("M", "F"))
+head(fev2)  
+```
+
+What does the relationship between height and FEV look like for the overall
+sample? 
+```{r}
+ggplot(data=fev2, aes(x=ht, y=FEV)) + geom_point() + xlab("Height") + 
+  ggtitle("Scatterplot of FEV vs height of adults") + 
+  geom_smooth(se=FALSE, method='lm', col="purple")
+```
+
+However if we examine the relationship separately by gender we see
+a slightly different story. 
+```{r}
+ggplot(data=fev2, aes(x=ht, y=FEV, col=gender)) + geom_point() + xlab("Height") + 
+  ggtitle("Scatterplot of FEV vs height of adults by gender") + 
+  geom_smooth(se=FALSE, method='lm') + 
+  geom_smooth(aes(x=ht, y=FEV), col="purple", se=FALSE, method='lm')
+```
+
+If we put numeric summaries to these bivariate relationships we see that the
+correlation between FEV and height overall is
+`cor(fev2$FEV, fev2$ht)` = `r round(cor(fev2$FEV, fev2$ht),2)`, but for
+males it is
+`cor(fev$FFEV, fev$FHEIGHT)` = `r round(cor(fev$FFEV, fev$FHEIGHT),2)`, 
+and for females the correlation is
+`cor(fev$MFEV, fev$MHEIGHT)` = `r round(cor(fev$MFEV, fev$MHEIGHT),2)`.
+
+
+**Conclusion:** The relationship between FEV1 and height depends on gender. 
+These variables are said to **interact** with each other. 
+
+### Recap of a main effects model
+[[top]](lec03_MultLinReg.html)
+
+First let's examine the _main effects_ model, that is the model without any
+interaction terms. 
+
+$$ FEV1 \sim \beta_{0} +  \beta_{1}*height + \beta_{2}*gender$$
+
+
+```{r}
+summary(lm(FEV ~ ht + gender, data=fev2))
+```
+The first thing to notice is the coefficient label: `genderF`. The gender 
+variable is a factor variable, and is automatically _dummy coded_ into a 
+new variable that is not present on the data set but only as part of the 
+linear model function. This variable `genderF` is a 1 if the gender on record 
+is female, and 0 otherwise. In this case there is only one other option, Male, 
+so when `genderF=0` the record states male.
+
+#### Interpretations
+* For every inch taller someone is, their FEV increases by 0.1 liters. 
+* Females have a FEV measurement of 0.57 lower compared to males of the same height. 
+
+### Adding interaction terms to a model
+[[top]](lec03_MultLinReg.html)
+
+The full interaction model can be written as: 
+$$ FEV1 \sim \beta_{0} +  \beta_{1}*height + \beta_{2}*gender + \beta_{3}*ht*gender $$
+
+To add an interaction term to a linear model in R you use the `*` operator between
+the interaction variables.
+
+```{r}
+intx_model <- lm(FEV ~ ht + gender + ht*gender, data=fev2)
+summary(intx_model)
+confint(intx_model)
+```
+
+The p-value for the interaction term `ht:genderF` is large, and the confidence
+interval for this parameter covers zero, so there is no indication that an 
+interaction exists. That is, there is not enough reason to believe that gender
+significantly affects the relationship between height and FEV. 
+
+**Reminder** Just as in a Two-Way ANOVA with an interaction term, the main effects
+cannot be interpreted directly when there is an interaction in the model. 
+
+
+## Stratification
+[[top]](lec03_MultLinReg.html)
+
+A model where there exists a variable that interacts with all other variables
+in the model can be considered a stratification variable. 
+
+Example: Within each gender there exists a negative correlation between age
+and FEV. However in the combined sample this appears to be a positive correlation. 
+
+```{r}
+ggplot(data=fev2, aes(x=ht, y=age, col=gender)) + geom_point() + xlab("Age") + 
+  ggtitle("Scatterplot of FEV vs age of adults by gender") + 
+  geom_smooth(se=FALSE, method='lm') + 
+  geom_smooth(aes(x=ht, y=age), col="purple", se=FALSE, method='lm')
+```
+
+This is similar to [Simpsons Paradox](https://en.wikipedia.org/wiki/Simpson%27s_paradox), 
+where there are a number of additional examples of this situation including the 
+[UC Berkeley gender bias lawsuit](http://vudlab.com/simpsons/).
+
+Since gender affects the relationship between FEV and both height and age, the
+appropriate model would then be:
+
+$$ FEV1 \sim \beta_{0} + \beta_{1}*gender + \beta_{2}*height + \beta_{3}*age + \beta_{4}*gender*height + \beta_{5}*gender*age $$
+
+If we let gender = 0 if the record is on a male, and gender = 1 if the record is
+on a female, then the model for males would be:
+
+$$ FEV1 \sim \beta_{0} +  \beta_{2}*height + \beta_{3}*age $$
+
+and the model for females would be:
+
+$$ FEV1 \sim (\beta_{0} + \beta_{1}) + (\beta_{2} + \beta_{4})*height + (\beta_{3}+\beta_{5})*age$$
+
+Instead of running the model on the full set of data and then calculating
+the correct coefficient for each gender we _stratify_ the model and run
+a model with the same set of covariates on each strata (gender). 
+
+$$ FEV1_{M} \sim \beta_{0M} +  \beta_{1M}*height + \beta_{2M}*age $$
+$$ FEV1_{F} \sim \beta_{0M} +  \beta_{1F}*height + \beta_{2F}*age $$
+
+The results of a model on FEV1 against age and height overall, and stratified
+by gender can be found in Table 7.5 in the textbook. Notice there is an 
+observable difference in all point and parameter estimates listed between
+the overall model and the subsets. 
+
+Even though the equations for males and females look quite similar, the 
+predicted FEV1 for females of the same height and age as a male is expected 
+to be less. We can confirm this ourselves. 
+
+```{r}
+# subset
+M <- subset(fev2, gender=="M")
+F <- subset(fev2, gender=="F")
+# run stratified models
+male_model   <- lm(FEV ~ age + ht, data=M)
+female_model <- lm(FEV ~ age + ht, data=F)
+# create new data frame using the overall mean height
+new.data <- data.frame(ht = rep(66, 2), age=c(30, 50))
+# predict on each model
+predict(male_model, new.data)
+predict(female_model, new.data)
+```
+
+### Testing equality of individual coefficients between groups
+To compare the regression coefficients for men and women we could simply
+compare the sign and magnitude of the standardized regression coefficients. 
+
+If an interaction exists, then the two coefficients from the stratified models
+would be equal. 
+
+To test the null hypothesis of equal coefficients we compute the following
+test statistic:
+
+$$ Z = \frac{\beta_{M} - \beta_{F}}{\sqrt{SE^{2}(\beta_{M}) -SE^{2}(\beta_{F})}}$$
+
+This $Z$ statistic has a normal distribution, and so you can use the 
+`pnorm()` function to calculate the corresponding test statistic. As an example, 
+to find the probability that |Z| > 1.96 you would type
+```{r}
+2*pnorm(-1.96)
+```
+Questions on the use of this function can be answered using the discussion forum. 
+
+If you choose to do this using **R** to extract the regression values, you
+can access the parameter estimates and their standard errors from the output
+of the summary function. I.e.: `summary(male_model)$coefficients`. 
+
+
+### Testing using a CI
+You can also attempt to test for a difference in slope coefficients by
+comparing the confidence intervals for the parameters. _Note: I am showing
+how I wrangled the linear model output into a table that is easily read for
+your info only. This is not mandatory but it looks nice._
+
+```{r, results="asis"}
+mci <- paste("(", round(confint(male_model)[,1],2),", ", round(confint(male_model)[,2],2), ")", sep="")
+fci <- paste("(", round(confint(female_model)[,1],2),", ", round(confint(female_model)[,2],2), ")", sep="")
+out <- cbind(Male = mci, Female = fci)[-1,]
+rownames(out) <- c("Age", "Height")
+out <- xtable(out)
+print(out, type="html")
+```
+
+* If CIs _do not_ overlap then slopes are significantly different from each other.
+* Since CIs do overlap, then two slopes _may or may not_ be significantly
+  different from each other.
+
+For both age and height the CI's for the slopes overlap a large amount, so I would suspect that 
+there is no significant difference between the two models but the test statistic should be
+calculated to confirm. 
+
+# What to watch out for
+[[top]](lec03_MultLinReg.html)
+
+* See cautions for simple regression including violations of assumptions, outliers, 
+  influential points
+* Need representative sample
+* Multicollinearity: coefficient of any one variable can vary widely, 
+  depending on what others are included in the model
+* Missing values: Even more important here
+    - Default method is complete case analysis
+    - If any variable in the model has missing data, the entire record is 
+      excluded.
+* Number of observations in sample should be large enough relative
+  to the number of parameters that are being estimated.
+  - This includes the variances and covariances of the parameter 
+    estimates. 
+
+
+##### On Your Own
+
+1. Fit the regression model for the fathers using `FFVC` as the 
+   dependent variable and age and height as the independent variables.
+   Write the results for this regression model so they would be suitable
+   for inclusion in a report. Include a table of results. 
+
+
+2. Confirm that this F-test in the model results is the correct one to 
+   use by manually calculating the F statistic using an ANOVA table. 
+   Confirm the degrees of freedom in both the numerator and denominator 
+   are correct, as well as the calculation of the p-value. If you are
+   not familiar with the `qf()` function in R to find the probability 
+   under the F distribution, here are some helpful resources in addition 
+   to your classmates. 
+    - http://www.r-tutor.com/elementary-statistics/probability-distributions/f-distribution
+    - https://www.youtube.com/watch?v=PZiVe5DMJWA
+  
+  
+3. Fit a regression model for females using `MFVC` as the dependent 
+   variable and age and height as the independent variables. Summarize 
+   the results in a tabular form. 
+   
+4. Test whether the effect of age and height on FVC for males are 
+   significantly different than for females. 
+
+5. Using the data on births from North Carolina (`NCbirths`), create a model
+   of the weight of the baby at birth in pounds using the mothers age, 
+   smoking habit, and the number of hospital visits during pregnancy as dependent
+   variables. Interpret the regression coefficients in context of the problem 
+   and include 95% confidence intervals and p-values in your discussion. 
+
+6. Find a 95% prediction interval for a 30-year-old smoking mother with 16 visits 
+   to the doctor during her pregnancy. 
+   
+7. Test for an interaction between smoking habit and the mothers age. 
+   Include a plot similar to the one shown in the lecture notes to support 
+   your findings. 
+
+
+8. Using the Parental HIV data, generate a variable that represents the sum
+   of the variables describing the neighborhood where the adolescent lives
+   (`NGHB1-NGHB11`). Is the age at which adolescents start smoking different
+   for girls compared to boys, after adjusting for the score describing the 
+   neighborhood? 
+   
+   
