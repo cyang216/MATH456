@@ -1,8 +1,8 @@
 ---
 title: "Week 4"
 author: "MATH 456, Spring 2016"
-date: " 02/15/16"
-output: html_document
+date: ' 02/15/16'
+output: pdf_document
 ---
 ```{r results="asis", echo=FALSE}
 source("C:/Github/MATH456/stylesheets/custom.R")
@@ -26,19 +26,33 @@ source("C:/Github/MATH456/stylesheets/custom.R")
 * Multiple linear regression - Model fitting, predictions, interpretations
 
 ### Wednesday 2/17/16
-* Multiple linear regression - Interactions
+* Multiple linear regression - Interactions & stratification
 
-### Friday 2/18/16
-* Multiple linear regression - Stratification
-* Consulting reflection assignment due EOD
+### Friday 2/19/16
+* Consulting
+    - Reflection on discussion boards due today
+    - Comparative analysis of chosen variables needs to be worked on. 
+    - Draft of report due next Friday 2/26
+    - Dr Downing has OH 10-11:30 on Wednesday. Go ask him questions. 
 
+* Handouts: Harrell Ch 1 & 2
+* Writing models, reference coding and contrasts
 
 ## Looking Ahead
-* Quiz on Ch 7 - BBLearn due Sunday
-* Variable selection
+* BBLearn Quiz on Ch 7 - Due Monday @ 12. Topics include:
+    - Writing and fitting linear models
+    - Interpretation of coefficients
+    - Model Diagnostics (also reference Harrel Ch 1)
+    - Testing hypothesis using indicator variables and contrasts. 
+* Splines, Missing Data
 
 
 ## Additional references
+Regression Modeling Strategies (Harrell), e-book plus tons of supplemental materials including R code:  http://biostat.mc.vanderbilt.edu/wiki/Main/RmS
+
+
+
+
 Not fully random links to other websites demonstrating regression modeling in R
 
 * http://ww2.coastal.edu/kingw/statistics/R-tutorials/multregr.html

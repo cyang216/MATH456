@@ -1,0 +1,19 @@
+\documentclass{article}
+\usepackage[top=0.5in, bottom=0.5in, left=0.5in, right=0.5in]{geometry}
+
+\begin{document}
+
+\textbf{For each problem presented do the following:}
+\begin{itemize}
+  \item[a] State each model statistically, identifying each predictor with one or more component varibles.
+  \item[b] Identify and interpret each regression parameter.
+  \item[c] State each hypothesis requested as a formal statistical hypothesis involving a null and alternative hypothesis using proper parameters, and give the degrees of freedom of the test.
+\end{itemize}
+
+\begin{enumerate}
+  \item The mean of an outcome $Y$ is linear in age and blood pressure, and there may be an interaction between the two predictors. Test: $H_{0}:$ there is no interaction between age and blood pressure. Test: $H_{0}:$ blood pressure is not associated with $Y$ in any fashion.
+  \item Consider a linear additive model invoving three treatments (control, drug Z, and drug Q) and one continuous adjustment variable, age. Test $H_{0}:$ treatment group is not associated with response, adjusted for age. Test $H_{0}:$ the response for drug Z has the same effect as the response for Drug Q, adjusted for age. 
+\end{enumerate}
+
+
+\end{document}
