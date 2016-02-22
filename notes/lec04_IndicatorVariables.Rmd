@@ -1,5 +1,5 @@
 ---
-title: "Lec 05: Other topics in Regression Analysis"
+title: "Lec 04: Indicator variables and Splines"
 author: "MATH 456 - Spring 2016"
 output:
   html_document:
@@ -20,7 +20,7 @@ source("C:/Github/MATH456/stylesheets/custom.R")
 Navbar: [[Home]](../index.html) [[Schedule]](../Schedule.html) [[Data]](../data/Datasets.html) [[Week 4 Overview]](../wk04.html) [[HW Rubric]](../admin/rubric.html)  [[Google Group]](https://groups.google.com/forum/#!forum/csuc_stat)  [[Google Drive]](https://drive.google.com/a/mail.csuchico.edu/folderview?id=0B83Z8_sNw3KPcnVrYzVFRHUtcHM&usp=sharing)
 
 # Assigned Reading
-Afifi: Chapter 9
+Afifi: Chapter 9.3, Harrel Ch 2
 
 
 ## Factor variable coding
