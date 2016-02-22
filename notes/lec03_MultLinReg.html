@@ -387,7 +387,7 @@ tab &lt;-<span class="st"> </span><span class="kw">xtable</span>(coeff.out)
 <span class="kw">names</span>(tab)[<span class="dv">3</span>:<span class="dv">4</span>] &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;t&quot;</span>, <span class="st">&quot;p-value&quot;</span>)
 <span class="kw">print</span>(tab, <span class="dt">type=</span><span class="st">&quot;html&quot;</span>)</code></pre>
 <!-- html table generated in R 3.2.3 by xtable 1.8-2 package -->
-<!-- Sun Feb 21 17:26:24 2016 -->
+<!-- Sun Feb 21 19:13:08 2016 -->
 <table border="1">
 <tr>
 <th>
@@ -515,7 +515,7 @@ x.vars &lt;-<span class="st"> </span>fev %&gt;%<span class="st"> </span><span cl
 <h3>Multicollinearity</h3>
 <ul>
 <li>Occurs when some of the X variables are highly intercorrelated.</li>
-<li>Affects estimates and their SEâs (p. 143)</li>
+<li>Affects estimates and their SE’s (p. 143)</li>
 <li>Look at tolerance, and its inverse, the Variance Inflation Factor (VIF)</li>
 <li>Need tolerance &lt; 0.01, or VIF &gt; 100.</li>
 </ul>
@@ -713,7 +713,7 @@ female_model &lt;-<span class="st"> </span><span class="kw">lm</span>(FEV ~<span
 <pre class="sourceCode r"><code class="sourceCode r">tab &lt;-<span class="st"> </span><span class="kw">xtable</span>(<span class="kw">summary</span>(overall_model), <span class="dt">digits=</span><span class="dv">3</span>)
 <span class="kw">print</span>(tab, <span class="dt">type=</span><span class="st">&quot;html&quot;</span>)</code></pre>
 <!-- html table generated in R 3.2.3 by xtable 1.8-2 package -->
-<!-- Sun Feb 21 17:26:27 2016 -->
+<!-- Sun Feb 21 19:13:11 2016 -->
 <table border="1">
 <tr>
 <th>
@@ -787,7 +787,7 @@ ht
 <pre class="sourceCode r"><code class="sourceCode r">tabf &lt;-<span class="st"> </span><span class="kw">xtable</span>(<span class="kw">summary</span>(female_model), <span class="dt">digits=</span><span class="dv">3</span>)
 <span class="kw">print</span>(tabf, <span class="dt">type=</span><span class="st">&quot;html&quot;</span>)</code></pre>
 <!-- html table generated in R 3.2.3 by xtable 1.8-2 package -->
-<!-- Sun Feb 21 17:26:27 2016 -->
+<!-- Sun Feb 21 19:13:11 2016 -->
 <table border="1">
 <tr>
 <th>
@@ -861,7 +861,7 @@ ht
 <pre class="sourceCode r"><code class="sourceCode r">tabm &lt;-<span class="st"> </span><span class="kw">xtable</span>(<span class="kw">summary</span>(male_model), <span class="dt">digits=</span><span class="dv">3</span>)
 <span class="kw">print</span>(tabm, <span class="dt">type=</span><span class="st">&quot;html&quot;</span>)</code></pre>
 <!-- html table generated in R 3.2.3 by xtable 1.8-2 package -->
-<!-- Sun Feb 21 17:26:27 2016 -->
+<!-- Sun Feb 21 19:13:11 2016 -->
 <table border="1">
 <tr>
 <th>
@@ -941,7 +941,7 @@ f.pred &lt;-<span class="st"> </span><span class="kw">predict</span>(female_mode
 pred &lt;-<span class="st"> </span><span class="kw">xtable</span>(<span class="kw">rbind</span>(o.pred, m.pred, f.pred), <span class="dt">digits=</span><span class="dv">3</span>)
 <span class="kw">print</span>(pred, <span class="dt">type=</span><span class="st">&quot;html&quot;</span>)</code></pre>
 <!-- html table generated in R 3.2.3 by xtable 1.8-2 package -->
-<!-- Sun Feb 21 17:26:27 2016 -->
+<!-- Sun Feb 21 19:13:11 2016 -->
 <table border="1">
 <tr>
 <th>
@@ -988,13 +988,13 @@ f.pred
 </tr>
 </table>
 <p>Column number 1 is a prediction of FEV for a 30 year old who is 66cm tall, column number 2 is a prediction of FEV for a 50 year old who is 66cm tall. Notice the overall prediction</p>
-<p>Even though the equations for males and females look quite similar, the predicted FEV1 for females of the same height and age as a male is expected to be less. The overall prediction is right inbetween the two estimates.</p>
+<p>Even though the equations for males and females look quite similar, the predicted FEV1 for females of the same height and age as a male is expected to be less. The overall prediction is right in between the two estimates.</p>
 <p><em>Note of caution: Stratification implies that the stratifying variable interacts with all other variables.</em></p>
 <div id="testing-equality-of-individual-coefficients-between-groups" class="section level3">
 <h3>Testing equality of individual coefficients between groups</h3>
 <p>To compare the regression coefficients for men and women we could simply compare the sign and magnitude of the standardized regression coefficients.</p>
 <p>If an interaction exists, then the two coefficients from the stratified models would be equal.</p>
-<p>To test the null hypothesis that the effect of height on FEV is the same across geneders, we compute the following test statistic:</p>
+<p>To test the null hypothesis that the effect of height on FEV is the same across genders, we compute the following test statistic:</p>
 <p><span class="math">\[ Z = \frac{\beta_{2M} - \beta_{2F}}{\sqrt{Var(\beta_{2M}) +Var(\beta_{2F})}}\]</span></p>
 <p>This <span class="math">\(Z\)</span> statistic follows the standard normal distribution, <span class="math">\(\mathcal{N}(0,1)\)</span> and so you can use the <code>pnorm()</code> function to calculate the p-value for the test.</p>
 <p><span class="math">\[ Z = \frac{0.114397 - 0.092593}{\sqrt{0.015789^2 +0.013704^2}} \]</span></p>
@@ -1015,7 +1015,7 @@ out &lt;-<span class="st"> </span><span class="kw">cbind</span>(<span class="dt"
 out &lt;-<span class="st"> </span><span class="kw">xtable</span>(out)
 <span class="kw">print</span>(out, <span class="dt">type=</span><span class="st">&quot;html&quot;</span>)</code></pre>
 <!-- html table generated in R 3.2.3 by xtable 1.8-2 package -->
-<!-- Sun Feb 21 17:26:27 2016 -->
+<!-- Sun Feb 21 19:13:11 2016 -->
 <table border="1">
 <tr>
 <th>
@@ -1054,7 +1054,7 @@ Height
 <li>If CIs <em>do not</em> overlap then slopes are significantly different from each other.</li>
 <li>Since CIs do overlap, then two slopes <em>may or may not</em> be significantly different from each other.</li>
 </ul>
-<p>For both age and height the CI’s for the slopes overlap a large amount, so I would suspect that there is no significant difference in the coefficients between models. This finding corroborates the formal statistical test of coefficients done above.</p>
+<p>For both age and height the CI’s for the slopes overlap a large amount, so I would suspect that there is no significant difference in the coefficients between models. This finding corroborates the formal statistical test done earlier.</p>
 </div>
 </div>
 </div>

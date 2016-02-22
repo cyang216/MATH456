@@ -1,12 +1,12 @@
 ---
-title: "Lec 03: Multiple Linear Regression Analysis"
+title: 'Lec 03: Multiple Linear Regression Analysis'
 author: "MATH 456 - Spring 2016"
 output:
+  pdf_document: default
   html_document:
     highlight: pygments
     theme: spacelab
     toc: yes
-  pdf_document: default
 ---
 ```{r,echo=FALSE, warning=FALSE, message=FALSE}
 library(knitr); library(rmarkdown);library(ggplot2)
@@ -320,7 +320,7 @@ http://www.statmethods.net/stats/rdiagnostics.html
 ### Multicollinearity
 
 * Occurs when some of the X variables are highly intercorrelated.
-* Affects estimates and their SE’s (p. 143)
+* Affects estimates and their SE's (p. 143)
 * Look at tolerance, and its inverse, the Variance Inflation Factor (VIF)
 * Need tolerance < 0.01, or VIF > 100.
 
@@ -547,7 +547,7 @@ Notice the overall prediction
 
 Even though the equations for males and females look quite similar, the 
 predicted FEV1 for females of the same height and age as a male is expected 
-to be less. The overall prediction is right inbetween the two estimates. 
+to be less. The overall prediction is right in between the two estimates. 
 
 _Note of caution: Stratification implies that the stratifying
 variable interacts with all other variables._ 
@@ -560,7 +560,7 @@ If an interaction exists, then the two coefficients from the stratified models
 would be equal. 
 
 To test the null hypothesis that the effect of height on FEV is the same
-across geneders, we compute the following test statistic:
+across genders, we compute the following test statistic:
 
 $$ Z = \frac{\beta_{2M} - \beta_{2F}}{\sqrt{Var(\beta_{2M}) +Var(\beta_{2F})}}$$
 

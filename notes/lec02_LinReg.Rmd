@@ -1,11 +1,11 @@
 ---
-title: "Lec 02: Linear Regression Analysis"
+title: 'Lec 02: Linear Regression Analysis'
 author: "MATH 456 - Spring 2016"
 output:
+  pdf_document: default
   html_document:
     highlight: pygments
     theme: spacelab
-  pdf_document: default
 ---
 ```{r,echo=FALSE, warning=FALSE, message=FALSE}
 library(knitr); library(rmarkdown);
@@ -196,7 +196,7 @@ Don't forget to use the _analysis_ data set for this problem.
 1. Perform a regression analysis of weight on height for fathers  
      a. Determine the correlation coefficient and the regression equation.   
      b. Interpret the coefficients in context of the problem.   
-2. Test that the coeffcients are significantly different from zero. 
+2. Test that the coefficients are significantly different from zero. 
 3. Assess model fit graphically. Comment on any outliers. 
 4. Repeat 1 -3 for mothers.   
 5. Discuss why the correlation for fathers appears higher than that for mothers.

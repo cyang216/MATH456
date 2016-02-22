@@ -1,47 +1,35 @@
 ---
-title: "Week 4"
+title: "Week 5"
 author: "MATH 456, Spring 2016"
-date: " 02/15/16"
+date: " 02/22/16"
 output: html_document
 ---
 ```{r results="asis", echo=FALSE}
 source("C:/Github/MATH456/stylesheets/custom.R")
 ```
-[[Schedule]](Schedule.html)  [[Week 3]](wk03.html) [[Week 5]](wk05.html)
+[[Schedule]](Schedule.html)  [[Week 4]](wk04.html) [[Week 6]](wk06.html)
 
 ## Announcements
-* Ch 6 Hw due on Sunday. 
 * Consulting reflection assignment posted on BBLearn
-* Revise and update your recruitment report. 
 
-## Prepare 
-* Read Afifi Ch 7. 
-* Replicate code in lecture notes for Multiple Linear Regression. 
 
 ### Notes and Materials
-* Lec 03: Multiple Linear Regression [[PDF]](notes/lec03_MultLinReg.pdf)[[HTML]](notes/lec03_MultLinReg.html)
+* Lec 04: Indicator variables [[PDF]](notes/lec04_Indicators_Splines.pdf)[[HTML]](notes/lec04_Indicators_Splines.html)
 
 ## Experience
-### Monday 2/15/16
-* Multiple linear regression - Model fitting, predictions, interpretations
+### Monday 2/22/16
+* Comments on consulting discussions
+* Factor variable coding
 
-### Wednesday 2/17/16
-* Multiple linear regression - Interactions
+### Wednesday 2/24/16
+* Splines
+* Dr. Downing's Office Hours: 10-11:30 Glenn 204
 
-### Friday 2/18/16
-* Multiple linear regression - Stratification
-* Consulting reflection assignment due EOD
-
+### Friday 2/26/16
+* Missing Data
+* Draft of consulting project report due to me by EOD. 
 
 ## Looking Ahead
-* Quiz on Ch 7 - BBLearn due Sunday
 * Variable selection
 
-
-## Additional references
-Not fully random links to other websites demonstrating regression modeling in R
-
-* http://ww2.coastal.edu/kingw/statistics/R-tutorials/multregr.html
-* http://www.gardenersown.co.uk/education/lectures/r/regression.htm 
-* https://www.youtube.com/watch?v=q1RD5ECsSB0
 

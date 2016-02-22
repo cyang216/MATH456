@@ -11,11 +11,11 @@ wk03,F,2/12/2016,TRUE,Consulting - Visit by Dr. Downing,,Q & A,
 wk04,Su,2/14/2016,FALSE,,,CH 6 HW due,
 wk04,M,2/15/2016,TRUE,"MLR - Fitting, predictions, interpretations(Ch 7)",lec03_MultLinReg,,
 wk04,W,2/17/2016,TRUE,MLR - Interactions & stratification,,,
-wk04,F,2/19/2016,TRUE,"Writing models, reference coding and contrasts","Harrell_Ch2, Afifi Ch 9.3",Consulting reflection,
+wk04,F,2/19/2016,TRUE,"Writing models, reference coding and contrasts","Afifi Ch 9.3, Harrel Ch 2",Consulting reflection,
 wk05,Su,2/21/2016,FALSE,,,Quiz 2 on Ch 7,
-wk05,M,2/22/2016,FALSE,"Reference coding, splines","Harrell_Ch2, Afifi Ch 9.3",,
-wk05,W,2/24/2016,FALSE,Intro to missing data,Harrell_Ch3,,QFOCUS - Missing Data
-wk05,F,2/26/2016,FALSE,,,2nd consulting report,
+wk05,M,2/22/2016,TRUE,Reference coding,lec04_Indicators_Splines,,
+wk05,W,2/24/2016,TRUE,Splines,,,
+wk05,F,2/26/2016,FALSE,Intro to missing data,"Afifi Ch 9.2, Harrell Ch3",2nd consulting report,QFOCUS - Missing Data
 wk06,Su,2/28/2016,FALSE,,,HW due,
 wk06,M,2/29/2016,FALSE,"Variable selection - manual, automated (Ch 8)",lec05_VarSelection,,QFOCUS - Variable selection
 wk06,W,3/2/2016,FALSE,Variable selection - penalized functions,,,
