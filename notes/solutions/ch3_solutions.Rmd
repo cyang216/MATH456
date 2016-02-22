@@ -148,7 +148,6 @@ under category 6 are now set as NA (missing).
 table(depress$RELIG, useNA="always")
 ```
 
-
 4.  **Update the Parental HIV data set by creating all the subscales listed at 
     the bottom of the codebook.**
     

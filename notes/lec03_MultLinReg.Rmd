@@ -1,12 +1,12 @@
 ---
-title: "Lec 03: Multiple Linear Regression Analysis"
+title: 'Lec 03: Multiple Linear Regression Analysis'
 author: "MATH 456 - Spring 2016"
 output:
+  pdf_document: default
   html_document:
     highlight: pygments
     theme: spacelab
     toc: yes
-  pdf_document: default
 ---
 ```{r,echo=FALSE, warning=FALSE, message=FALSE}
 library(knitr); library(rmarkdown);library(ggplot2)
@@ -213,7 +213,7 @@ interpreted as the rate of change of FEV1 as a function of height **after adjust
 for age**. This is also called the **partial regression coefficient** of FEV1 on 
 height after adjusting for age. 
 
-* Problem: Values of $\hat{\beta_{j}}$’s are NOT directly comparable for any $j=1, \ldots, p$. 
+* Problem: Values of $\hat{\beta_{j}}$ are NOT directly comparable for any $j=1, \ldots, p$. 
 * Solution: Standardized coefficients:
 $$\hat{\beta}_{j} = \hat{\beta}_{j} \frac{s_{x_{j}}}{s_{y}}$$
 * These coefficients are the same as if you standardized the data X and
@@ -233,7 +233,7 @@ that shows three basic options.
 http://kbroman.org/knitr_knutshell/pages/figs_tables.html 
 
 Here is an example using `xtable`. 
-I first ruond the results of the table to 2 digits, then format the
+I first round the results of the table to 2 digits, then format the
 p-value to read <.0001 instead of a super small digit. Then I wrap
 `xtable()` around that output. 
 ```{r, results="asis"}
@@ -320,7 +320,7 @@ http://www.statmethods.net/stats/rdiagnostics.html
 ### Multicollinearity
 
 * Occurs when some of the X variables are highly intercorrelated.
-* Affects estimates and their SE’s (p. 143)
+* Affects estimates and their SE's (p. 143)
 * Look at tolerance, and its inverse, the Variance Inflation Factor (VIF)
 * Need tolerance < 0.01, or VIF > 100.
 
@@ -440,17 +440,38 @@ cannot be interpreted directly when there is an interaction in the model.
 ## Stratification
 [[top]](lec03_MultLinReg.html)
 
-A model where there exists a variable that interacts with all other variables
-in the model can be considered a stratification variable. 
+Sometimes it is desirable to examine equations for subgroup of
+the population. Consider the relationship between age, height and FEV
+by gender. We write the model with the same set of covariates on each 
+strata (gender). 
 
-Example: Within each gender there exists a negative correlation between age
-and FEV. However in the combined sample this appears to be a positive correlation. 
+$$ FEV1_{M} \sim \beta_{0M} + \beta_{1M}*height + \beta_{2M}*age $$
+$$ FEV1_{F} \sim \beta_{0M} + \beta_{1F}*height + \beta_{2F}*age $$
+
+<!--- #### 
 
 ```{r}
-ggplot(data=fev2, aes(x=ht, y=age, col=gender)) + geom_point() + xlab("Age") + 
-  ggtitle("Scatterplot of FEV vs age of adults by gender") + 
+ggplot(data=fev2, aes(x=age, y=FEV, col=gender)) + geom_point() +
+  ggtitle("Scatterplot of height vs age of adults by gender") + 
   geom_smooth(se=FALSE, method='lm') + 
-  geom_smooth(aes(x=ht, y=age), col="purple", se=FALSE, method='lm')
+  geom_smooth(aes(x=age, y=FEV), col="purple", se=FALSE, method='lm')
+
+ggplot(data=fev2, aes(x=ht, y=FEV, col=gender)) + geom_point() +
+  ggtitle("Scatterplot of height vs age of adults by gender") + 
+  geom_smooth(se=FALSE, method='lm') + 
+  geom_smooth(aes(x=ht, y=FEV), col="purple", se=FALSE, method='lm')
+```
+
+Example: Within each gender there exists a negative correlation between 
+age and height. However in the combined sample this appears to be a
+positive correlation. 
+
+
+```{r}
+ggplot(data=fev2, aes(x=age, y=ht, col=gender)) + geom_point() +
+  ggtitle("Scatterplot of height vs age of adults by gender") + 
+  geom_smooth(se=FALSE, method='lm') + 
+  geom_smooth(aes(x=age, y=ht), col="purple", se=FALSE, method='lm')
 ```
 
 This is similar to [Simpsons Paradox](https://en.wikipedia.org/wiki/Simpson%27s_paradox), 
@@ -473,33 +494,63 @@ $$ FEV1 \sim (\beta_{0} + \beta_{1}) + (\beta_{2} + \beta_{4})*height + (\beta_{
 
 Instead of running the model on the full set of data and then calculating
 the correct coefficient for each gender we _stratify_ the model and run
-a model with the same set of covariates on each strata (gender). 
 
-$$ FEV1_{M} \sim \beta_{0M} +  \beta_{1M}*height + \beta_{2M}*age $$
-$$ FEV1_{F} \sim \beta_{0M} +  \beta_{1F}*height + \beta_{2F}*age $$
-
-The results of a model on FEV1 against age and height overall, and stratified
-by gender can be found in Table 7.5 in the textbook. Notice there is an 
-observable difference in all point and parameter estimates listed between
-the overall model and the subsets. 
-
-Even though the equations for males and females look quite similar, the 
-predicted FEV1 for females of the same height and age as a male is expected 
-to be less. We can confirm this ourselves. 
+--->
 
 ```{r}
-# subset
+# subset the data
 M <- subset(fev2, gender=="M")
 F <- subset(fev2, gender=="F")
+# Overall model
+overall_model <- lm(FEV ~ age + ht, data=fev2)
 # run stratified models
 male_model   <- lm(FEV ~ age + ht, data=M)
 female_model <- lm(FEV ~ age + ht, data=F)
-# create new data frame using the overall mean height
-new.data <- data.frame(ht = rep(66, 2), age=c(30, 50))
-# predict on each model
-predict(male_model, new.data)
-predict(female_model, new.data)
 ```
+
+The overall model indicates that FEV decreases with age and increases
+with height (p<.0001 each)
+```{r, results='asis'}
+tab <- xtable(summary(overall_model), digits=3)
+print(tab, type="html")
+```
+
+Model on females only:
+```{r, results='asis'}
+tabf <- xtable(summary(female_model), digits=3)
+print(tabf, type="html")
+```
+
+Model on males only:
+```{r, results='asis'}
+tabm <- xtable(summary(male_model), digits=3)
+print(tabm, type="html")
+```
+
+Create a prediction of FEV for two cases, a 30 year old who is
+66cm tall, and a 50 year old who is 62cm tall. 
+
+```{r, results='asis'}
+# create new data frame using the overall mean height
+new.data <- data.frame(ht = c(66, 62), age=c(30, 50))
+# predict on each model
+o.pred <- predict(overall_model, new.data)
+m.pred <- predict(male_model, new.data)
+f.pred <- predict(female_model, new.data)
+pred <- xtable(rbind(o.pred, m.pred, f.pred), digits=3)
+print(pred, type="html")
+```
+
+Column number 1 is a prediction of FEV for a 30 year old who is 66cm tall,
+column number 2 is a prediction of FEV for a 50 year old who is 66cm tall. 
+Notice the overall prediction
+
+Even though the equations for males and females look quite similar, the 
+predicted FEV1 for females of the same height and age as a male is expected 
+to be less. The overall prediction is right in between the two estimates. 
+
+_Note of caution: Stratification implies that the stratifying
+variable interacts with all other variables._ 
 
 ### Testing equality of individual coefficients between groups
 To compare the regression coefficients for men and women we could simply
@@ -508,25 +559,40 @@ compare the sign and magnitude of the standardized regression coefficients.
 If an interaction exists, then the two coefficients from the stratified models
 would be equal. 
 
-To test the null hypothesis of equal coefficients we compute the following
-test statistic:
+To test the null hypothesis that the effect of height on FEV is the same
+across genders, we compute the following test statistic:
 
-$$ Z = \frac{\beta_{M} - \beta_{F}}{\sqrt{SE^{2}(\beta_{M}) -SE^{2}(\beta_{F})}}$$
+$$ Z = \frac{\beta_{2M} - \beta_{2F}}{\sqrt{Var(\beta_{2M}) +Var(\beta_{2F})}}$$
 
-This $Z$ statistic has a normal distribution, and so you can use the 
-`pnorm()` function to calculate the corresponding test statistic. As an example, 
-to find the probability that |Z| > 1.96 you would type
+This $Z$ statistic follows the standard normal distribution, $\mathcal{N}(0,1)$ 
+and so you can use the `pnorm()` function to calculate the p-value for the test. 
+
+$$ Z = \frac{0.114397 - 0.092593}{\sqrt{0.015789^2 +0.013704^2}} $$
+
 ```{r}
-2*pnorm(-1.96)
+z = (0.114397 - 0.092593)/(sqrt(0.015789^2 + 0.013704^2))
+z
+2*(1-pnorm(z))
 ```
-Questions on the use of this function can be answered using the discussion forum. 
 
-If you choose to do this using **R** to extract the regression values, you
-can access the parameter estimates and their standard errors from the output
-of the summary function. I.e.: `summary(male_model)$coefficients`. 
+_`pnorm(z)` takes the value of the test statistic as the argument `z`, and
+returns the probability of a random variable being **below** the test
+statistic. This can be thought of as the area to the **left** under the 
+normal probability distribution curve. The p-value for a statistical test 
+is the probability of observing a test statistic equal to or greater than 
+the one observed. Since our test statistic is positive, we are interested 
+in P(Z>1.04). Thus we want to calculate the area is the **right** under
+the normal probability distribution. Since the result of `pnorm` gives
+us the left and we want the right, and the full area under the curve 
+adds up to 1, we simply calculate `1-pnorm()` to find the area to
+the right. Lastly, since this is a two tailed test we double 
+the tail area to calculate the p-value of the test in question_
+
+With a large p-value of 0.30 there is insufficient evidence to believe
+that the relationship between FEV and height differs by gender. 
 
 
-### Testing using a CI
+#### Testing using a CI
 You can also attempt to test for a difference in slope coefficients by
 comparing the confidence intervals for the parameters. _Note: I am showing
 how I wrangled the linear model output into a table that is easily read for
@@ -545,9 +611,10 @@ print(out, type="html")
 * Since CIs do overlap, then two slopes _may or may not_ be significantly
   different from each other.
 
-For both age and height the CI's for the slopes overlap a large amount, so I would suspect that 
-there is no significant difference between the two models but the test statistic should be
-calculated to confirm. 
+For both age and height the CI's for the slopes overlap a large amount, so I
+would suspect that there is no significant difference in the coefficients
+between models. This finding corroborates the formal statistical test
+done earlier. 
 
 # What to watch out for
 [[top]](lec03_MultLinReg.html)

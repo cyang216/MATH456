@@ -1,0 +1,181 @@
+---
+title: 'Lec 04: Indicator variables and Splines'
+author: "MATH 456 - Spring 2016"
+output:
+  pdf_document: default
+  html_document:
+    highlight: pygments
+    theme: spacelab
+    toc: yes
+---
+```{r,echo=FALSE, warning=FALSE, message=FALSE}
+library(knitr); library(rmarkdown);library(ggplot2)
+opts_chunk$set(warning=FALSE, message=FALSE) 
+```
+
+```{r results="asis", echo=FALSE}
+source("C:/Github/MATH456/stylesheets/custom.R")
+```
+
+Navbar: [[Home]](../index.html) [[Schedule]](../Schedule.html) [[Data]](../data/Datasets.html) [[Week 5 Overview]](../wk05.html) [[HW Rubric]](../admin/rubric.html)  [[Google Group]](https://groups.google.com/forum/#!forum/csuc_stat)  [[Google Drive]](https://drive.google.com/a/mail.csuchico.edu/folderview?id=0B83Z8_sNw3KPcnVrYzVFRHUtcHM&usp=sharing)
+
+# Assigned Reading
+Afifi: Chapter 9.3, Harrel Ch 2
+
+
+# Factor variable coding
+
+* Better used term: Indicator variable
+* Math notation: **I(gender == "Female")**. 
+* A.k.a reference coding
+* For a nominal X with K categories, define K indicator variables.
+    - Choose a reference (referent) category:
+    - Leave it out
+    - Use remaining K-1 in the regression.
+    - Often, the largest category is chosen as the reference category.
+
+
+## Example: Binary indicator for gender
+Consider the linear model of FEV on gender($x_{1}$), height($x_{2}$) and age($x_{3}$)
+where gender interacts with both age and height. In other words, gender changes
+the relationship between height and FEV1, and the relationship between age and FEV1.
+
+$$ FEV1 \sim \beta_{0} + \beta_{1}*gender + \beta_{2}*height + \beta_{3}*age + \beta_{4}*gender*height + \beta_{5}*gender*age $$
+
+If we let gender = 0 if the record is on a male, and gender = 1 if the record is
+on a female, then the model for males would be:
+
+$$ FEV1 \sim \beta_{0} +  \beta_{2}*height + \beta_{3}*age $$
+
+and the model for females would be:
+
+$$ FEV1 \sim (\beta_{0} + \beta_{1}) + (\beta_{2} + \beta_{4})*height + (\beta_{3}+\beta_{5})*age$$
+
+
+## Example: Religion against income and depression
+Consider a log-linear model for the effect of marital status ($X_2$) on
+log income while controlling for age($X_1$). This is called a log-linear
+model because the outcome has been log transformed. 
+
+$$ log(Y_i) = \beta_0 + \beta_1*x_1 + \beta_2*x_2 $$
+
+```{r}
+dep <- read.table("C:/GitHub/MATH456/data/Depress_020916.txt", sep="\t", header=TRUE)
+names(dep) <- tolower(names(dep)) # I hate all captal variable names
+levels(dep$marital)
+```
+
+Marital status has 5 levels, so we would need 4 indicator variables. 
+R always uses the first level of a factor variable as the reference level. 
+
+* Let $x_{2}=1$ when `marital='Married'`, and 0 otherwise,  
+* let $x_{3}=1$ when `marital='Never Married'`, and 0 otherwise,  
+* let $x_{4}=1$ when `marital='Separated'`, and 0 otherwise,  
+* let $x_{5}=1$ when `marital='Widowed'`, and 0 otherwise. 
+
+The mathmatical model would look like: 
+
+$$ log(Y)|X \sim \beta_{0} + \beta_{1}*x_{1} + \beta_{2}x_{2} + \beta_{3}x_{3} + \beta_{4}x_{4} + \beta_{5}x_{5} $$
+
+Two levels of interpretation here. 
+
+1. The outcome is log transformed, so the interpretation has to be 
+   back-transformed.   
+2. The coefficients for the other levels of the categorical variable
+   are in _comparison_ to the reference level. 
+
+
+**Interpretation of log-linear models** 
+Calculate the change in $Y$ that corresponds to a one unit change in $x_1$. 
+Since marital status is remaining constant, I will exclude it from the 
+calculations below to save space and not to detract from the main point.
+
+Write each equation down
+
+$$ log(Y)|x_1 = \beta_{0} + \beta_{1}x_{1}$$ 
+$$ log(Y)|(x_1+1)  = \beta_{0} + \beta_{1}(x_{1}+1)$$ 
+
+Find the difference
+
+$$ (log(Y)|x_1) - (log(Y)|(x_1+1)) = (\beta_{0} + \beta_{1}x_{1}) - (\beta_{0} + \beta_{1}(x_{1}+1))$$ 
+
+and simplify. 
+
+$$ log(\frac{Y|x_1}{Y|x_1+1}) = \beta_{1}$$ 
+$$ \frac{Y|x_1}{Y|x_1+1} = e^{\beta_{1}}$$
+
+Each 1-unit increase in $x_{j}$ multiplies the expected value of Y by $e^{\hat{\beta_{j}}}$.  
+
+Interpretation: $100\hat{\beta_{j}}$ is the expected **percentage** change
+in $Y$ for a unit increase in $x_{j}$.
+
+
+The nice thing about factor variables in R, is that the appropriate 
+indicator variables are automatically created for you by the linear
+model (`lm()`) function.
+
+```{r, echo=1}
+summary(lm(log(income) ~ age + marital,data=dep))
+cf <- round(exp(coef(summary(lm(log(income) ~ age + marital,data=dep)))),2)
+```
+
+
+* For every year older, a persons income decreases by 1%. (`exp(-0.009)` = `r cf[2,1]`)
+* Married individuals have a 52% higher income compared to those who are divorced. (`exp(-0.417)` = `r cf[3,1]`)
+* Those who have never been married have  16% lower income compared to those who are divorced. (`exp(-0.183)` = `r cf[4,1]`)
+* Separated individuals have 32% lower income compared to those who are divorced. (`exp(-0.394)` = `r cf[5,1]`)
+* Widowed individuals have 24% lower income compared to those who are divorced. (`exp(-0.278)` = `r cf[6,1]`)
+
+Other references on how to interpret regression parameters when they have 
+been log transformed: 
+
+* http://www.ats.ucla.edu/stat/mult_pkg/faq/general/log_transformed_regression.htm 
+* http://www.kenbenoit.net/courses/ME104/logmodels2.pdf
+
+## On Your Own
+##### On Your Own
+
+**Create a model to analyze the relationship of education status to depression level as measured by
+CESD after controlling for age. Combine all education levels below a HS graduate into one reference 
+category called "Up to HS" prior to analysis.**
+
+This is a seemingly simple request, but there are a lot of steps you must do
+to correctly analyze this question. 
+
+1. Ensure that you are using the analyzable version of the depression data set. 
+   It may be helpful to confirm that your recodes are correct by comparing
+   your data mangement code file to mine [dm_depress](../data/dm_depress.html) 
+   located on our course website. 
+2. Reference your Ch3 homework (or the [solutions](./solutions/ch3_solutions.html))
+   if you need help collapsing educational categories. 
+3. Ensure that R is treating "Up to HS" as the reference category for eduation level. 
+   If it is not, use the `levels` argument of the `factor()` function to reorder
+   your factor levels. This is also presented in the Ch3 solutions. 
+4. Consider a transformation of `CESD`. Explain and justify using graphical
+   measures why you chose to, or chose not to, transform CESD prior to modeling. 
+5. Check the model fit by examining the residuals to see if the assumption that 
+   $\epsilon_{i} \sim \mathcal{N}(0, \sigma^{2})$ is upheld. 
+6. Identify any potential outliers. Explain why you think they are outliers. 
+   Examine their standardized residuals and leverage values.If any seem to stand out or 
+   have high values for either measure, exclude them from the analysis and re-run the model. 
+7. Once you have finalized your model, interpret ALL coefficients in context of the problem. 
+   State if any are significantly predictive of the outcome, provide p-values in your conclusion. 
+8. Does this model do well at all in predicting CESD? Answer this question using both the
+   coefficient of determiniation and the ANOVA test of overall global fit (testing that
+   all $\beta$'s are 0)
+   
+
+
+# Splines
+
+## References
+
+* Afifi Section 9.4
+* Harrell 2.4.3, pg 39 http://biostat.mc.vanderbilt.edu/tmp/course.pdf 
+* https://www.youtube.com/watch?v=o_d4hmKhmsQ
+* http://www.r-bloggers.com/thats-smooth/
+
+  
+
+
+

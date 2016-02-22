@@ -1,0 +1,35 @@
+---
+title: "Week 5"
+author: "MATH 456, Spring 2016"
+date: " 02/22/16"
+output: html_document
+---
+```{r results="asis", echo=FALSE}
+source("C:/Github/MATH456/stylesheets/custom.R")
+```
+[[Schedule]](Schedule.html)  [[Week 4]](wk04.html) [[Week 6]](wk06.html)
+
+## Announcements
+* Consulting reflection assignment posted on BBLearn
+
+
+### Notes and Materials
+* Lec 04: Indicator variables [[PDF]](notes/lec04_Indicators_Splines.pdf)[[HTML]](notes/lec04_Indicators_Splines.html)
+
+## Experience
+### Monday 2/22/16
+* Comments on consulting discussions
+* Factor variable coding
+
+### Wednesday 2/24/16
+* Splines
+* Dr. Downing's Office Hours: 10-11:30 Glenn 204
+
+### Friday 2/26/16
+* Missing Data
+* Draft of consulting project report due to me by EOD. 
+
+## Looking Ahead
+* Variable selection
+
+

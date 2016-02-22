@@ -103,7 +103,6 @@ img {
 </ul></li>
 <li><a href="#stratification">Stratification</a><ul>
 <li><a href="#testing-equality-of-individual-coefficients-between-groups">Testing equality of individual coefficients between groups</a></li>
-<li><a href="#testing-using-a-ci">Testing using a CI</a></li>
 </ul></li>
 </ul></li>
 <li><a href="#what-to-watch-out-for">What to watch out for</a></li>
@@ -371,7 +370,7 @@ x.new %*%<span class="st"> </span>betas</code></pre>
 <p><a href="lec03_MultLinReg.html">[top]</a></p>
 <p>This value of 4.18 is the rate of change of FEV1 for fathers as a function of height when no other variables are taken into account. For the model that includes age, the coefficient for height is now 0.11, which is interpreted as the rate of change of FEV1 as a function of height <strong>after adjusting for age</strong>. This is also called the <strong>partial regression coefficient</strong> of FEV1 on height after adjusting for age.</p>
 <ul>
-<li>Problem: Values of <span class="math">\(\hat{\beta_{j}}\)</span>’s are NOT directly comparable for any <span class="math">\(j=1, \ldots, p\)</span>.</li>
+<li>Problem: Values of <span class="math">\(\hat{\beta_{j}}\)</span> are NOT directly comparable for any <span class="math">\(j=1, \ldots, p\)</span>.</li>
 <li>Solution: Standardized coefficients: <span class="math">\[\hat{\beta}_{j} = \hat{\beta}_{j} \frac{s_{x_{j}}}{s_{y}}\]</span></li>
 <li>These coefficients are the same as if you standardized the data X and Y prior to conducting the regression.</li>
 <li>The larger the magnitude of the standardized coefficient, the more <span class="math">\(X_{i}\)</span> directly contributes to the prediction of <span class="math">\(y\)</span>.</li>
@@ -380,7 +379,7 @@ x.new %*%<span class="st"> </span>betas</code></pre>
 <div id="interlude-reporting-regression-coefficients-using-tables-in-markdown" class="section level3">
 <h3>Interlude: Reporting regression coefficients using tables in Markdown</h3>
 <p>There are not many options for making readable tables in Markdown. For better control you would be best suited by switching to LaTeX and Sweave (both can be done in R Studio). Here is a reference webpage that shows three basic options. <a href="http://kbroman.org/knitr_knutshell/pages/figs_tables.html" class="uri">http://kbroman.org/knitr_knutshell/pages/figs_tables.html</a></p>
-<p>Here is an example using <code>xtable</code>. I first ruond the results of the table to 2 digits, then format the p-value to read &lt;.0001 instead of a super small digit. Then I wrap <code>xtable()</code> around that output.</p>
+<p>Here is an example using <code>xtable</code>. I first round the results of the table to 2 digits, then format the p-value to read &lt;.0001 instead of a super small digit. Then I wrap <code>xtable()</code> around that output.</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(xtable)
 coeff.out &lt;-<span class="st"> </span><span class="kw">round</span>(<span class="kw">summary</span>(mv_model)$coef, <span class="dv">2</span>)
 coeff.out[,<span class="dv">4</span>] &lt;-<span class="st"> </span><span class="kw">ifelse</span>(coeff.out[,<span class="dv">4</span>]&lt;.<span class="dv">0001</span>, <span class="st">&quot;&lt;.0001&quot;</span>, coeff.out[,<span class="dv">4</span>])
@@ -388,7 +387,7 @@ tab &lt;-<span class="st"> </span><span class="kw">xtable</span>(coeff.out)
 <span class="kw">names</span>(tab)[<span class="dv">3</span>:<span class="dv">4</span>] &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;t&quot;</span>, <span class="st">&quot;p-value&quot;</span>)
 <span class="kw">print</span>(tab, <span class="dt">type=</span><span class="st">&quot;html&quot;</span>)</code></pre>
 <!-- html table generated in R 3.2.3 by xtable 1.8-2 package -->
-<!-- Sun Feb 14 17:39:25 2016 -->
+<!-- Sun Feb 21 19:13:08 2016 -->
 <table border="1">
 <tr>
 <th>
@@ -642,53 +641,372 @@ fev2$gender &lt;-<span class="st"> </span><span class="kw">factor</span>(fev2$ge
 <div id="stratification" class="section level2">
 <h2>Stratification</h2>
 <p><a href="lec03_MultLinReg.html">[top]</a></p>
-<p>A model where there exists a variable that interacts with all other variables in the model can be considered a stratification variable.</p>
-<p>Example: Within each gender there exists a negative correlation between age and FEV. However in the combined sample this appears to be a positive correlation.</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(<span class="dt">data=</span>fev2, <span class="kw">aes</span>(<span class="dt">x=</span>ht, <span class="dt">y=</span>age, <span class="dt">col=</span>gender)) +<span class="st"> </span><span class="kw">geom_point</span>() +<span class="st"> </span><span class="kw">xlab</span>(<span class="st">&quot;Age&quot;</span>) +<span class="st"> </span>
-<span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Scatterplot of FEV vs age of adults by gender&quot;</span>) +<span class="st"> </span>
-<span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">se=</span><span class="ot">FALSE</span>, <span class="dt">method=</span><span class="st">'lm'</span>) +<span class="st"> </span>
-<span class="st">  </span><span class="kw">geom_smooth</span>(<span class="kw">aes</span>(<span class="dt">x=</span>ht, <span class="dt">y=</span>age), <span class="dt">col=</span><span class="st">&quot;purple&quot;</span>, <span class="dt">se=</span><span class="ot">FALSE</span>, <span class="dt">method=</span><span class="st">'lm'</span>)</code></pre>
-<p><img src="data:image/png;base64,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" title alt width="672" /></p>
-<p>This is similar to <a href="https://en.wikipedia.org/wiki/Simpson%27s_paradox">Simpsons Paradox</a>, where there are a number of additional examples of this situation including the <a href="http://vudlab.com/simpsons/">UC Berkeley gender bias lawsuit</a>.</p>
-<p>Since gender affects the relationship between FEV and both height and age, the appropriate model would then be:</p>
-<p><span class="math">\[ FEV1 \sim \beta_{0} + \beta_{1}*gender + \beta_{2}*height + \beta_{3}*age + \beta_{4}*gender*height + \beta_{5}*gender*age \]</span></p>
-<p>If we let gender = 0 if the record is on a male, and gender = 1 if the record is on a female, then the model for males would be:</p>
-<p><span class="math">\[ FEV1 \sim \beta_{0} +  \beta_{2}*height + \beta_{3}*age \]</span></p>
-<p>and the model for females would be:</p>
-<p><span class="math">\[ FEV1 \sim (\beta_{0} + \beta_{1}) + (\beta_{2} + \beta_{4})*height + (\beta_{3}+\beta_{5})*age\]</span></p>
-<p>Instead of running the model on the full set of data and then calculating the correct coefficient for each gender we <em>stratify</em> the model and run a model with the same set of covariates on each strata (gender).</p>
-<p><span class="math">\[ FEV1_{M} \sim \beta_{0M} +  \beta_{1M}*height + \beta_{2M}*age \]</span> <span class="math">\[ FEV1_{F} \sim \beta_{0M} +  \beta_{1F}*height + \beta_{2F}*age \]</span></p>
-<p>The results of a model on FEV1 against age and height overall, and stratified by gender can be found in Table 7.5 in the textbook. Notice there is an observable difference in all point and parameter estimates listed between the overall model and the subsets.</p>
-<p>Even though the equations for males and females look quite similar, the predicted FEV1 for females of the same height and age as a male is expected to be less. We can confirm this ourselves.</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># subset</span>
+<p>Sometimes it is desirable to examine equations for subgroup of the population. Consider the relationship between age, height and FEV by gender. We write the model with the same set of covariates on each strata (gender).</p>
+<p><span class="math">\[ FEV1_{M} \sim \beta_{0M} + \beta_{1M}*height + \beta_{2M}*age \]</span> <span class="math">\[ FEV1_{F} \sim \beta_{0M} + \beta_{1F}*height + \beta_{2F}*age \]</span></p>
+<!--- #### 
+
+
+```r
+ggplot(data=fev2, aes(x=age, y=FEV, col=gender)) + geom_point() +
+  ggtitle("Scatterplot of height vs age of adults by gender") + 
+  geom_smooth(se=FALSE, method='lm') + 
+  geom_smooth(aes(x=age, y=FEV), col="purple", se=FALSE, method='lm')
+```
+
+<img src="lec03_MultLinReg_files/figure-html/unnamed-chunk-24-1.png" title="" alt="" width="672" />
+
+```r
+ggplot(data=fev2, aes(x=ht, y=FEV, col=gender)) + geom_point() +
+  ggtitle("Scatterplot of height vs age of adults by gender") + 
+  geom_smooth(se=FALSE, method='lm') + 
+  geom_smooth(aes(x=ht, y=FEV), col="purple", se=FALSE, method='lm')
+```
+
+<img src="lec03_MultLinReg_files/figure-html/unnamed-chunk-24-2.png" title="" alt="" width="672" />
+
+Example: Within each gender there exists a negative correlation between 
+age and height. However in the combined sample this appears to be a
+positive correlation. 
+
+
+
+```r
+ggplot(data=fev2, aes(x=age, y=ht, col=gender)) + geom_point() +
+  ggtitle("Scatterplot of height vs age of adults by gender") + 
+  geom_smooth(se=FALSE, method='lm') + 
+  geom_smooth(aes(x=age, y=ht), col="purple", se=FALSE, method='lm')
+```
+
+<img src="lec03_MultLinReg_files/figure-html/unnamed-chunk-25-1.png" title="" alt="" width="672" />
+
+This is similar to [Simpsons Paradox](https://en.wikipedia.org/wiki/Simpson%27s_paradox), 
+where there are a number of additional examples of this situation including the 
+[UC Berkeley gender bias lawsuit](http://vudlab.com/simpsons/).
+
+Since gender affects the relationship between FEV and both height and age, the
+appropriate model would then be:
+
+$$ FEV1 \sim \beta_{0} + \beta_{1}*gender + \beta_{2}*height + \beta_{3}*age + \beta_{4}*gender*height + \beta_{5}*gender*age $$
+
+If we let gender = 0 if the record is on a male, and gender = 1 if the record is
+on a female, then the model for males would be:
+
+$$ FEV1 \sim \beta_{0} +  \beta_{2}*height + \beta_{3}*age $$
+
+and the model for females would be:
+
+$$ FEV1 \sim (\beta_{0} + \beta_{1}) + (\beta_{2} + \beta_{4})*height + (\beta_{3}+\beta_{5})*age$$
+
+Instead of running the model on the full set of data and then calculating
+the correct coefficient for each gender we _stratify_ the model and run
+
+--->
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># subset the data</span>
 M &lt;-<span class="st"> </span><span class="kw">subset</span>(fev2, gender==<span class="st">&quot;M&quot;</span>)
 F &lt;-<span class="st"> </span><span class="kw">subset</span>(fev2, gender==<span class="st">&quot;F&quot;</span>)
+<span class="co"># Overall model</span>
+overall_model &lt;-<span class="st"> </span><span class="kw">lm</span>(FEV ~<span class="st"> </span>age +<span class="st"> </span>ht, <span class="dt">data=</span>fev2)
 <span class="co"># run stratified models</span>
 male_model   &lt;-<span class="st"> </span><span class="kw">lm</span>(FEV ~<span class="st"> </span>age +<span class="st"> </span>ht, <span class="dt">data=</span>M)
-female_model &lt;-<span class="st"> </span><span class="kw">lm</span>(FEV ~<span class="st"> </span>age +<span class="st"> </span>ht, <span class="dt">data=</span>F)
-<span class="co"># create new data frame using the overall mean height</span>
-new.data &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">ht =</span> <span class="kw">rep</span>(<span class="dv">66</span>, <span class="dv">2</span>), <span class="dt">age=</span><span class="kw">c</span>(<span class="dv">30</span>, <span class="dv">50</span>))
+female_model &lt;-<span class="st"> </span><span class="kw">lm</span>(FEV ~<span class="st"> </span>age +<span class="st"> </span>ht, <span class="dt">data=</span>F)</code></pre>
+<p>The overall model indicates that FEV decreases with age and increases with height (p&lt;.0001 each)</p>
+<pre class="sourceCode r"><code class="sourceCode r">tab &lt;-<span class="st"> </span><span class="kw">xtable</span>(<span class="kw">summary</span>(overall_model), <span class="dt">digits=</span><span class="dv">3</span>)
+<span class="kw">print</span>(tab, <span class="dt">type=</span><span class="st">&quot;html&quot;</span>)</code></pre>
+<!-- html table generated in R 3.2.3 by xtable 1.8-2 package -->
+<!-- Sun Feb 21 19:13:11 2016 -->
+<table border="1">
+<tr>
+<th>
+</th>
+<th>
+Estimate
+</th>
+<th>
+Std. Error
+</th>
+<th>
+t value
+</th>
+<th>
+Pr(&gt;|t|)
+</th>
+</tr>
+<tr>
+<td align="right">
+(Intercept)
+</td>
+<td align="right">
+-6.737
+</td>
+<td align="right">
+0.563
+</td>
+<td align="right">
+-11.960
+</td>
+<td align="right">
+0.000
+</td>
+</tr>
+<tr>
+<td align="right">
+age
+</td>
+<td align="right">
+-0.019
+</td>
+<td align="right">
+0.004
+</td>
+<td align="right">
+-4.186
+</td>
+<td align="right">
+0.000
+</td>
+</tr>
+<tr>
+<td align="right">
+ht
+</td>
+<td align="right">
+0.165
+</td>
+<td align="right">
+0.008
+</td>
+<td align="right">
+19.785
+</td>
+<td align="right">
+0.000
+</td>
+</tr>
+</table>
+<p>Model on females only:</p>
+<pre class="sourceCode r"><code class="sourceCode r">tabf &lt;-<span class="st"> </span><span class="kw">xtable</span>(<span class="kw">summary</span>(female_model), <span class="dt">digits=</span><span class="dv">3</span>)
+<span class="kw">print</span>(tabf, <span class="dt">type=</span><span class="st">&quot;html&quot;</span>)</code></pre>
+<!-- html table generated in R 3.2.3 by xtable 1.8-2 package -->
+<!-- Sun Feb 21 19:13:11 2016 -->
+<table border="1">
+<tr>
+<th>
+</th>
+<th>
+Estimate
+</th>
+<th>
+Std. Error
+</th>
+<th>
+t value
+</th>
+<th>
+Pr(&gt;|t|)
+</th>
+</tr>
+<tr>
+<td align="right">
+(Intercept)
+</td>
+<td align="right">
+-2.211
+</td>
+<td align="right">
+0.896
+</td>
+<td align="right">
+-2.468
+</td>
+<td align="right">
+0.015
+</td>
+</tr>
+<tr>
+<td align="right">
+age
+</td>
+<td align="right">
+-0.020
+</td>
+<td align="right">
+0.005
+</td>
+<td align="right">
+-3.963
+</td>
+<td align="right">
+0.000
+</td>
+</tr>
+<tr>
+<td align="right">
+ht
+</td>
+<td align="right">
+0.093
+</td>
+<td align="right">
+0.014
+</td>
+<td align="right">
+6.757
+</td>
+<td align="right">
+0.000
+</td>
+</tr>
+</table>
+<p>Model on males only:</p>
+<pre class="sourceCode r"><code class="sourceCode r">tabm &lt;-<span class="st"> </span><span class="kw">xtable</span>(<span class="kw">summary</span>(male_model), <span class="dt">digits=</span><span class="dv">3</span>)
+<span class="kw">print</span>(tabm, <span class="dt">type=</span><span class="st">&quot;html&quot;</span>)</code></pre>
+<!-- html table generated in R 3.2.3 by xtable 1.8-2 package -->
+<!-- Sun Feb 21 19:13:11 2016 -->
+<table border="1">
+<tr>
+<th>
+</th>
+<th>
+Estimate
+</th>
+<th>
+Std. Error
+</th>
+<th>
+t value
+</th>
+<th>
+Pr(&gt;|t|)
+</th>
+</tr>
+<tr>
+<td align="right">
+(Intercept)
+</td>
+<td align="right">
+-2.761
+</td>
+<td align="right">
+1.138
+</td>
+<td align="right">
+-2.427
+</td>
+<td align="right">
+0.016
+</td>
+</tr>
+<tr>
+<td align="right">
+age
+</td>
+<td align="right">
+-0.027
+</td>
+<td align="right">
+0.006
+</td>
+<td align="right">
+-4.183
+</td>
+<td align="right">
+0.000
+</td>
+</tr>
+<tr>
+<td align="right">
+ht
+</td>
+<td align="right">
+0.114
+</td>
+<td align="right">
+0.016
+</td>
+<td align="right">
+7.245
+</td>
+<td align="right">
+0.000
+</td>
+</tr>
+</table>
+<p>Create a prediction of FEV for two cases, a 30 year old who is 66cm tall, and a 50 year old who is 62cm tall.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># create new data frame using the overall mean height</span>
+new.data &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">ht =</span> <span class="kw">c</span>(<span class="dv">66</span>, <span class="dv">62</span>), <span class="dt">age=</span><span class="kw">c</span>(<span class="dv">30</span>, <span class="dv">50</span>))
 <span class="co"># predict on each model</span>
-<span class="kw">predict</span>(male_model, new.data)</code></pre>
-<pre><code>##        1        2 
-## 3.990278 3.457491</code></pre>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">predict</span>(female_model, new.data)</code></pre>
-<pre><code>##        1        2 
-## 3.300691 2.901182</code></pre>
+o.pred &lt;-<span class="st"> </span><span class="kw">predict</span>(overall_model, new.data)
+m.pred &lt;-<span class="st"> </span><span class="kw">predict</span>(male_model, new.data)
+f.pred &lt;-<span class="st"> </span><span class="kw">predict</span>(female_model, new.data)
+pred &lt;-<span class="st"> </span><span class="kw">xtable</span>(<span class="kw">rbind</span>(o.pred, m.pred, f.pred), <span class="dt">digits=</span><span class="dv">3</span>)
+<span class="kw">print</span>(pred, <span class="dt">type=</span><span class="st">&quot;html&quot;</span>)</code></pre>
+<!-- html table generated in R 3.2.3 by xtable 1.8-2 package -->
+<!-- Sun Feb 21 19:13:11 2016 -->
+<table border="1">
+<tr>
+<th>
+</th>
+<th>
+1
+</th>
+<th>
+2
+</th>
+</tr>
+<tr>
+<td align="right">
+o.pred
+</td>
+<td align="right">
+3.586
+</td>
+<td align="right">
+2.555
+</td>
+</tr>
+<tr>
+<td align="right">
+m.pred
+</td>
+<td align="right">
+3.990
+</td>
+<td align="right">
+3.000
+</td>
+</tr>
+<tr>
+<td align="right">
+f.pred
+</td>
+<td align="right">
+3.301
+</td>
+<td align="right">
+2.531
+</td>
+</tr>
+</table>
+<p>Column number 1 is a prediction of FEV for a 30 year old who is 66cm tall, column number 2 is a prediction of FEV for a 50 year old who is 66cm tall. Notice the overall prediction</p>
+<p>Even though the equations for males and females look quite similar, the predicted FEV1 for females of the same height and age as a male is expected to be less. The overall prediction is right in between the two estimates.</p>
+<p><em>Note of caution: Stratification implies that the stratifying variable interacts with all other variables.</em></p>
 <div id="testing-equality-of-individual-coefficients-between-groups" class="section level3">
 <h3>Testing equality of individual coefficients between groups</h3>
 <p>To compare the regression coefficients for men and women we could simply compare the sign and magnitude of the standardized regression coefficients.</p>
 <p>If an interaction exists, then the two coefficients from the stratified models would be equal.</p>
-<p>To test the null hypothesis of equal coefficients we compute the following test statistic:</p>
-<p><span class="math">\[ Z = \frac{\beta_{M} - \beta_{F}}{\sqrt{SE^{2}(\beta_{M}) -SE^{2}(\beta_{F})}}\]</span></p>
-<p>This <span class="math">\(Z\)</span> statistic has a normal distribution, and so you can use the <code>pnorm()</code> function to calculate the corresponding test statistic. As an example, to find the probability that |Z| &gt; 1.96 you would type</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="dv">2</span>*<span class="kw">pnorm</span>(-<span class="fl">1.96</span>)</code></pre>
-<pre><code>## [1] 0.04999579</code></pre>
-<p>Questions on the use of this function can be answered using the discussion forum.</p>
-<p>If you choose to do this using <strong>R</strong> to extract the regression values, you can access the parameter estimates and their standard errors from the output of the summary function. I.e.: <code>summary(male_model)$coefficients</code>.</p>
-</div>
-<div id="testing-using-a-ci" class="section level3">
-<h3>Testing using a CI</h3>
+<p>To test the null hypothesis that the effect of height on FEV is the same across genders, we compute the following test statistic:</p>
+<p><span class="math">\[ Z = \frac{\beta_{2M} - \beta_{2F}}{\sqrt{Var(\beta_{2M}) +Var(\beta_{2F})}}\]</span></p>
+<p>This <span class="math">\(Z\)</span> statistic follows the standard normal distribution, <span class="math">\(\mathcal{N}(0,1)\)</span> and so you can use the <code>pnorm()</code> function to calculate the p-value for the test.</p>
+<p><span class="math">\[ Z = \frac{0.114397 - 0.092593}{\sqrt{0.015789^2 +0.013704^2}} \]</span></p>
+<pre class="sourceCode r"><code class="sourceCode r">z =<span class="st"> </span>(<span class="fl">0.114397</span> -<span class="st"> </span><span class="fl">0.092593</span>)/(<span class="kw">sqrt</span>(<span class="fl">0.015789</span>^<span class="dv">2</span> +<span class="st"> </span><span class="fl">0.013704</span>^<span class="dv">2</span>))
+z</code></pre>
+<pre><code>## [1] 1.042917</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="dv">2</span>*(<span class="dv">1</span>-<span class="kw">pnorm</span>(z))</code></pre>
+<pre><code>## [1] 0.2969868</code></pre>
+<p><em><code>pnorm(z)</code> takes the value of the test statistic as the argument <code>z</code>, and returns the probability of a random variable being <strong>below</strong> the test statistic. This can be thought of as the area to the <strong>left</strong> under the normal probability distribution curve. The p-value for a statistical test is the probability of observing a test statistic equal to or greater than the one observed. Since our test statistic is positive, we are interested in P(Z&gt;1.04). Thus we want to calculate the area is the <strong>right</strong> under the normal probability distribution. Since the result of <code>pnorm</code> gives us the left and we want the right, and the full area under the curve adds up to 1, we simply calculate <code>1-pnorm()</code> to find the area to the right. Lastly, since this is a two tailed test we double the tail area to calculate the p-value of the test in question</em></p>
+<p>With a large p-value of 0.30 there is insufficient evidence to believe that the relationship between FEV and height differs by gender.</p>
+<div id="testing-using-a-ci" class="section level4">
+<h4>Testing using a CI</h4>
 <p>You can also attempt to test for a difference in slope coefficients by comparing the confidence intervals for the parameters. <em>Note: I am showing how I wrangled the linear model output into a table that is easily read for your info only. This is not mandatory but it looks nice.</em></p>
 <pre class="sourceCode r"><code class="sourceCode r">mci &lt;-<span class="st"> </span><span class="kw">paste</span>(<span class="st">&quot;(&quot;</span>, <span class="kw">round</span>(<span class="kw">confint</span>(male_model)[,<span class="dv">1</span>],<span class="dv">2</span>),<span class="st">&quot;, &quot;</span>, <span class="kw">round</span>(<span class="kw">confint</span>(male_model)[,<span class="dv">2</span>],<span class="dv">2</span>), <span class="st">&quot;)&quot;</span>, <span class="dt">sep=</span><span class="st">&quot;&quot;</span>)
 fci &lt;-<span class="st"> </span><span class="kw">paste</span>(<span class="st">&quot;(&quot;</span>, <span class="kw">round</span>(<span class="kw">confint</span>(female_model)[,<span class="dv">1</span>],<span class="dv">2</span>),<span class="st">&quot;, &quot;</span>, <span class="kw">round</span>(<span class="kw">confint</span>(female_model)[,<span class="dv">2</span>],<span class="dv">2</span>), <span class="st">&quot;)&quot;</span>, <span class="dt">sep=</span><span class="st">&quot;&quot;</span>)
@@ -697,7 +1015,7 @@ out &lt;-<span class="st"> </span><span class="kw">cbind</span>(<span class="dt"
 out &lt;-<span class="st"> </span><span class="kw">xtable</span>(out)
 <span class="kw">print</span>(out, <span class="dt">type=</span><span class="st">&quot;html&quot;</span>)</code></pre>
 <!-- html table generated in R 3.2.3 by xtable 1.8-2 package -->
-<!-- Sun Feb 14 17:39:27 2016 -->
+<!-- Sun Feb 21 19:13:11 2016 -->
 <table border="1">
 <tr>
 <th>
@@ -736,7 +1054,8 @@ Height
 <li>If CIs <em>do not</em> overlap then slopes are significantly different from each other.</li>
 <li>Since CIs do overlap, then two slopes <em>may or may not</em> be significantly different from each other.</li>
 </ul>
-<p>For both age and height the CI’s for the slopes overlap a large amount, so I would suspect that there is no significant difference between the two models but the test statistic should be calculated to confirm.</p>
+<p>For both age and height the CI’s for the slopes overlap a large amount, so I would suspect that there is no significant difference in the coefficients between models. This finding corroborates the formal statistical test done earlier.</p>
+</div>
 </div>
 </div>
 </div>
