@@ -1,5 +1,5 @@
 Data,filename,filetype,codebook,dm,Notes
-Depression,Depress.txt,tab,DepressCodebook.txt,dm_depress.Rmd,Afifi Appendix A3
+Depression,Depress.txt,tab,DepressCodebook.txt,dm_depress.html,Afifi Appendix A3
 North Carolina Births,NCbirths.csv,csv,NCBirthsCodebook.html,,
-Parental HIV,Parhiv.csv,csv,ParhivCodebook.txt,,
-Lung function,Lungraw.txt,tab,LungCodebook.txt,dm_lung.Rmd,Afifi Appendix A6
+Parental HIV,Parhiv.csv,csv,ParhivCodebook.txt,dm_parhiv.html,
+Lung function,Lungraw.txt,tab,LungCodebook.txt,dm_lung.html,Afifi Appendix A6
