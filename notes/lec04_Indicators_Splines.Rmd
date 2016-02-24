@@ -167,15 +167,92 @@ to correctly analyze this question.
 
 
 # Splines
-
 ## References
 
 * Afifi Section 9.4
-* Harrell 2.4.3, pg 39 http://biostat.mc.vanderbilt.edu/tmp/course.pdf 
+* Harrell 2.4.3, pg 39 http://biostat.mc.vanderbilt.edu/tmp/course.pdf
+* Harrell ch2 from second edition [pdf](https://drive.google.com/open?id=0B83Z8_sNw3KPb0dsYzk0OTR1Nms) in shared GDrive. 
 * https://www.youtube.com/watch?v=o_d4hmKhmsQ
 * http://www.r-bloggers.com/thats-smooth/
 
-  
+library(graphics)
+library(splines) # Used for the ns() function — (natural cubic splines)
+
+x <- cars$speed
+y <- cars$dist
+eval.length = 50
+?cars
+
+# This LOESS shows two different R function arriving at the same solution.
+# Careful using the LOESS defaults as they differ and will produce different solutions.
+fit.loess  <- loess.smooth(x, y, evaluation = eval.length, family="gaussian", span=.75, degree=1)
+fit.loess2 <- loess(y ~ x, family="gaussian", span=.75, degree=1)
+
+## Set a simple 95% CI on the fit.loess model
+new.x <- seq(min(x),max(x), length.out=eval.length)
+ci <- cbind(predict(fit.loess2, data.frame(x=new.x)),
+            predict(fit.loess2, data.frame(x=new.x))+
+            predict(fit.loess2, data.frame(x=new.x), se=TRUE)$se.fit*qnorm(1-.05/2),
+            predict(fit.loess2, data.frame(x=new.x))-
+            predict(fit.loess2, data.frame(x=new.x), se=TRUE)$se.fit*qnorm(1-.05/2)
+            )
+
+## Linear Model
+fit <- lm(y ~ x )
+
+## Polynomial
+fit.3 <- lm(y ~ poly(x,3) )
+
+## Knot at 15
+D <- ifelse(x>15, 1, 0)
+fit.kn <- lm(y ~ x + D + x*D)
+
+## Natural Spline
+fit.ns.3 = lm(y ~ ns(x, 3) )
+
+## Smoothing Spline
+fit.sp = smooth.spline(y ~ x, nknots=15)
+
+
+## All the plots!
+plot(x,y, xlim=c(min(x),max(x)), ylim=c(min(y),max(y)), pch=16, cex=.5,
+ylab = "Stopping Distance (feet)", xlab= "Speed (MPH)", main="Comparison of Models")
+
+## LOESS with Confidence Intervals
+matplot(new.x, ci, lty = c(1,2,2), col=c(1,2,2), type = "l", add=T)
+## Linear
+lines(new.x, predict(fit,      data.frame(x=new.x)), col=3, lty=3)
+## Polynomial
+lines(new.x, predict(fit.3,    data.frame(x=new.x)), col=4, lty=4)
+## Knot
+lines(new.x, predict(fit.kn,   data.frame(x=new.x)), col=5, lty=5)
+## Natural Spline
+lines(new.x, predict(fit.ns.3, data.frame(x=new.x)), col=6, lty=6)
+## Smoothing Spline
+lines(fit.sp, col=7, lty=7)
+
+# Legend
+legend("topleft",c("Lowess", "Linear","Polynomial","Single Knot", "Natural Spline","Smoothing Spline"),
+col=c(1,3:7), lty=c(1,3:7), lwd=2)
+
+
+## On Your Own
+##### On Your Own
+
+1. Using the family lung function data, relate FEV1 to heigh tfor the oldest
+   child in four ways: simple linear regression, regression of FEV1 on height
+   squared, spline regression with one knot at at height = 64, and natural
+   splines using the `smooth.spline` or `ns` function in R. 
+   
+2. Using the $R^{2}$ value and a test of overall fit, which model fits the 
+   data the best? 
+   
+3. On each of the four models, calculate a confidence interval for the
+   predicted average FEV1 for a child who's height is 60cm and 64cm. 
+   This is 8 prediction intervals in total. Comment on the
+   differences in prediction intervals across the two heights, and 
+   across the four models. 
+
 
 
 

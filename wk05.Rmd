@@ -23,6 +23,8 @@ source("C:/Github/MATH456/stylesheets/custom.R")
 
 ### Wednesday 2/24/16
 * Splines
+    - Harrell Ch 2 (copies uploaded to Google Drive)
+    - Afifi Section 9.4
 * Dr. Downing's Office Hours: 10-11:30 Glenn 204
 
 ### Friday 2/26/16
