@@ -1,0 +1,135 @@
+---
+title: "Cleaning Parental HIV data"
+author: "Robin Donatello"
+date: '`r Sys.Date()`'
+output: html_document
+---
+
+# Purpose
+The purpose of this file is to clean and recode the parental data set. 
+Each time this file is run it will write a new data set to the hard drive
+with the current date. 
+
+Each time a new recode or edit is added a note should be written about when and 
+why this edit was made, and this file should be compiled. 
+
+# Import the raw data
+```{r, message=FALSE, warning=FALSE}
+library(readxl); library(car); library(dplyr)
+hiv <- read_excel("C:/GitHub/MATH456/data/Parhiv.xlsx") 
+```
+
+
+## Update the Parental HIV data set by creating all the subscales listed at the bottom of the codebook.
+    
+I will use this space to show many different ways to approach this task. The methods
+are not numbered by any real characteristic. For each scale in the list I just thought 
+of a method that would work easily for the variable at hand, that I had not already 
+demonstrated. Some methods are more advanced than others. You will find the method(s)
+that work best for you. 
+
+#### Method 1: Reverse code all sub items that require it by making new variables. Then apply the mean function across that matrix (`cbind`) of variables. 
+
+```{r}
+rpb02 <- recode(hiv$PB02, '1=4; 2=3; 3=2; 4=1') # using recode()
+table(rpb02, hiv$PB02, useNA="always") 
+rpb04 <- 5-hiv$PB04 #easier way to flip a scale
+rpb14 <- 5-hiv$PB14
+rpb16 <- 5-hiv$PB16
+rpb18 <- 5-hiv$PB18
+rpb24 <- 5-hiv$PB24
+
+hiv$parent_care <- apply(cbind(hiv$PB01, rpb02, rpb04, hiv$PB05, hiv$PB06, hiv$PB11, hiv$PB12, 
+                          rpb14, rpb16, hiv$PB17, rpb18, rpb24), 1, mean)
+# confirm recode
+summary(hiv$parent_care)
+```
+
+#### Method 2: Reverse code sub-items at the time of combining (`cbind`). 
+```{r}
+hiv$parent_overprotection <- apply(cbind(5-hiv$PB03, 5-hiv$PB07, hiv$PB08, hiv$PB09, hiv$PB10, 
+                                         hiv$PB13, 5-hiv$PB15, hiv$PB19, hiv$PB20, 5-hiv$PB21, 
+                                         5-hiv$PB22, hiv$PB23, 5-hiv$PB25), 1, mean)
+summary(hiv$parent_overprotection)
+```
+
+#### Method 3: Take the row-wise mean across columns with a variable name that starts with BSI
+```{r}
+# Find the column numbers whose variable names start with the string BSI
+bsi.columns <- grep("^BSI", names(hiv))
+# Apply the function mean() row-wise (1) across the column numbers found  above. 
+hiv$BSI_overall <- apply(hiv[,bsi.columns], 1, mean)
+# confirm that some numbers were created and that the variable is not fully missing, 
+# and all values are in the appropriate range of 0 to 4. 
+summary(hiv$BSI_overall) 
+```
+
+#### Method 4: Take the row-wise mean across specified columns using the variable names
+```{r}
+hiv$BSI_somat <- apply(hiv[,c("BSI02","BSI07","BSI23","BSI29","BSI30","BSI33","BSI37")], 1, mean)
+summary(hiv$BSI_somat)
+```
+
+#### Method 5: Using the `mutate` function, `rowwise`, in `dplyr`
+```{r}
+hiv <- hiv %>% 
+       rowwise() %>% 
+       mutate(BSI_obcomp = mean(c(BSI05, BSI15, BSI26, BSI27, BSI32, BSI36)))
+summary(hiv$BSI_obcomp)
+```
+
+
+#### Method 6: Using Method #5 but for *all* the remaining variables. 
+```{r}
+hiv <- hiv %>% 
+       rowwise() %>% 
+       mutate(BSI_interp = mean(c(BSI20:BSI22, BSI42)),
+              BSI_depress = mean(c(BSI09, BSI16, BSI17, BSI18 ,BSI35, BSI50)),
+              BSI_anxiety = mean(c(BSI01, BSI12, BSI19, BSI38 ,BSI45, BSI49)),
+              BSI_hostil = mean(c(BSI06 ,BSI13, BSI40, BSI41, BSI46)),
+              BSI_phobic = mean(c(BSI08, BSI28, BSI31, BSI43, BSI47)),
+              BSI_paranoid = mean(c(BSI04 ,BSI10 ,BSI24, BSI48 ,BSI51)),
+              BSI_psycho = mean(c(BSI03, BSI14, BSI34, BSI44, BSI53))
+              ) %>% 
+        ungroup() # to prevent further operations from being done row-wise
+
+summary(cbind(hiv$BSI_interp, hiv$BSI_depress, hiv$BSI_anxiety, hiv$BSI_hostil, hiv$BSI_phobic, 
+        hiv$BSI_paranoid, hiv$BSI_psycho))
+```
+The column names here are listed as V1-V7, which is fine. This was just for the
+`summary()` information. Nothing that we are going to keep. You can confirm that the
+variables were created with the names you intended to create using the `names()` function. 
+
+```{r}
+names(hiv)
+```
+See, all the subscales have been appended to the end of the data set in columns 112 through 123. 
+
+## Other recodes
+
+### Change factor variables from numeric to categorical.
+Gender(1=M, 2=F) 
+```{r}
+hiv$GENDER <- factor(hiv$GENDER, labels=c("Male", "Female"))
+```
+
+
+### Set missing values
+Age at smoking = 0 for those who have not started smoking by the time of the survey.
+```{r}
+hiv$AGESMOKE <- ifelse(hiv$AGESMOKE == 0, NA, hiv$AGESMOKE)
+```
+
+
+# Save the cleaned data set with todays date. 
+The `sys.date()` function takes the current date from your computer. 
+The value is then formatted nicely for human consumption and added (pasted) to
+the file name before written to the working directory as a new text file. 
+
+```{r}
+date <- format(Sys.Date(), "%m%d%y")
+filename <- paste("C:/GitHub/MATH456/data/PARHIV_", date, ".txt", sep="")
+write.table(hiv, filename, sep="\t", row.names=FALSE)
+```
+
+

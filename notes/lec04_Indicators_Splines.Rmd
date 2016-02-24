@@ -73,7 +73,7 @@ R always uses the first level of a factor variable as the reference level.
 * let $x_{4}=1$ when `marital='Separated'`, and 0 otherwise,  
 * let $x_{5}=1$ when `marital='Widowed'`, and 0 otherwise. 
 
-The mathmatical model would look like: 
+The mathematical model would look like: 
 
 $$ log(Y)|X \sim \beta_{0} + \beta_{1}*x_{1} + \beta_{2}x_{2} + \beta_{3}x_{3} + \beta_{4}x_{4} + \beta_{5}x_{5} $$
 
@@ -144,11 +144,11 @@ to correctly analyze this question.
 
 1. Ensure that you are using the analyzable version of the depression data set. 
    It may be helpful to confirm that your recodes are correct by comparing
-   your data mangement code file to mine [dm_depress](../data/dm_depress.html) 
+   your data management code file to mine [dm_depress](../data/dm_depress.html) 
    located on our course website. 
 2. Reference your Ch3 homework (or the [solutions](./solutions/ch3_solutions.html))
    if you need help collapsing educational categories. 
-3. Ensure that R is treating "Up to HS" as the reference category for eduation level. 
+3. Ensure that R is treating "Up to HS" as the reference category for education level. 
    If it is not, use the `levels` argument of the `factor()` function to reorder
    your factor levels. This is also presented in the Ch3 solutions. 
 4. Consider a transformation of `CESD`. Explain and justify using graphical
@@ -161,21 +161,219 @@ to correctly analyze this question.
 7. Once you have finalized your model, interpret ALL coefficients in context of the problem. 
    State if any are significantly predictive of the outcome, provide p-values in your conclusion. 
 8. Does this model do well at all in predicting CESD? Answer this question using both the
-   coefficient of determiniation and the ANOVA test of overall global fit (testing that
+   coefficient of determination and the ANOVA test of overall global fit (testing that
    all $\beta$'s are 0)
    
 
 
-# Splines
-
+# Splines & other non-linear terms
 ## References
 
 * Afifi Section 9.4
-* Harrell 2.4.3, pg 39 http://biostat.mc.vanderbilt.edu/tmp/course.pdf 
+* Harrell 2.4.3, pg 39 http://biostat.mc.vanderbilt.edu/tmp/course.pdf
+* Harrell ch2 from second edition [pdf](https://drive.google.com/open?id=0B83Z8_sNw3KPb0dsYzk0OTR1Nms) in shared GDrive. 
 * https://www.youtube.com/watch?v=o_d4hmKhmsQ
 * http://www.r-bloggers.com/thats-smooth/
 
-  
+
+[[top]](lec04_Indicators_Splines.html)
+
+#### Example 1: Simulated data.
+Example data pulled from 
+_http://faculty.washington.edu/heagerty/Courses/b571/homework/spline-tutorial.q_
+
+Suppose we have a predictor that takes the values 1:24
+```{r}
+x <- c(1:24)
+```
+and there is an outcome variable that is predicted by
+the variable X, but in some non-linear fashion:
+```{r}
+mu <- 10 + 5 * sin( x * pi / 24 )  - 2 * cos( (x-6)*4/24 )
+```
+But there is always some amount of error associated with real data.
+```{r}
+set.seed(42)
+eee <- rnorm(length(mu))
+```
+So our simulated data then is the true trend + the noise. 
+```{r}
+y <- mu + eee
+```
+
+Let's look at the data, and the real mean trend without the random noise. 
+```{r}
+plot(y~x)
+lines(x, mu, col="red" )
+```
+
+Let's look at ways to fit a model to this data. 
+
+
+## Linear
+[[top]](lec04_Indicators_Splines.html)
+
+Ignore the trend and fit a linear model. 
+
+$$ E(Y|X) = \beta_{0} + \beta_{1}X$$ 
+
+```{r}
+fit.slr <- lm(y~x)
+plot(y~x)
+abline(fit.slr)
+lines(x, mu, col="red" )
+```
+
+Undoubtedly not a good fit. Examining the residuals shows the non-constant
+variance clearly. 
+
+```{r}
+par(mfrow=c(2,2))
+plot(fit.slr)
+```
+
+## Piecewise linear splines
+[[top]](lec04_Indicators_Splines.html)
+
+We allow the $x$ axis to be divided into intervals, with a linear model
+fit within each interval. The breakpoints between intervals are called _knots_. 
+This is where you are allowing the slope of the line to change. 
+For example to break the x-axis into three sections we would use 2 knots. 
+The model would look like. 
+
+$$ E(Y|X) = \beta_{0} + \beta_{1}X + \beta_{2}(X-a)_{+} + \beta_{3}(X-b)_{+}$$
+
+where $(u)_{+}$ contains the value of $u$ when $u$ is positive, and 0 otherwise. 
+
+Let's put knots at 6, 12, and 18. 
+```{r}
+x6 <- (x-6)
+x6[ x6<0 ] <- 0
+
+x12 <- (x-12)
+x12[ x12<0 ] <- 0
+
+x18 <- (x-18)
+x18[ x18<0 ] <- 0
+```
+What does this data look like now? 
+```{r}
+t(cbind(x, x6, x12, x18)[8:20,])
+```
+
+Now let's fit this model. 
+```{r}
+fit.lin.spline <- lm(y ~ x + x6 + x12 + x18)
+plot(y~x)
+lines(x, predict(fit.lin.spline), col="orange")
+points(c(6, 12, 18), predict(fit.lin.spline)[c(6, 12, 18)], pch=16, col="orange")
+lines(x, mu, col="red" )
+```
+
+Much closer than the linear model, but it still lacks the curvature that 
+is present in the data. The residual plots look much better already. 
+
+```{r}
+par(mfrow=c(2,2))
+plot(fit.lin.spline)
+```
+
+
+## Powers
+[[top]](lec04_Indicators_Splines.html)
+
+A non-linear effect can be as simple as adding a covariate at some power. 
+
+$$ E(Y|X) = \beta_{0} + \beta_{1}X + \beta_{2}X^{2}$$ 
+
+Testing $H_{0}: \beta_{2} = 0$ tests the null hypothesis that the effect
+of $X_1$ on $Y$ is linear vs the effect is quadratic. 
+
+```{r}
+x.squared <- x^2
+fit.sq <- lm(y~x + x.squared)
+plot(y~x)
+lines(x, predict(fit.sq), col="blue")
+lines(x, mu, col="red" )
+```
+
+A cubic term could also be added. 
+
+$$ E(Y|X) = \beta_{0} + \beta_{1}X + \beta_{2}X^{2} + \beta_{3}x^{3}$$ 
+
+```{r}
+x.cubed <- x^3
+fit.cubic <- lm(y~x + x.squared + x.cubed)
+plot(y~x)
+lines(x, predict(fit.cubic), col="purple")
+lines(x, mu, col="red" )
+```
+
+Adding this cubic term allows for another "wiggle" in the fitted line. 
+
+## Cubic splines
+[[top]](lec04_Indicators_Splines.html)
+
+Combining the two concepts allows for a very flexible polynomial model. 
+
+$$ E(Y|X) = \beta_{0} + \beta_{1}X + \beta_{2}X^{2} + \beta_{3}X^{3} + 
+            \beta_{4}(X-a)^{3}_{+} + \beta_{5}(X-b)^{3}_{+}$$
+            
+Using the knots at 6, 12, and 18 let's fit a cubic spline. 
+
+```{r}
+x6.cubed <- x6^3
+x12.cubed <- x12^3
+x18.cubed <- x18^3
+
+fit.cub.spline <- lm(y ~ x + x.squared + x.cubed + x6.cubed + x12.cubed + x18.cubed)
+```
+
+Replot and look at the fitted model. 
+```{r}
+plot(y~x)
+lines(x, predict(fit.cub.spline), col="darkgreen")
+points(c(6, 12, 18), predict(fit.cub.spline)[c(6, 12, 18)], pch=16, col="darkgreen")
+lines(x, mu, col="red" )
+```
+
+It seems like our model is fitting the data better, but sometimes there is a 
+balance between a flexible model, and overfitting the data (when your model fits
+each point better than the true underlying average.)
+
+## Natural splines
+[[top]](lec04_Indicators_Splines.html)
+
+Also called _natural splines_, these models constrain the model to be linear in the
+tails. The model is difficult to write, and fit by hand so we will use the `splines` 
+package. 
+
+```{r}
+library(splines)
+
+fit.ns = lm( y ~ ns(x, knots=c(6,12,18) ) )
+
+plot(y~x)
+lines(x, predict(fit.ns), col="darkcyan")
+points(c(6, 12, 18), predict(fit.ns)[c(6, 12, 18)], pch=16, col="darkcyan")
+lines(x, mu, col="red" )
+```
+
+There are other methods of model fitting under the umbrella of _Nonparametric Regression_, 
+these include kernel smoothing, smoothing splines, and the familiar LOWESS 
+(locally weighted scatterplot smoothing) and LOESS (Local regression) models. 
+
+[[top]](lec04_Indicators_Splines.html)
+
+## On Your Own
+##### On Your Own
+
+1. Using the `cars` data set built into R, build a model to predict the
+   distance a car takes to stop based on how fast it was going.  
+2. Using the family lung function data, build a model to predict FEV1
+   to height for the oldest child. 
+
+
 
 
 
