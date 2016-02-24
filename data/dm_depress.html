@@ -72,10 +72,9 @@ img {
 <p>The purpose of this file is to clean and recode the depression data set. Each time this file is run it will write a new data set to the hard drive with the current date.</p>
 <p>Each time a new recode or edit is added a note should be written about when and why this edit was made, and this file should be compiled.</p>
 </div>
-<div id="set-the-working-directory-where-the-data-lives-and-import-the-raw-data" class="section level1">
-<h1>Set the working directory where the data lives, and import the raw data</h1>
-<pre class="r"><code>setwd(&quot;C:/GitHub/MATH456/data/&quot;)
-depress &lt;- read.table(&quot;Depress.txt&quot;, sep=&quot;\t&quot;, header=TRUE)  </code></pre>
+<div id="import-the-raw-data" class="section level1">
+<h1>Import the raw data</h1>
+<pre class="r"><code>depress &lt;- read.table(&quot;C:/GitHub/MATH456/data/Depress.txt&quot;, sep=&quot;\t&quot;, header=TRUE)  </code></pre>
 </div>
 <div id="create-factor-variables." class="section level1">
 <h1>Create factor variables.</h1>
@@ -85,8 +84,7 @@ depress &lt;- read.table(&quot;Depress.txt&quot;, sep=&quot;\t&quot;, header=TRU
 </ul>
 <pre class="r"><code>depress$MARITAL &lt;- factor(depress$MARITAL, 
                           labels = c(&quot;Never Married&quot;, &quot;Married&quot;, &quot;Divorced&quot;, &quot;Separated&quot;, &quot;Widowed&quot;))
-depress$EDUCAT &lt;- factor(depress$EDUCAT, 
-                          levels = c(&quot;&lt;HS&quot;, &quot;Some HS&quot;, &quot;HS Grad&quot;, &quot;Some college&quot;, &quot;BS&quot;, &quot;MS&quot;, &quot;PhD&quot;),
+depress$EDUCAT2 &lt;- factor(depress$EDUCAT, 
                           labels = c(&quot;&lt;HS&quot;, &quot;Some HS&quot;, &quot;HS Grad&quot;, &quot;Some college&quot;, &quot;BS&quot;, &quot;MS&quot;, &quot;PhD&quot;))</code></pre>
 </div>
 <div id="edits-and-recodes" class="section level1">
@@ -105,8 +103,8 @@ depress$EDUCAT &lt;- factor(depress$EDUCAT,
 <h1>Save the cleaned data set with todays date.</h1>
 <p>The <code>sys.date()</code> function takes the current date from your computer. The value is then formatted nicely for human consumption and added (pasted) to the file name before written to the working directory as a new text file.</p>
 <pre class="r"><code>date &lt;- format(Sys.Date(), &quot;%m%d%y&quot;)
-filename &lt;- paste(&quot;Depress_&quot;, date, &quot;.txt&quot;, sep=&quot;&quot;)
-write.table(depress, filename, sep=&quot;\t&quot;, row.names=FALSE, col.names=FALSE)</code></pre>
+filename &lt;- paste(&quot;C:/GitHub/MATH456/data/Depress_&quot;, date, &quot;.txt&quot;, sep=&quot;&quot;)
+write.table(depress, filename, sep=&quot;\t&quot;, row.names=FALSE)</code></pre>
 </div>
 
 
