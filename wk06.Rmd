@@ -1,0 +1,34 @@
+---
+title: "Week 6"
+author: "MATH 456, Spring 2016"
+date: " 02/28/16"
+output: html_document
+---
+```{r results="asis", echo=FALSE}
+source("C:/Github/MATH456/stylesheets/custom.R")
+```
+[[Schedule]](Schedule.html)  [[Week 5]](wk05.html) [[Week 7]](wk07.html)
+
+## Announcements
+* Homework #3 due by midnight
+
+### Notes and Materials
+* Lec 05: Variable Selection [[PDF]](notes/)[[HTML]](notes/)
+
+## Experience
+
+### Monday 2/29/16
+* Variable selection: Manual and Automated
+
+### Wednesday 3/2/16
+* Variable selection: Penalized functions
+
+### Friday 3/4/16
+* Dimension Reduction - Principle Component Analysis
+
+## Looking Ahead
+* Quiz on variable selection and PCA on Monday
+* Factor Analysis
+* Exam 1 
+
+
