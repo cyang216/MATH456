@@ -1,0 +1,36 @@
+---
+title: "Week 7"
+author: "MATH 456, Spring 2016"
+date: " 03/07/16"
+output: html_document
+---
+```{r results="asis", echo=FALSE}
+source("C:/Github/MATH456/stylesheets/custom.R")
+```
+[[Schedule]](Schedule.html)  [[Week 6]](wk06.html) [[Week 9]](wk09.html)
+
+## Announcements
+* Quiz on variable selection and PCA due Monday @ 12
+
+
+### Notes and Materials
+
+### Monday 3/7/16
+* Dimension reduction - Factor Analysis
+
+### Wednesday 3/9/16
+* Consulting visit by Dr. Downing
+    - 7 minute presentations on analysis results
+
+
+### Friday 3/11/16
+
+* Exam 1 
+    - All topics taught to date are fair game. 
+    - Open book/note. 
+    - All relevant R code and output will be provided, no on the spot coding. 
+
+## Looking Ahead
+Spring Break!
+
+
