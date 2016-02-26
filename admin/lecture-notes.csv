@@ -21,8 +21,8 @@ wk06,M,2/29/2016,FALSE,"Variable selection - manual, automated (Ch 8)",lec05_Var
 wk06,W,3/2/2016,FALSE,Variable selection - penalized functions,,,
 wk06,F,3/4/2016,FALSE,Dimension Reduction - PCA,lec06_DimReduction,,QFOCUS - Variable selection when p >>> n
 wk07,Su,3/6/2016,FALSE,,,Quiz 3 - lec05/06,
-wk07,M,3/7/2016,FALSE,Dimension reduction - FA,,,
-wk07,W,3/9/2016,FALSE,Consulting - Visit by Dr. Downing,,,
+wk07,M,3/7/2016,FALSE,Consulting - Visit by Dr. Downing,,,
+wk07,W,3/9/2016,FALSE,Dimension reduction - FA,,,
 wk07,F,3/11/2016,FALSE,,,Exam 1 - Lec01 - 06,
 wk08,M,3/14/2016,FALSE,Spring Break!,,,
 wk09,M,3/21/2016,FALSE,Discriminant Analysis,,,
