@@ -8,18 +8,26 @@ output: html_document
 source("C:/Github/MATH456/stylesheets/custom.R")
 ```
 
-Navbar: [[Home]](../index.html) [[Schedule]](../Schedule.html) [[Google Group]](https://groups.google.com/forum/#!forum/csuc_stat)  [[Google Drive]](https://drive.google.com/a/mail.csuchico.edu/folderview?id=0B83Z8_sNw3KPcnVrYzVFRHUtcHM&usp=sharing)
+Navbar: [[Home]](index.html) [[Schedule]](Schedule.html) [[Google Group]](https://groups.google.com/forum/#!forum/csuc_stat)  [[Google Drive]](https://drive.google.com/a/mail.csuchico.edu/folderview?id=0B83Z8_sNw3KPcnVrYzVFRHUtcHM&usp=sharing)
 
 
 
 ```{r include = FALSE}
 library(readr)
 #rubric <- read_csv(file.path("admin", "hw_rubric.csv"))
-rubric <- read_csv("hw_rubric.csv")
+rubric <- read_csv("admin/hw_rubric.csv")
 ```
+## Posted Solutions
+This is where I will post homework solutions (full and partial), and some helper code.
+
+* Data Wrangling Solutions [Ch3_solutions](notes/solutions/ch3_solutions.html)
+* Simple Linear regression [Ch6_solutions](notes/solutions/ch6_solutions.html)
+* Plotting help for spline predictions [Lec04_solutions](notes/solutions/Lec04_solutions.html)
+
+
 
 ## How to submit homework
-* Homework will be submitted approximately every other week.
+* Homework will be submitted through BBLearn approximately every other week.
 * The file name of your submission should follow this format: _userid_assigment_
     - For example my markdown document for chapter 3 would be _rdonatello_ch3.Rmd_
 * Double check the notes and blackboard learn to see what file exactly is to be uploaded. 
@@ -40,7 +48,7 @@ rubric <- read_csv("hw_rubric.csv")
     - 3 criteria worth up to 3 pts. 
     - 1 pt for a complete assignment. 
 
-
+## Grading Rubric
 ```{r results = 'asis', echo = FALSE}
 knitr::kable(rubric)
 ```
