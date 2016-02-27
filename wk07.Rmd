@@ -10,18 +10,18 @@ source("C:/Github/MATH456/stylesheets/custom.R")
 [[Schedule]](Schedule.html)  [[Week 6]](wk06.html) [[Week 9]](wk09.html)
 
 ## Announcements
-* Quiz on variable selection and PCA due Monday @ 12
+* Quiz on variable selection due Monday @ 12
 
 
 ### Notes and Materials
 
 ### Monday 3/7/16
-* Dimension reduction - Factor Analysis
-
-### Wednesday 3/9/16
 * Consulting visit by Dr. Downing
     - 7 minute presentations on analysis results
 
+
+### Wednesday 3/9/16
+* Exam review
 
 ### Friday 3/11/16
 

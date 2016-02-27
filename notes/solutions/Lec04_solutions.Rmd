@@ -1,0 +1,98 @@
+---
+title: "Indicators and Splines"
+author: "MATH 456 Solutions"
+date: "February 26, 2016"
+output: html_document
+---
+
+# Indicators
+1. Create a model to analyze the relationship of education status to depression level as measured by
+CESD after controlling for age. Combine all education levels below a HS graduate into one reference 
+category called "Up to HS" prior to analysis.
+
+
+# Splines
+1. Using the `cars` data set built into R, build a model to predict the
+   distance a car takes to stop based on how fast it was going.  
+   
+2. Using the family lung function data, build a model to predict FEV1
+   to height for the oldest child. 
+
+```{r}
+library(ggplot2)
+fev <- read.table("C:/Github/MATH456/data/Lung_020716.txt", sep="\t", header=TRUE)
+names(fev) <- tolower(names(fev))
+qplot(x=ocheight, y=ocfev1, data=fev, geom='point') + geom_smooth()
+```
+
+**SLR**
+```{r}
+slr <- lm(ocfev1 ~ ocheight, data=fev)
+ggplot(fev, aes(x=ocheight, y=ocfev1)) + geom_point() + geom_smooth(se=FALSE, method="lm")
+```
+
+**Polynomial**
+```{r}
+fev$ocheight.sq <- fev$ocheight^2
+sqr.model <- lm(ocfev1 ~ ocheight + ocheight.sq, data=fev)
+
+fev$ocheight.cub <- fev$ocheight^3 
+cub.model <- lm(ocfev1 ~ ocheight + ocheight.sq + ocheight.cub, data=fev)
+
+# Plot both on same graph
+ggplot(fev, aes(x=ocheight, y=ocfev1)) + geom_point() + 
+  geom_line(aes(x=ocheight, y=predict(cub.model)), col="blue") + 
+  geom_line(aes(x=ocheight, y=predict(sqr.model)), col="red")
+```
+
+**Linear Splines**
+_Note: A knots at 55 and 64 are just used as demonstration purposes. You need to 
+justify your knot placement_
+
+```{r}
+# create the knot
+gt55 <- (fev$ocheight-55)
+gt55[ gt55<0 ] <- 0
+gt64 <- (fev$ocheight-64)
+gt64[ gt64<0 ] <- 0
+
+# Run the model
+lin_spl  <- lm(ocfev1 ~ ocheight + gt55 + gt64, data=fev)
+
+# calculate predictions for the points at knots for plotting
+new.dta <- data.frame(ocheight=c(55, 64), gt55=c(0,9), gt64=c(0,0))
+pred.pts <- predict(lin_spl, new.dta)
+
+# plot the data and model prediction
+ggplot(fev, aes(x=ocheight, y=ocfev1)) + geom_point() + 
+    geom_point(x=55, y=pred.pts[1], size=3, col="purple") + 
+    geom_point(x=64, y=pred.pts[2], size=3, col="purple") + 
+    geom_line(aes(x=ocheight, y=predict(lin_spl)), col="purple")
+    
+```
+
+Hint: Look at `model.matrix(lm(ocfev1 ~ ocheight + gt55 + gt64, data=fev))` to 
+see why the x-values for gt55 is 9 when ocheight is 64. 
+
+**Cubic splines**
+```{r}
+gt55.3 <- gt55^3
+gt64.3 <- gt64^3
+
+cub.spline <- lm(ocfev1 ~ ocheight + ocheight.sq + ocheight.cub + gt55.3 + gt64.3, data=fev)
+
+ggplot(fev, aes(x=ocheight, y=ocfev1)) + geom_point() + 
+    geom_line(aes(x=ocheight, y=predict(cub.spline)), col="darkorange")
+```
+
+**Natural splines**
+```{r}
+library(splines)
+fit.ns <- lm(ocfev1 ~ ns(ocheight, 3), data=fev )
+ggplot(fev, aes(x=ocheight, y=ocfev1)) + geom_point() + 
+    geom_line(aes(x=ocheight, y=predict(fit.ns)), col="darkgreen")
+```
+
+
+
+

@@ -24,11 +24,10 @@ source("C:/Github/MATH456/stylesheets/custom.R")
 * Variable selection: Penalized functions
 
 ### Friday 3/4/16
-* Dimension Reduction - Principle Component Analysis
+* Working on your consulting model
 
 ## Looking Ahead
 * Quiz on variable selection and PCA on Monday
-* Factor Analysis
 * Exam 1 
 
 
