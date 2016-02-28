@@ -24,10 +24,15 @@ source("C:/Github/MATH456/stylesheets/custom.R")
 * Variable selection: Penalized functions
 
 ### Friday 3/4/16
-* Working on your consulting model
+* Working on expanding your consulting model and writing a final
+  report for Dr. Downing. 
+* **Extra Credit** Attend the Department colloqium talk from 3-4pm. 
+  Dr. Shemra Rizzo from UC Riverside will be here to give an Applied
+  Statistics seminar. 
 
 ## Looking Ahead
-* Quiz on variable selection and PCA on Monday
-* Exam 1 
+* Dr. Downing's next visit on Monday. 
+* Quiz on variable selection due Monday @ 12
+* Exam 1 on Friday
 
 
