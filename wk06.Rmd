@@ -27,7 +27,7 @@ source("C:/Github/MATH456/stylesheets/custom.R")
     [Model Building](https://docs.google.com/a/mail.csuchico.edu/document/d/1JX_Gh90khCbhvACaA6_-xjt6otSrXmF58HykfIz4kZc/edit?usp=sharing) Google Doc.
 2. Post this qustion on the BBLearn forum.   
 **Due by Friday EOD** Review and think about your, and other's priority questions. 
-  Comment (which could include trying to answer the question) on at least 6 of
+  Comment (which could include trying to answer the question) on at least 4 of
   your classmates questions. 
 
 
