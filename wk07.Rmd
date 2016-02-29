@@ -30,6 +30,13 @@ source("C:/Github/MATH456/stylesheets/custom.R")
     - Open book/note. 
     - All relevant R code and output will be provided, no on the spot coding. 
 
+* **Extra Credit** Attend the Department colloqium talk from 3-4pm.   
+  Dr. Matt Jans from the UCLA Center for Health Policy Research is here
+  to give a talk titled  **_"Item missing data and potential miscategorization 
+  with sexual orientation and partner sex questions: Language and cultural differences"_**
+  
+
+
 ## Looking Ahead
 Spring Break!
 
