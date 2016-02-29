@@ -1,14 +1,17 @@
 ---
-title: "Lec 04: Variable Selecdtion"
+title: "Lec 05: Variable Selection"
 author: "MATH 456 - Spring 2016"
 output:
   html_document:
     highlight: pygments
     theme: spacelab
+    toc: yes
   pdf_document: default
 ---
 ```{r,echo=FALSE, warning=FALSE, message=FALSE}
 library(knitr); library(rmarkdown);library(ggplot2)
+library(xtable)
+options(xtable.comment = FALSE)
 opts_chunk$set(warning=FALSE, message=FALSE) 
 ```
 
@@ -16,38 +19,451 @@ opts_chunk$set(warning=FALSE, message=FALSE)
 source("C:/Github/MATH456/stylesheets/custom.R")
 ```
 
-Navbar: [[Home]](../index.html) [[Schedule]](../Schedule.html) [[Data]](../data/Datasets.html) [[Week 5 Overview]](../wk05.html) [[HW Rubric]](../admin/rubric.html)  [[Google Group]](https://groups.google.com/forum/#!forum/csuc_stat)  [[Google Drive]](https://drive.google.com/a/mail.csuchico.edu/folderview?id=0B83Z8_sNw3KPcnVrYzVFRHUtcHM&usp=sharing)
+Navbar: [[Home]](../index.html) [[Schedule]](../Schedule.html) [[Data]](../data/Datasets.html) [[Week 6 Overview]](../wk06.html) [[HW Info]](../HW Info.html)  [[Google Group]](https://groups.google.com/forum/#!forum/csuc_stat)  [[Google Drive]](https://drive.google.com/a/mail.csuchico.edu/folderview?id=0B83Z8_sNw3KPcnVrYzVFRHUtcHM&usp=sharing)
 
-# Assigned Reading
+# Introduction
 
-# Stuff
+Variable selection methods are used mainly in exploratory situations where many
+independent variables have been measured and a final model explaining the 
+dependent variable has not been reached. 
 
-## Goodness of fit
+In Bioinformatics and other fields that use Machine Learning techniques this
+technique of selecting variables is also known as _feature selection_. 
 
-### Coefficient of determiniation
-Was our model improved by the addition of this variable? Let's check the $R^{2}$. 
-Recall this is calculated as the amount of variance explained by the model divided
-by the total variance. 
-```{r}
-summary(aov(mv_model))
-(16.05317+5.00380)/(16.05317+5.00380+42.04133)
+**To do variable selection you need:**
+
+1. A general test, 
+2. Selection criteria, and
+3. A selection process.
+
+Consider a model with $P$ variables and you want to test if $Q$ additional 
+variables are useful.   
+$H_{0}: Q$ additional variables are useless, i.e., their $\beta$'s all = 0  
+$H_{A}: Q$ additional variables are useful
+
+**Ex:** Y = FEV1, X1 = ht, X2 = age, X3 = ethnicity, X4 = location.   
+Test $H_{0}$: location does not matter.
+
+# A General Test
+
+## Likelihood Ratio (Deviance) Test
+* Deviance = -2 log likelihood
+* Under $H_{0}$, the _full model_, the deviance = $D_{0}, df_{0} = N-P-1$
+* Under $H_{a}$, the _reduced model_, the deviance = $D_{a}, df_{a} = N-P-Q-1$
+* LR (deviance) test statistic is:
+* $D_{0} - D_{a}$ is distributed approximately as $\chi^{2}$ with $Q$ degrees of freedom
+under $H_{0}$ for large $N$.
+
+If we assume normally distributed residuals, the LR test becomes an exact $F$=test. 
+
+$$F = \frac{(SSR_{red} - SSR_{full})/(df_{full} - df_{red})}{SSR_{full}/df_{full}} $$
+
+#### Likelihood
+Let $X$ be a random variable with pdf $f$ and that depends on the 
+parameter $\theta$. The function 
+$\mathcal{L}(\theta|x) = f_{\theta}(x)$ 
+then is called the _Likelihood function_. It is the likelihood of
+$\theta$ given the outcome $x$. Many analyses rely on maximizing this
+function (Maximum likelihood estimate or MLE), but commonly do so 
+by first taking the log of this function. Hence the _log likelihood_. 
+
+
+## Example: Testing adding $Q$ variables to a model
+Consider a model to predict depression using age, employment status
+and whether or not the person was chronically ill in the past year
+as covariates. 
+
+```{r, results='asis'}
+depress <- read.delim("C:/GitHub/MATH456/data/depress_022416.txt")
+depress$Employ <- factor(depress$EMPLOY, 
+                         labels=c("FT", "PT", "Unemp", "Retired", "Houseperson", "Student", "Other"))
+full_model <- lm(log(CESD+1) ~ AGE + CHRONILL + Employ, data=depress)
+tab <- xtable(summary(full_model), digits=3)
+print(tab, type="html")
 ```
-This number is displayed as the **Multiple R-squared** value in the linear model 
-output. But what about that other value, the **Adjusted R-squared**? Observe
-what happens to these two variables when we put a variable into the model
-that is not associated with the outcome, mothers weight.
+
+The results of this model show that age and chronic illness are 
+statistically associated with CESD (each p<.006). However employment
+status is a mixed bag. 
+
+Recall that employment is a categorical variable, and all the coefficient 
+estimates shown are the effect of being in that income category has on
+depression _compared to_ being employed full time. For example, the 
+coefficient for PT employment is greater than zero, so they have a higher
+CESD score compared to someone who is fully employed. 
 
 ```{r}
-summary(lm(FFEV1 ~ FHEIGHT + FAGE + MWEIGHT, data=fev))
+exp(.379)
 ```
 
-Adding more predictors to the model will always increase the $R^{2}$!
+Specifically while holding all other variables constant, someone who is 
+working part time has 46% higher CESD score as someone who is working 
+full time. 
 
-**Adjusted R^{2}**
-$$ 1 - (1-R^{2})\frac{n-1}{n-p-1} $$
+_Since only a small constant was added to the CESD score, we can interpret
+the exponentiated coefficient as the fold change as seen previously with log(Y)._
+
+But what about employment status overall? Not all employment categories are 
+significantly different from FT status. To test that employment status
+affects CESD we need to do a global test that all $\beta$'s are 0. 
+
+$H_{0}: \beta_{3} = \beta_{4} = \beta_{5} = \beta_{6} = \beta_{7} = \beta_{8} = 0$  
+$H_{A}$: At least one $\beta_{j}$ is not 0. 
+
+We fit the reduced model, the one without employment category.
+```{r}
+red_model <- lm(log(CESD+1) ~ AGE + CHRONILL, data=depress)
+```
+and conduct a global F test by running an `anova()`. _Not to be confused
+with `aov()`_
+```{r}
+anova(full_model, red_model)
+```
+
+We see that as a whole, employment significantly predicts CESD score.
+
+**This only is valid for nested models** Meaning all variables in the
+reduced model are present in the full model. 
+
+# Selection Criteria
+
+## Coefficient of Determination
+If the model explains a large amount of variation in the outcome
+that's good right? So we could consider using $R^{2}$ as a selection 
+criteria and trying to find the model that maximizes this value. 
+
+
+The residual sum of squares (RSS in the book or SSE) can be written 
+as $\sum(Y-\hat{Y})^{2}(1-R^{2})$. Therefore minimizing the RSS is
+equivalent to maximizing the multiple correlation coefficient.  
+
+
+**Multiple $R^{2}$**
+Problem: The multiple $R^{2}$ _always_ increases as predictors are 
+added to the model. 
+
+**Adjusted $R^{2}$**
+Ok, so let's add an adjustment, or a penalty, to keep this measure
+in check. $R^{2}_{adj} = R^{2} - \frac{p(1-R^{2})}{n-p-1}$
+
+## Information Criteria
+####Mallows Cp
+
+* Compares MSE of a reduced model to the full model. 
+* Penalized function, as P increases Cp decreases. 
+* Many investigators  recommend selecting those independent variables 
+  that minimize the values of Cp. 
+
+####Akaike Information Criterion (AIC)
+
+* A penalty is applied to the deviance that increases as the number of
+  parameters $p$ increase. 
+* AIC = $-2LL + 2p$ 
+* Smaller is better
+
+####Bayesian Information Criterion (BIC)
+* A different penalty function
+* BIC = $-2LL + p*ln(n)$
+* Compare nested and non-nested models
+* BIC identifies the model that is more likely to have generated the observed data.
+* Smaller is better
 
 
 
+## Cross validation (CV)
+Estimate the expected level of model fit on a data set that is independent of the data
+used to train the model on. 
 
+1. Randomly split the sample into training sample and validation (testing) sample. 
+2. Compute regression equation from training sample
+    a. Use that equation to compute predicted values in testing sample
+    b. Calculate the prediction error on that testing sample. 
+3. Repeat for different splits of training and testing samples. 
+4. Average the prediction error across the different subsets of the data to derive
+   a more accurate estimate of model performance. 
+
+
+#### $k$-fold cross validation
+* Randomly partition the original sample into $k$ equal sized subsamples. 
+* Compute the regression equation on $k-1$ subsamples (training sample).
+* Use this model to calculate the prediction error on the $k$th held-out subsample (testing sample).
+* Repeat this $k$ times ($k$ folds), with each of the k subsamples used exactly once as the validation data. 
+* Average the $k$ results to produce a single estimation of model predictiveness. 
+
+#### Repeated k-fold CV
+* Repeat $k$-fold CV multiple times, where the data is split differently
+  for each repeat. Results are averaged across repeats. 
+
+#### How to choose $k$?
+* A typical value for $k$ is 10. a.k.a. 10-fold CV
+* Afifi recommends $k$ = 3 or 4.
+* Leave-one-out cross-validation: $k = n$
+
+#### Methods in R
+There are several methods to cross validate a model in R. At this
+time we are going to use the `cv.lm()` function in the `DAAG` package.
+```{r}
+library(DAAG)
+```
+
+The `caret` package is also very powerful and flexible cross-validation
+tool that we are likely to come back to later on in the semester. 
+Here are some resources to start with if you are interested in 
+cross-validation and want to learn more about these tools. 
+
+* https://cran.r-project.org/web/packages/caret/vignettes/caret.pdf
+* http://topepo.github.io/caret/training.html#builtin
+
+
+# Selection Process
+We want to choose a set of independent variables that both will yield a good
+prediction using as few variables as possible. 
+
+## Manual
+In many situations where regression is used, the investigator has strong
+justification for including certain variables in the model.
+
+* previous studies
+* accepted theory
+
+The investigator may have prior justification for using certain variables but
+may be open to suggestions for the remaining variables.
+
+The set of independent variables can be broken down into logical subsets
+
+* The usual demographics are entered first (age, gender, ethnicity)
+* A set of variables that other studies have shown to affect the dependent variable
+* A third set of variables that _could_ be associated but the relationship has
+  not yet been examined. 
+  
+Partially model-driven regression analysis and partially an exploratory analysis. 
+
+
+## Automated
+
+### Stepwise Regression
+
+* Forward selection: 
+    - Start with no predictors.
+    - Individual $X$ variables added one at a time until optimal model reached
+* Backward elimination: 
+    - Start with all candidate predictors. 
+    - Individual $X$ variables removed one at a time until optimal model reached
+* Stepwise selection: Combines the two
+    - Start forward selection
+    - At each step check to see if any variables should be removed. 
+  
+There is a lot of controversy and criticism around these methods so I will not 
+discuss them in great detail. 
+
+### Best Subset Regression
+A "better" method of variable selection considers all possible 
+subsets/combinations of potential variables and finds the model that
+best fits the data according to a selected criteria. 
+
+
+## Manually modified Automated methods
+Sometimes you want to have a bit of control over the automated
+procedures. 
+
+* You can enter and remove variables in blocks, 
+  e.g., dummy variables representing a nominal $X$ should all be in 
+  together, or all excluded together. 
+* You can force some variables in (e.g. age, gender)
+
+
+
+# Example: Model Selection
+To follow the example in the book, I will use the `Chemical` data set. Refer to the book
+to learn more about what the variables measure. The raw data and data management file
+is available on the [Data](./data/Datasets.html) page of the course website. 
+```{r}
+chem <- read.delim("C:/GitHub/MATH456/data/chem_022816.txt", sep="\t")
+```
+
+####Forward selection, Backward elimination, and Stepwise regression based on model AIC
+
+This uses the `stepAIC` function found in the `MASS` package. 
+
+First we define the full, and null models. 
+That null model only contains an intercept, the full model contains all
+proposed variables. 
+```{r}
+library(MASS)
+null <- lm(PE ~ 1, data=chem)
+full <- lm(PE ~ ., data=chem)
+```
+
+**Forward**
+```{r}
+fwd <- stepAIC(null, scope=list(lower=null, upper=full), direction="forward")
+```
+
+**Backward**
+```{r}
+back <- stepAIC(full, direction="backward")
+```
+
+**Stepwise**
+```{r}
+step <- stepAIC(null, scope=list(upper=full,lower=null), direction="both")
+```
+
+Let's look at the final model chosen by all three methods. 
+```{r, results="asis"}
+library(dplyr)
+names(fwd$coefficients)
+names(back$coefficients)
+names(step$coefficients)
+```
+
+They all ended at the exact same model. This will not always be the case, 
+but when it is you can be assured that the variables chosen are truly
+important variable to predict the outcome. 
+
+#### Best Subsets
+
+To perform best subsets we will use the `regsubsets` function
+found in the `leaps` package. From the help file for `leaps`: 
+_Since the algorithm returns a best model of each size, the results do not 
+depend on a penalty model for model size: it doesn't make any difference 
+whether you want to use AIC, BIC, CIC, DIC, ..._
+
+```{r}
+library(leaps)
+regsubsets.out <- regsubsets(PE ~ ROR5 + DE + SALESGR5 + EPS5 + NPM1 + PAYOUTR1,
+                     data = chem,
+                     nbest = 2,       # 2 best models for each number of predictors
+                     nvmax = NULL,    # NULL for no limit on number of variables
+                     force.in = NULL, force.out = NULL,
+                     method = "exhaustive")
+```
+
+Let's look at the 2 best models for each size subset. 
+```{r}
+summary(regsubsets.out)
+```
+A `*` in the column means that variable was selected to be included in 
+that model. `Payoutr1` was included in most selections, as was `NPM1`. 
+We can visualize the results based on fitness measures by plotting the
+`regsubsets.out` output. 
+```{r}
+par(mfrow=c(1,2))
+plot(regsubsets.out, scale="bic", main="BIC")
+plot(regsubsets.out, scale="adjr2", main="Adjusted R^2")
+```
+
+Black indicates that a variable is included in the model, white indicates
+the variable is not in the model. The y axis (and shading) is oriented such
+that the top (darker) boxes are better. The top model under both methods 
+(lowest BIC and highest adjusted $R^{2}$) is the same: 
+`PE ~ DE + SALESGR5 + NPM1 + PAYOUTR1`. The second best model under BIC 
+is the same as the best model but drops `DE`, but the second best model
+using adjusted $R^{2}$ is vastly different. 
+
+**Conclusion** The final model chosen by best subsets corresponds with 
+the step-wise procedures. 
+
+
+# Example: Cross Validation
+In the prior example, the top two candidate models were:
+
+* Model 1: `PE ~ DE + SALESGR5 + NPM1 + PAYOUTR1`
+* Model 2: `PE ~ SALESGR5 + NPM1 + PAYOUTR1`
+
+In the interest of parsimony, if the variable `DE` really doesn't 
+contribute a lot of information to the model then perhaps it can
+be dropped. There are only `r NROW(chem)` observations in the
+chem dataset, so I will conduct only 3-fold cross-validation due
+to sample size. 
+
+```{r}
+fit1 <- cv.lm(data=chem, # data set 
+              form.lm = formula(PE ~ DE + SALESGR5 + NPM1 + PAYOUTR1),  # model 
+              m=3) # number of partitions
+```
+
+The generated graphic plots the predicted PE (X) against the true PE (Y). 
+The large values are for predictions made on the full data, the small 
+values are for predictions after cross-validating the model. Individual
+regression lines are shown for each of the folds as well. 
+
+Now fit the second model (suppressing the printing of the verbose output). 
+```{r}
+fit2 <- CVlm(data=chem, printit=FALSE, 
+            form.lm = formula(PE ~ SALESGR5 + NPM1 + PAYOUTR1), m=3)
+```
+
+Recall the MSE (mean squared error) is amount of variance in the outcome that
+was NOT explained by the model, so it is a measure that we want to minimize. 
+We extract the average MS from each model and compare. 
+```{r}
+attributes(fit1)$ms
+attributes(fit2)$ms
+```
+
+Model 1 is selected as the final model because it has the lowest MSE. 
+
+
+# What to watch out for
+* Use previous research as a guide
+* Variables not included can bias the results
+* Significance levels are only a guide
+* Perform diagnostics after selection
+* _**Use common sense**_:
+    - A sub-optimal subset may make more sense than optimal one
+
+In addition to the almost dozen entries in the textbook, see the following 
+resources regarding areas of concern. 
+
+* http://www.stata.com/support/faqs/statistics/stepwise-regression-problems/
+* http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.126.4133&rep=rep1&type=pdf
+
+
+TLDR; Don't expect a magic bullet and don't use any method blindly. 
+
+
+
+# Penalized methods
+I won't go over these methods because we don't have the time to do them
+justice. However I encourage you to learn more about methods such as
+Ridge/Lasso regression, and cross-validation methods. 
+Here are a few places to start. 
+
+* http://www.stat.ucla.edu/~cocteau/stat120b/lectures/lecture7.pdf
+* http://statweb.stanford.edu/~jtaylo/courses/stats203/notes/penalized.pdf
+* http://www.stat.ufl.edu/archived/casella/Papers/BL-Final.pdf
+* http://www.r-bloggers.com/variable-selection-using-cross-validation-and-other-techniques/
+
+# Assigned Reading and additional references
+* Afifi Chapter 8
+
+* http://www.statmethods.net/stats/regression.html
+* http://www.stat.columbia.edu/~martin/W2024/R10.pdf  
+* https://stat.ethz.ch/R-manual/R-devel/library/MASS/html/stepAIC.html
+* http://www.stat.colostate.edu/~darrenho/AMA/1_regression2.pdf
+* https://dynamicecology.wordpress.com/2015/05/21/why-aic-appeals-to-ecologists-lowest-instincts/
+* http://www.r-bloggers.com/aic-bic-vs-crossvalidation/
+* http://andrewgelman.com/2012/06/27/cross-validation-what-is-it-good-for/
+* http://users.stat.umn.edu/~yangx374/papers/ACV_v30.pdf
+
+# On Your Own
 ##### On Your Own
 
+1. For the lung function data, use an automated selection process to predict
+   FEV1 for the oldest child using age, height, weight and FVC as candidate
+   variables. State and justify the method and criteria you chose. 
+2. Take the variables you selected in problem 2 and build a linear regression 
+   model with `OCFEV1` as the dependent variable, and test whether including the
+   FEV1 of the parents (`MFEV1` and `FFEV1` taken as a pair) in the model
+   significantly improves the regression. 
+3. Using the Parental HIV data find the best model that predicts the age at
+   which adolescents started drinking alcohol. Since the data were collected
+   retrospectively, only consider variables which might be considered
+   representative of the time before the adolescent started drinking alcohol.
+  
+    
+    
+    
+    
+    

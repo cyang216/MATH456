@@ -5,6 +5,10 @@ date: "February 26, 2016"
 output: html_document
 ---
 
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+library(ggplot2)
+```
+
 # Indicators
 1. Create a model to analyze the relationship of education status to depression level as measured by
 CESD after controlling for age. Combine all education levels below a HS graduate into one reference 
@@ -14,12 +18,35 @@ category called "Up to HS" prior to analysis.
 # Splines
 1. Using the `cars` data set built into R, build a model to predict the
    distance a car takes to stop based on how fast it was going.  
-   
+  
+```{r}
+x6 <- (cars$speed-6)
+x6[ x6<0 ] <- 0
+
+x12 <- (cars$speed-12)
+x12[ x12<0 ] <- 0
+
+x18 <- (cars$speed-18)
+x18[ x18<0 ] <- 0
+
+t(cbind(cars$speed, x6, x12, x18)[8:20,])
+
+fit.lin.spline <- lm(cars$dist ~ cars$speed + x6 + x12 + x18)
+
+ggplot(cars, aes(x=speed, y=dist)) +
+    geom_point() + 
+    geom_line(aes(x=speed, y=predict(fit.lin.spline)))
+
+
+
+```
+
+
 2. Using the family lung function data, build a model to predict FEV1
    to height for the oldest child. 
 
 ```{r}
-library(ggplot2)
+
 fev <- read.table("C:/Github/MATH456/data/Lung_020716.txt", sep="\t", header=TRUE)
 names(fev) <- tolower(names(fev))
 qplot(x=ocheight, y=ocfev1, data=fev, geom='point') + geom_smooth()
