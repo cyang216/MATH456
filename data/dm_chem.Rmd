@@ -1,0 +1,34 @@
+---
+title: "Import chemical data"
+output: html_document
+---
+
+
+This is a fixed-width file, meaning each variable starts on a specific column. 
+I will use the `read_fwf` function found in the `readr` library, and specify 
+how large each column of data is manually. 
+```{r}
+library(readr)
+chemdta <- read_fwf(file="C:/GitHub/MATH456/data/ChemicalRaw.txt", 
+                    fwf_widths(c(3,6,4,6,5,5,4)))
+```
+
+Then manually assign variable names. 
+```{r}
+names(chemdta) <- c("PE", "ROR5", "DE", "SALESGR5", "EPS5", "NPM1", "PAYOUTR1")
+```
+
+# Save the clean data as a tab-delimited text file. 
+```{r}
+date <- format(Sys.Date(), "%m%d%y")
+filename <- paste("C:/GitHub/MATH456/data/chem_", date, ".txt", sep="")
+write.table(chemdta, filename, sep="\t", row.names=FALSE)
+```
+
+ 
+# Session Info
+This document was compiled on `r Sys.time()` and with the following system
+information:
+```{r}
+sessionInfo()
+```

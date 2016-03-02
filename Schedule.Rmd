@@ -15,7 +15,7 @@ library(readr)
 source("C:/Github/MATH456/stylesheets/custom.R")
 ```
 
-Navbar: [[Home]](index.html) [[Data]](./data/Datasets.html) [[HW Rubric]](./admin/rubric.html)  [[Google Group]](https://groups.google.com/forum/#!forum/csuc_stat)  [[Google Drive]](https://drive.google.com/a/mail.csuchico.edu/folderview?id=0B83Z8_sNw3KPcnVrYzVFRHUtcHM&usp=sharing)
+Navbar: [[Home]](index.html) [[Data]](./data/Datasets.html) [[HW Info]](HW_Info.html)  [[Google Group]](https://groups.google.com/forum/#!forum/csuc_stat)  [[Google Drive]](https://drive.google.com/a/mail.csuchico.edu/folderview?id=0B83Z8_sNw3KPcnVrYzVFRHUtcHM&usp=sharing)
 
 
 ```{r include = FALSE}
@@ -31,20 +31,21 @@ cdat  <- cdat %>% full_join(cmdat)
 
 cdat$topic[cdat$link_it] <- str_replace(cdat$Outline[cdat$link_it], "(.*:)", '<a href="LINK">\\1</a>')
 cdat$Topic <- ifelse(cdat$link_it,  str_replace(cdat$topic, "LINK", cdat$html), cdat$Outline)
-cdat <- cdat %>% select(Week, Day, Date, Topic, raw_notes, Evaluations, link_it)
+cdat <- cdat[,c('Week', 'Day', 'Date', 'Topic', 'raw_notes', 'Evaluations', 'link_it')]
 
 # Add direct links to notes
 lmdat <- data_frame(html = list.files(path="notes/", pattern = '^lec.*html$'))
 lmdat <- lmdat %>% mutate(raw_notes = str_replace(html, ".html", ""), 
                           link = paste("notes/", html, sep=""))
-lcdat <- cdat %>% full_join(lmdat)
+lcdat <- cdat %>% left_join(lmdat)
 
 lcdat$notes[lcdat$link_it] <- str_replace(lcdat$raw_notes[lcdat$link_it], "(.*)", '<a href="LINK">\\1</a>')
 lcdat$Notes <- ifelse(lcdat$link_it,  str_replace(lcdat$notes, "LINK", lcdat$link), lcdat$raw_notes)
 clean <- lcdat %>% mutate(Topic=ifelse(is.na(Topic), '-', Topic), 
                           Notes=ifelse(is.na(Notes), '-', Notes),
-                          Evaluations=ifelse(is.na(Evaluations), '-', Evaluations)) %>% 
-               select(Date, Day, Topic, Notes, Evaluations)
+                          Evaluations=ifelse(is.na(Evaluations), '-', Evaluations))
+
+clean <- clean[,c('Date', 'Day', 'Topic', 'Notes', 'Evaluations')]
 ```
 
 <!-- unholy hack to make following two tables less wide and the same wide -->

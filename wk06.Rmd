@@ -10,25 +10,43 @@ source("C:/Github/MATH456/stylesheets/custom.R")
 [[Schedule]](Schedule.html)  [[Week 5]](wk05.html) [[Week 7]](wk07.html)
 
 ## Announcements
-* Homework #3 due by midnight
+* Homework #3 due by midnight Sunday 2/28
 
 ### Notes and Materials
-* Lec 05: Variable Selection [[PDF]](notes/)[[HTML]](notes/)
+* Lec 05: Variable Selection [[PDF]](notes/lec05_Variable_Selection.pdf)[[HTML]](notes/lec05_Variable_Selection.html)
 
 ## Experience
 
 ### Monday 2/29/16
 * Variable selection: Manual and Automated
 
+### Tuesday 3/1 - Due by EOD
+1. Choose a priority question regarding model building with respect to the 
+  recruitment model. 
+    - The list of questions you came up with last week can be found on the 
+    [Model Building](https://docs.google.com/a/mail.csuchico.edu/document/d/1JX_Gh90khCbhvACaA6_-xjt6otSrXmF58HykfIz4kZc/edit?usp=sharing) Google Doc.
+2. Post this qustion on the BBLearn forum.   
+**Due by Friday EOD** Review and think about your, and other's priority questions. 
+  Comment (which could include trying to answer the question) on at least 4 of
+  your classmates questions. 
+
+
+
 ### Wednesday 3/2/16
-* Variable selection: Penalized functions
+* Model building practice
+* Working on expanding your consulting model to include other variables.  
+* Consult with other groups - Combine models? 
 
 ### Friday 3/4/16
-* Dimension Reduction - Principle Component Analysis
+* Finalize model and start writing clean report for Dr. Downing. 
+* **Extra Credit** Attend the Department colloqium talk from 3-4pm. 
+  Dr. Shemra Rizzo from UC Riverside will be here to give an Applied
+  Statistics seminar. 
+
 
 ## Looking Ahead
-* Quiz on variable selection and PCA on Monday
-* Factor Analysis
-* Exam 1 
+* Dr. Downing's next visit on Monday. 
+* Quiz on variable selection due Monday @ 12
+* Exam 1 on Friday
 
 
