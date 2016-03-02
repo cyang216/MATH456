@@ -178,7 +178,7 @@ fev$dad_sresid &lt;-<span class="st"> </span><span class="kw">studres</span>(dad
 ## 105     245      76   1.638357
 ## 5       121      61  -1.211665</code></pre>
 <p>The studentized residuals are not large, the points with high leverage are not flagged as problematic in other plots, and the rest of the assumptions appear to be very well upheld. Thus my conclusion is that no records need to be removed from this analysis.</p>
-<p><strong>4. Repeat 1 -3 for mothers. </strong> Examine the relationship between weight and height for mothers.</p>
+<p><strong>4. Repeat 1 -3 for mothers.</strong> Examine the relationship between weight and height for mothers.</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cor</span>(fev$mweight, fev$mheight)</code></pre>
 <pre><code>## [1] 0.3175785</code></pre>
 <p>The correlation coefficient between weight and height for mothers is 0.32, this is a weak correlation.</p>
@@ -259,6 +259,17 @@ fev[<span class="kw">c</span>(<span class="dv">45</span>, <span class="dv">94</s
 <p>Record 144 shows a large studentized residual of 4.1. This observation may be removed from the data set because she appears to be an outlier relative to her height.</p>
 <p><strong>5. Discuss why the correlation for fathers appears higher than that for mothers.</strong></p>
 <p>The correlation for fathers appears higher than that for mothers since the data for mothers are more spread out than for fathers. Correlation is a direct function of the variance of both the predictor and outcomes, and so the density of the points around the best fit line dictates the strength of the correlation.</p>
+<hr />
+<p>Last updated</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">Sys.info</span>()</code></pre>
+<pre><code>##                      sysname                      release 
+##                    &quot;Windows&quot;                      &quot;7 x64&quot; 
+##                      version                     nodename 
+## &quot;build 7601, Service Pack 1&quot;                     &quot;C00734&quot; 
+##                      machine                        login 
+##                     &quot;x86-64&quot;                 &quot;rdonatello&quot; 
+##                         user               effective_user 
+##                 &quot;rdonatello&quot;                 &quot;rdonatello&quot;</code></pre>
 
 
 </div>
