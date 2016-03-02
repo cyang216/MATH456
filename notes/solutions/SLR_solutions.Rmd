@@ -1,5 +1,5 @@
 ---
-title: "Multiple Linear Regression (Afifi Ch 7) Solutions"
+title: "Simple Linear Regression (Afifi Ch 6) Solutions"
 author: "MATH 456 - Spring 2016"
 output:
   html_document:
@@ -7,106 +7,168 @@ output:
     theme: spacelab
   pdf_document: default
 ---
-```{r results="asis", echo=FALSE}
-source("~/Github/MATH456/stylesheets/custom.R")
-```
+
 
 ```{r, warning=FALSE, message=FALSE}
 library(knitr); library(rmarkdown);library(ggplot2);library(xtable)
 options(xtable.comment = FALSE) # suppresses the % line from xtable
 opts_chunk$set(warning=FALSE, message=FALSE) 
 
-fev <- read.delim("~/GitHub/MATH456/data/Lung_020716.txt", sep="\t", header=TRUE)
+fev <- read.delim("C:/GitHub/MATH456/data/Lung_020716.txt", sep="\t", header=TRUE)
 names(fev) <- tolower(names(fev))
-ncb <- read.delim("~/GitHub/MATH456/data/Lung_020716.txt", sep="\t", header=TRUE)
-names(fev) <- tolower(names(ncb))
-hiv <- read.delim("~/GitHub/MATH456/data/Lung_020716.txt", sep="\t", header=TRUE)
-names(hiv) <- tolower(names(hiv))
 ```
 
-## 1. Regress FVC on age and height for fathers.  
+**1. Perform a regression analysis of weight on height for fathers**
 
+  **a. Determine the correlation coefficient and the regression equation.**  
+```{r}
+cor(fev$fweight, fev$fheight)
+```
+The correlation coefficient between weight and height for fathers is 0.52, 
+this is a moderately strong correlation. 
+
+  **b. Interpret the coefficients in context of the problem.**
+```{r}
+dad <- lm(fweight ~ fheight, data=fev)
+coef(dad)
+```
+The regression equation is: 
+  $$weight ~ -129.0 + 4.49height $$
+The intercept $\beta_{0} = -129.0$, is interpreted as the weight of a father
+who is 0cm tall. This is an impossible and nonsensical measurement. The slope
+coefficient $\beta_{1}$ is interpreted as the rate of change in weight as a
+a function of height. For every 1 cm taller a father is, his weight increases
+by 4.5lbs. 
+
+
+**2. Test that the coeffcients are significantly different from zero.**
 ```{r, results='asis'}
-dad_model <- lm(ffvc ~ fage + fheight, data=fev)
-print(xtable(summary(dad_model)), type="html")
+md <- xtable(summary(dad))
+print(md, type='html')
+```
+The summary output for the linear model run in R automatically conducts a
+test for each individual coefficient in the regression model is significantly 
+different from zero.
+
+$H_{0}: \beta_{0} = 0$ vs $H_{A}: \beta_{0} \neq 0$. The test statistic for this
+test is -3.08, with a corresponding p-value of 0.0025. This indicates that the 
+intercept is statistically significantly different from zero. Due to the 
+interpretation of the data, this is not a meaningful test. 
+
+$H_{0}: \beta_{1} = 0$ vs $H_{A}: \beta_{1} \neq 0$. The test statistic for this
+test is 7.43, with a corresponding p-value <.0001. There is strong evidence to 
+believe that the height of a father increases the weight of a father.  
+
+**3. Assess model fit graphically. Comment on any outliers.**
+
+Check linearity: 
+```{r}
+qplot(x=fheight, y=fweight, data=fev, geom="point") + 
+  ggtitle("Height vs weight for fathers") + xlab("Height (cm)") + ylab("Weight (lbs)") + 
+  geom_smooth(se=FALSE, method = "lm", col="blue") + geom_smooth(se=FALSE, col="red")
 ```
 
+The red lowess line and the blue linear best fit line are very similar.
+The relationship between height and weight within fathers appear to be linear. 
 
-## 2. Confirm the F-test in the summary results is the same as the ANOVA test of global fit. 
-Confirm that this F-test in the model results is the correct one to 
-   use by manually calculating the F statistic using an ANOVA table. 
-   Confirm the degrees of freedom in both the numerator and denominator 
-   are correct, as well as the calculation of the p-value.
-  
-  
-## 3. Regress FVC on age and height for mothers.  
+Then the rest of the diagnostics based on the residuals. 
+```{r, fig.height=6}
+par(mfrow=c(2,2))
+plot(dad)
+```
 
+The residuals appear to be normally distributed (Normal Q-Q plot), 
+they are centered around zero (Residuals vs Fitted), and there is no 
+evidence of non-constant variance a.k.a. heteroscedasticity (Residuals
+vs Fitted, and Scale-Location). 
+
+There are some potential outliers marked to examine. Records 80, 67 and
+127 are marked as potential outliers in 3/4 of the diagnostic plots, 
+but record 105 and 5 have possibly large leverage values. 
+
+The guideline for what is considered to be high leverage is 4/N, so for 
+this model it is `4 / NROW(fev)` = `r round(4/NROW(fev),2)`. 
+_Note: I can use the number of rows in the `fev` data set as the N 
+because I have already confirmed that there is no missing data
+in the variables that are used in the model._
+
+While we're examining outliers, let's calculate the standardized
+residuals for each case using the `studres()` function available 
+in the `MASS` package. Anything over 3 is considered to be a large
+value (Afifi top of p 100).
+
+```{r}
+library(MASS)
+fev$dad_sresid <- studres(dad)
+```
+Then view this record. 
+```{r}
+fev[c(80, 67, 127, 105,5) ,c('fweight', 'fheight', 'dad_sresid')]
+```
+
+The studentized residuals are not large, the points with
+high leverage are not flagged as problematic in other plots, and
+the rest of the assumptions appear to be very well upheld. Thus my 
+conclusion is that no records need to be removed from this analysis. 
+
+
+**4. Repeat 1 -3 for mothers.**
+Examine the relationship between weight and height for mothers. 
+
+```{r}
+cor(fev$mweight, fev$mheight)
+```
+The correlation coefficient between weight and height for mothers is 0.32, 
+this is a weak correlation. 
+
+```{r}
+mom <- lm(mweight ~ mheight, data=fev)
+```
 ```{r, results='asis'}
-mom_model <- lm(mfvc ~ mage + mheight, data=fev)
-print(xtable(summary(mom_model)), type="html")
+ms <- xtable(summary(mom))
+print(ms, type='html')
 ```
+The regression equation is: 
+  $$weight ~ -108.02 + 3.98height $$
+A mother who is 0 cm tall will weigh -108 lbs, and for every 1 cm taller a mother
+is, her weight increases by 4lbs. 
 
-## 4. Test whether gender changes the effect of age and height on FVC
-   
-Programmatically extract the coefficients and standard errors
-from the model results. 
+_Check assumptions_
+Check linearity: 
 ```{r}
-beta_age_male  <- coef(dad_model)[2]; var_beta_age_male <- vcov(dad_model)[2,2]
-beta_age_fem   <- coef(mom_model)[2]; var_beta_age_fem  <- vcov(mom_model)[2,2]
-beta_ht_male   <- coef(dad_model)[3]; var_beta_ht_fem   <- vcov(mom_model)[3,3]
-beta_ht_female <- coef(mom_model)[3]; var_beta_ht_fem   <- vcov(mom_model)[3,3]
+qplot(x=mheight, y=mweight, data=fev, geom="point") + 
+  geom_smooth(se=FALSE, method = "lm", col="blue") + geom_smooth(se=FALSE, col="red") + 
+  ggtitle("Height vs weight for mothers") + xlab("Height (cm)") + ylab("Weight (lbs)")
 ```
 
-#### Age
-Calculate the test statistic and p-value for $H_{0}: \beta_{1M} = \beta_{1F}$
-versus $H_{A}: \beta_{1M} \neq \beta_{1F}$. In other words, is the effect of
-age on FEV different for males compared to females. 
+There appears to be a linear relationship between weight and height for mothers
+in the data set. There are some points that appear to have higher than average weight
+(250+) for their height (63-66cm). 
+
+Examine the rest of the diagnostics based on the residuals. 
+```{r, fig.height=6}
+par(mfrow=c(2,2))
+plot(mom)
+```
+
+The residuals appear to be slightly non-normally distributed, but are centered
+around zero. 
+There are some records flagged as potential outliers (45, 144, 94, 107) 
+that we should further investigate. The leverage cutoff is the same
+as for fathers, `r round(4/NROW(fev),2)`. 
+
 ```{r}
-z = (beta_age_male - beta_age_fem)/(sqrt(var_beta_age_male + var_beta_age_fem))
-z
-2*(pnorm(z))
+fev$mom_sresid <- studres(mom)
+fev[c(45, 94, 144, 107) ,c('mweight', 'mheight', 'mom_sresid')]
 ```
 
-There appears to be a stronger negative relationship between age and FEV for males
-compared to females ($\beta_{1M} = -2.8, \beta_{1F} = -1.8$), but this is not a 
-statistically significant difference (p=.31). 
-
-```{r}
-confint(dad_model)[2,]
-confint(mom_model)[2,]
-```
-
-The confidence intervals overlap, so we cannot use this method to determine
-if there is a significant difference. 
+Record 144 shows a large studentized residual of 4.1. This observation may be 
+removed from the data set because she appears to be an outlier relative to her height.
 
 
-#### Height
+**5. Discuss why the correlation for fathers appears higher than that for mothers.**
 
-
-
-
-### Alternative
-If the data was reshaped into long format, then interaction terms between 
-gender and age, and gender and height could be tested individually to answer
-the same question. 
-
-
-
-## 5. Model birthweight using mothers age, smoking habit and number of visits. 
-Interpret the regression coefficients in context of the problem 
-and include 95% confidence intervals and p-values in your discussion. 
-
-## 6. Calculate a 95% prediction interval for a 30-year-old smoking mother with 16 visits to the doctor during her pregnancy.
-   
-## 7. Test for an interaction between smoking habit and the mothers age. 
-Include a plot similar to the one shown in the lecture notes to support your findings. 
-
-
-## 8. Is there a gender difference in when adolescents start smoking adjusting for neighborhood factors? 
-Generate a variable that represents the sum
-of the variables describing the neighborhood where the adolescent lives
-  (`NGHB1-NGHB11`). Is the age at which adolescents start smoking different
-   for girls compared to boys, after adjusting for the score describing the 
-   neighborhood?**
-
-   
+The correlation for fathers appears higher than that for mothers since the
+data for mothers are more spread out than for fathers. Correlation is a direct
+function of the variance of both the predictor and outcomes, and so the density
+of the points around the best fit line dictates the strength of the correlation. 
