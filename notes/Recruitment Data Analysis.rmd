@@ -1,0 +1,49 @@
+---
+title: 'Project 1: Statistical Consulting of Recruitment Database'
+output: html_document
+---
+
+# Purpose
+The Execitive recruitment industry is in the business of getting people jobs, and filling open positions. Individuals who are recruited already are employed, the recruiters attempt to get the person to leave their job (possibly move across country) for a new job. The individuals in each office are basically head hunting people to pull from one company to another. 
+
+# Project Introduction
+
+Dr. Jim Downing from the College of Business at CSU, Chico provided us with a recruitment database and posed some research questions. The recruitment data set is a collection of multi-level self-reported data regarding the Executive recruitment industry. 
+
+There is data on 456 firms under this franchise umbrella. The data is collected by the franchise on the individuals within the firm, and the transactions that firm makes. A franchise - you are the owner/operator of your office. you pay the franchise $ to use their name/marketing etc. These offices compete with each other, sometimes they collaborate. Employees working in the office are like independent contractors themselves - working for commissions only. The firm pays them by contract.
+
+
+## Phase 1: Data Exploration
+Each group chose one or two research questions posed by Dr. Downing to explore. The variables were examined univariately, missing data was examined and potential transformations were considered. A draft exploratory data analysis was submitted and reviewed by your course instructor, Dr. Donatello. A final draft was submitted to Dr. Downing, and the results of the exploratory data analysis was presented to him during an in-person meeting. No statistical tests were run at this point. 
+
+
+## Phase 2: Analysis & Model building
+Formally test the posed hypothesis for the bivariate relationship explored in part I. Start model building 
+
+
+# Report Submission
+* A draft report will be due 2/26.
+  - This report will be graded and returned to you with suggestions for improvement. 
+* You will present your findings with the client on Monday 3/7. 
+    - Your group will have roughly 7 minutes to present. 
+    - Send me your final version before 3/7 at noon I will print copies for the class. 
+        - You can email this to me directly or upload it via BBLearn. 
+        - Otherwise you are responsible for printing out 15 copies 
+          (one for each of 13 students + me + client).
+
+# Peer Feedback
+You are expected to pay attention to the other groups presentations, 
+You are asked to write constructive comments, suggestions for edits, and/or general feedback
+regarding the report or the presentation. 
+    - These comments are to be written directly on the paper report.
+    - Turn in this paper report to me by Friday 3/11, 4pm. I will not be on campus
+      over spring break so make sure I have it in hand, or you will have to scan and
+      email it to me.
+    - I will review the comments and return copies to the original group members. 
+
+# Grading 
+This project and will be worth 50 points. 
+Your overall project grade will be determined by the actual 
+report (80%), your presentation (10%) and your peer review (10%).
+
+

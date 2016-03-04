@@ -34,7 +34,7 @@ cdat$Topic <- ifelse(cdat$link_it,  str_replace(cdat$topic, "LINK", cdat$html), 
 cdat <- cdat[,c('Week', 'Day', 'Date', 'Topic', 'raw_notes', 'Evaluations', 'link_it')]
 
 # Add direct links to notes
-lmdat <- data_frame(html = list.files(path="notes/", pattern = '^lec.*html$'))
+lmdat <- data_frame(html = list.files(path="notes/", pattern = '*html$'))
 lmdat <- lmdat %>% mutate(raw_notes = str_replace(html, ".html", ""), 
                           link = paste("notes/", html, sep=""))
 lcdat <- cdat %>% left_join(lmdat)
