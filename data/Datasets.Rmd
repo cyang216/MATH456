@@ -15,7 +15,7 @@ library(readr)
 source("C:/Github/MATH456/stylesheets/custom.R")
 ```
 
-Navbar: [[Home]](../index.html) [[Schedule]](../schedule.html)
+Navbar: [[Home]](../index.html) [[Schedule]](../Schedule.html)
 
 
 ```{r include = FALSE}
