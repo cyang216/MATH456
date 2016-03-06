@@ -1,0 +1,35 @@
+---
+title: "Week 9"
+author: "MATH 456, Spring 2016"
+date: " 03/21/16"
+output: html_document
+---
+```{r results="asis", echo=FALSE}
+source("C:/Github/MATH456/stylesheets/custom.R")
+```
+[[Schedule]](Schedule.html)  [[Week 7]](wk07.html) [[Week 10]](wk10.html)
+
+## Announcements
+
+
+### Notes and Materials
+
+### Monday 3/21/16
+
+
+### Wednesday 3/23/16
+
+
+### Friday 3/25/16
+
+* **Extra Credit** Attend the Department colloqium talk from 3-4pm.   
+  Dr. Matt Jans from the UCLA Center for Health Policy Research is here
+  to give a talk titled  **_"Item missing data and potential miscategorization 
+  with sexual orientation and partner sex questions: Language and cultural differences"_**
+  
+
+
+## Looking Ahead
+Spring Break!
+
+
