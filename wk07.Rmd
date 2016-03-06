@@ -10,7 +10,6 @@ source("C:/Github/MATH456/stylesheets/custom.R")
 [[Schedule]](Schedule.html)  [[Week 6]](wk06.html) [[Week 9]](wk09.html)
 
 ## Announcements
-* Quiz on variable selection due Monday @ 12
 
 
 ### Notes and Materials
@@ -29,12 +28,6 @@ source("C:/Github/MATH456/stylesheets/custom.R")
     - All topics taught to date are fair game. 
     - Open book/note. 
     - All relevant R code and output will be provided, no on the spot coding. 
-
-* **Extra Credit** Attend the Department colloqium talk from 3-4pm.   
-  Dr. Matt Jans from the UCLA Center for Health Policy Research is here
-  to give a talk titled  **_"Item missing data and potential miscategorization 
-  with sexual orientation and partner sex questions: Language and cultural differences"_**
-  
 
 
 ## Looking Ahead

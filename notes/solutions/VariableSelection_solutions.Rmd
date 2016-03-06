@@ -1,0 +1,436 @@
+---
+title: "Variable Selection"
+author: "MATH 456 Solutions"
+date: "February 26, 2016"
+output: html_document
+---
+
+```{r, warning=FALSE, message=FALSE}
+library(ggplot2);library(leaps);library(MASS)
+library(dplyr);library(xtable); library(knitr)
+lung  <- read.delim("~/GitHub/MATH456/data/lung_020716.txt")
+hiv <- read.delim("~/GitHub/MATH456/data/PARHIV_022216.txt")
+opts_chunk$set(warning=FALSE, message=FALSE, fig.align='center') 
+```
+
+```{r results="asis", echo=FALSE}
+source("~/Github/MATH456/stylesheets/custom.R")
+```
+
+**1. For the lung function data, use an automated selection process to predict
+   FEV1 for the oldest child using age, height, weight and FVC as candidate
+   variables. State and justify the method and criteria you chose.**
+```{r}
+lung  <- lung %>% mutate(OCSEX = factor(OCSEX, labels=c("Male", "Female")))
+lung2 <- lung %>% select(OCSEX, OCAGE, OCHEIGHT, OCWEIGHT, OCFEV1)
+```
+
+Specify the null and full models
+```{r}
+null <- lm(OCFEV1 ~ 1, data=lung2)
+full <- lm(OCFEV1 ~ ., data=lung2)
+```
+
+Then run forwards, backwards and stepwise selection methods using the AIC
+as the selection criteria. Also run best subsets regression. 
+
+```{r}
+fwd  <- stepAIC(null, scope=list(lower=null, upper=full), direction="forward")
+back <- stepAIC(full, direction="backward")
+step <- stepAIC(null, scope=list(upper=full,lower=null), direction="both")
+subset <- regsubsets(OCFEV1 ~ .,data = lung2, nbest = 2, nvmax = NULL,   
+                     force.in = NULL, force.out = NULL, method = "exhaustive")
+```
+
+Let's look at the final model chosen by all four methods. 
+```{r}
+names(fwd$coefficients)
+names(back$coefficients)
+names(step$coefficients)
+```
+
+```{r}
+par(mfrow=c(1,2))
+plot(subset, scale="bic", main="BIC")
+plot(subset, scale="adjr2", main="Adjusted R^2")
+```
+
+All automated procedures ended up identifying a model with gender, height
+and weight as variables predictive of FEV1 for the oldest child. Forward, 
+backward and stepwise models were chosen based on the best (lowest) AIC 
+value, the best subsets models were ranked using BIC and adjusted $R^{2}$. 
+
+
+**2. Take the variables you selected in problem 2 and build a linear regression 
+   model with `OCFEV1` as the dependent variable, and test whether including the
+   FEV1 of the parents (`MFEV1` and `FFEV1` taken as a pair) in the model
+   significantly improves the regression.**
+
+A Likelihood ratio (Deviance) test is used to simultaneously test the effects of 
+multiple variables the same time. 
+
+The full model includes the automatically chosen variables, and the parents FEV1 values.  
+```{r}
+full <- lm(OCFEV1 ~ OCHEIGHT + OCWEIGHT + OCSEX + FFEV1 + MFEV1, data=lung)
+```
+The reduced model excludes those parental variables. 
+```{r}
+reduced <- lm(OCFEV1 ~ OCHEIGHT + OCWEIGHT + OCSEX, data=lung)
+```
+
+An F test is then conducted to see if parental FEV adds a signficant amount of 
+information to the model of the oldest child's FEV measurement. 
+
+$H_{0}: \beta_{4} = \beta_{5} = 0$  
+$H_{a}:$  At least one is not zero. 
+
+```{r}
+anova(full, reduced)
+```
+
+There is sufficient evidence to believe that the FEV1 measurement
+for at least one parent is sigificantly predictive of the FEV1 
+measurement for the oldest child. 
+
+
+**3. Using the Parental HIV data find the best model that predicts the age at
+   which adolescents started drinking alcohol. Since the data were collected
+   retrospectively, only consider variables which might be considered
+   representative of the time before the adolescent started drinking alcohol.**
+
+Since alcohol use tends to be associated with smoking and marijuana use, 
+I first exclude those variables from the pool of possible variables. At the
+same time I exclude all records where the adolescent has not started drinking
+yet. 
+```{r}
+hiv1 <- hiv %>% select(-SMOKEP3M, -AGEMAR, -AGESMOKE) %>%
+                filter(!is.na(AGEALC) & AGEALC > 0)
+```
+
+I then also take the time to make sure factor variables are being treated
+as actual factors. This code then will be moved into the data management file
+after this point because it is a change that should be done permenantly to the
+data set. _I am leaving the ordinal variables unchanged_. I am also creating
+the neighborhood score variable as introduced in the multiple regression chapter. 
+
+```{r}
+hiv2 <- hiv1 %>% 
+  mutate(LIVWITH = factor(LIVWITH, labels=c("Both", "One parent", "Other")), 
+         SIBLINGS = factor(SIBLINGS , labels=c("No", "Yes")), 
+         JOBMO = factor(JOBMO, labels=c("Employed", "Unemployed", "Retired/Disabled")), 
+         EDUMO = factor(EDUMO, labels=c("<HS", "HS/GED", "Post HS")), 
+         HOWREL = factor(HOWREL), ATTSERV = factor(ATTSERV), 
+         MONFOOD = factor(MONFOOD, labels=c("No", "Sometimes", "Yes")),
+         FINSIT = factor(FINSIT, labels=c("Very Poor", "Poor", "OK", "Comf")),
+         ETHN = factor(ETHN, labels=c("Latino", "NH - Black", "Other")), 
+         FRNDS = factor(FRNDS, labels=c("A good group of good friends", 
+                                        "1-2 good friends, lots acquaint.",
+                                        "1-2 good friends, few acquaint.", 
+                                        "Not close to anyone")), 
+         SCHOOL = factor(SCHOOL), LIKESCH = factor(LIKESCH), 
+         HMONTH = factor(HMONTH)) 
+hiv2 <- hiv2 %>% rowwise() %>% 
+        mutate(NGHB = sum(c(NGHB1,NGHB2,NGHB3,NGHB4,NGHB5,NGHB6,NGHB7,NGHB8,NGHB9,NGHB10,NGHB11)))
+```
+
+Next, I trim down the list of potential predictors by looking at `names(hiv2)`
+and dropping variables using their column number. 
+
+* The ID variable is not considered a predictor. _Column 1_.
+* The variable `HOOKEY` is a dichotomize version of the `NHOOKEY` variable. 
+  There is more information contained in the continuous versions of a 
+  measure are always preferred over a categorical version.  _Column 28-29_
+* The scale measures such as `BSI_overall` are linear combinations of several
+  component variables. Both sets can't be considered at the same time. It is
+  the researchers preference, but I am choosing to use the calculated scales
+  as potential predictors instead of the component variables. 
+  _Columns 10-20, 31-108_
+  
+```{r}
+hiv3 <- hiv2[,-c(1,10:20, 28, 31:108)]
+```
+
+Lets check the relationship between the age when the adolescent started
+drinking and the other continuous measurements in the data set by doing
+simple scatterplots. 
+
+```{r}
+library(gridExtra)
+a <- qplot(y=AGEALC, x=AGE, data=hiv3, geom=c("point", "smooth"))
+b <- qplot(y=AGEALC, x=NHOOKEY, data=hiv3, geom=c("point", "smooth"))
+d <- qplot(y=AGEALC, x=parent_care, data=hiv3, geom=c("point", "smooth"))
+e <- qplot(y=AGEALC, x=parent_overprotection, data=hiv3, geom=c("point", "smooth"))
+grid.arrange(a,b,d,e, ncol=2)
+```
+
+It make sense that age has a linear relationship with the age in which 
+the adolescent starts drinking. 
+
+```{r}
+a <- qplot(y=AGEALC, x=BSI_overall, data=hiv3, geom=c("point", "smooth"))
+b <- qplot(y=AGEALC, x=BSI_somat, data=hiv3, geom=c("point", "smooth"))
+d <- qplot(y=AGEALC, x=BSI_obcomp, data=hiv3, geom=c("point", "smooth"))
+e <- qplot(y=AGEALC, x=BSI_interp, data=hiv3, geom=c("point", "smooth"))
+grid.arrange(a,b,d,e, ncol=2)
+```
+
+`BSI_somat` and `BSI_interp` may have a curvilinear relationship with 
+`AGEALC`, or perhaps there is a certain spot (`BSI_somat>1`?, `BSI_interp>2`?) where the relationship changes. 
+
+```{r}
+a <- qplot(y=AGEALC, x=BSI_depress, data=hiv3, geom=c("point", "smooth"))
+b <- qplot(y=AGEALC, x=BSI_anxiety, data=hiv3, geom=c("point", "smooth"))
+d <- qplot(y=AGEALC, x=BSI_hostil, data=hiv3, geom=c("point", "smooth"))
+e <- qplot(y=AGEALC, x=BSI_phobic, data=hiv3, geom=c("point", "smooth"))
+grid.arrange(a,b,d,e, ncol=2)
+```
+```{r}
+a <- qplot(y=AGEALC, x=BSI_paranoid, data=hiv3, geom=c("point", "smooth"))
+b <- qplot(y=AGEALC, x=BSI_psycho, data=hiv3, geom=c("point", "smooth"))
+d <- qplot(y=AGEALC, x=NGHB, data=hiv3, geom=c("point", "smooth"))
+grid.arrange(a,b,d, ncol=2)
+```
+
+The rest look pretty linear. 
+
+#### Consider non-linear terms
+```{r}
+library(splines)
+i1 <- (hiv3$BSI_interp-2)
+i1[ i1<0 ] <- 0
+
+test_lin_spline <- lm(hiv3$AGEALC ~ hiv3$BSI_interp + i1)
+summary(test_lin_spline)
+```
+
+The coefficient for the knot is significant, so it should be included
+in the model. We can also check the AIC for each model.
+```{r}
+lin_model <- lm(hiv3$AGEALC ~ hiv3$BSI_interp)
+AIC(test_lin_spline)
+AIC(lin_model)
+```
+The difference in AIC between the two models is decently large. 
+A difference over 3 or so indicates that the models are likely 
+significantly different. Since these models are nested, we can
+perform a global F test to confirm this. 
+```{r}
+anova(test_lin_spline, lin_model)
+```
+Notice that since only one variable was added to the linear 
+model, the F test and for the T-test that the
+beta coefficient is zero results in the exact same p-value.
+This is not a coincidence. 
+
+But what about that wiggle around 0.5? Let's fit a natural
+spline, and see if that improves the fit. 
+```{r}
+test_ns <- lm(hiv3$AGEALC ~ ns(hiv3$BSI_interp,3))
+
+ggplot(hiv3, aes(x=BSI_interp, y=AGEALC)) + geom_point() +
+  geom_line(aes(x=BSI_interp, y=predict(test_lin_spline)), col="red") + 
+  geom_line(aes(x=BSI_interp, y=predict(test_ns)), col="blue")
+```
+
+This provides a smoother fit, but is it necessarily better? 
+```{r}
+AIC(test_lin_spline)
+AIC(test_ns)
+```
+The difference is pretty negligible. So we stick with the simpler
+model and keep the knot at 2. 
+
+```{r}
+s1 <- (hiv3$BSI_somat-1)
+s1[ s1<0 ] <- 0
+
+test_lin_spline <- lm(hiv3$AGEALC ~ hiv3$BSI_somat + s1)
+summary(test_lin_spline)
+```
+
+```{r}
+test_ns <- lm(hiv3$AGEALC ~ ns(hiv3$BSI_somat,3))
+
+ggplot(hiv3, aes(x=BSI_somat, y=AGEALC)) + geom_point() +
+  geom_line(aes(x=BSI_somat, y=predict(test_lin_spline)), col="red") + 
+  geom_line(aes(x=BSI_somat, y=predict(test_ns)), col="blue")
+```
+
+Compare AIC
+```{r}
+AIC(test_ns)
+AIC(test_lin_spline)
+```
+Again, no real difference in fit. 
+
+What do we do with this information? Well we know that the final
+model of `AGEALC` should include `BSI_somat`, `BSI_interp` and
+their respective knots. 
+
+### Automated procedures
+
+At this point if I try to put all the variables into a best subset
+model, I get an error message about linear dependencies. This is 
+another indicator that there is multicolinearity going on, that is, 
+at least two variables have a correlation of nearly 1 -or- that one
+variable is a linear combination of other variables. 
+```{r, error=TRUE, warning=TRUE}
+test <- regsubsets(AGEALC ~ ., data = hiv3, nbest = 2,   
+                     force.in = 1, method = "exhaustive")
+```
+
+I can see if the problem stems from a continuous variable by
+creating a subset with only continuous variables and trying
+the subset model again. 
+```{r}
+cont <- hiv3[,c(1,12,16,18:30)]
+
+test_c <- regsubsets(AGEALC ~ ., data = cont, nbest = 2,   
+                     force.in = 1, method = "exhaustive")
+```
+No error, what are the results? 
+
+```{r, fig.width=10}
+par(mfrow=c(1,2))
+plot(test_c, scale="bic", main="BIC")
+plot(test_c, scale="adjr2", main="Adjusted R^2")
+```
+Interesting, looks like `BSI_anxiety` almost never makes it in, but then
+again, `BSI_interp` also does not rank high amongst the commonly selected
+variables. 
+
+So no error, so the problem with linear dependency involves a categorical
+variable, which there are a handful of.  
+
+```{r}
+cat <- cbind(hiv3[,12], hiv3[,-c(1,12,16,18:30)])
+summary(cat)
+```
+
+So, we do a combo of manual and automated procedures. 
+I manually ran the code chunk below, each time changing the data set
+to include more variables until I run into the error again.  
+```{r, warning=TRUE}
+regsubsets(AGEALC ~ ., data = cat[,1:12], nbest = 2, 
+            method = "exhaustive")
+```
+Bingo. Whatever the 12th column is, is the problem. 
+```{r}
+names(cat)[12]
+```
+So let's force that out of the model and we'll look at it
+later. No more errors after that. 
+```{r}
+ms_cat <- regsubsets(AGEALC ~ ., data = cat[,c(1:11, 13:15)], nbest = 2, 
+                     method = "exhaustive")
+```
+
+```{r, fig.width=10}
+par(mfrow=c(1,2))
+plot(ms_cat, scale="bic", main="BIC")
+plot(ms_cat, scale="adjr2", main="Adjusted R^2")
+```
+
+`HMONTH`, `ATTSERV`, Ethnicity and mom's education level don't seem 
+to show up at all. Let's drop them from the considered pool for now, 
+but we should go back and check Ethnicity one last time before finalizing
+the model. It typically is a very important demographic. 
+
+```{r}
+hiv4 <- hiv3 %>% select(-BSI_anxiety, -HMONTH, -ATTSERV, 
+                        -EDUMO, -ETHN, -FRNDS)
+```
+Putting *all* the remaining candidate variables into a
+selection process one last time.
+```{r}
+test4 <- regsubsets(AGEALC ~ ., data = hiv4, nbest = 1, 
+                     method = "exhaustive")
+plot(test4, scale="bic", main="BIC")
+plot(test4, scale="adjr2", main="Adjusted R^2")
+```
+
+Narrowed down indeed. Let's take the best model as chosen here
+and manually test a few variables that were were looking at earlier. 
+
+```{r}
+base_model <- lm(AGEALC ~ AGE + GENDER + HOWREL + BSI_somat + 
+                   NHOOKEY + BSI_paranoid + NGHB, data=hiv3)
+```
+Test the knot for `BSI_somat`.
+```{r}
+test_somat_knot <- lm(AGEALC ~ AGE + GENDER + HOWREL + BSI_somat + s1 +
+                      NHOOKEY + BSI_paranoid + NGHB, data=hiv3)
+anova(base_model, test_somat_knot)
+```
+
+Borderline significant, and we saw that it fit the relationship earlier
+so we will consider it included. 
+
+Now test `BSI_interp` and it's knot. 
+
+```{r}
+test_inter <- lm(AGEALC ~ AGE + GENDER + HOWREL + BSI_somat + s1 +
+                      NHOOKEY + BSI_paranoid + NGHB + BSI_interp + i1,
+                 data=hiv3)
+anova(test_somat_knot, test_inter)
+```
+
+Adding these two variables provides a significant improvment to the
+model. 
+```{r}
+summary(test_inter)
+```
+These results agree since the p-value of the knot for `BSI_interp`
+is highly significant. 
+
+Now lastly, what about Ethnicity? 
+```{r}
+test_eth <- lm(AGEALC ~ AGE + GENDER + HOWREL + BSI_somat + s1 +
+                        NHOOKEY + BSI_paranoid + NGHB + 
+                        BSI_interp + i1 + ETHN,
+                 data=hiv3)
+anova(test_inter, test_eth)
+summary(test_eth)
+```
+
+After controlling for all other variables in the model, the age
+at which an adolescent starts drinking alcohol does not differ
+across ethnicity. 
+
+Now to check assumptions.
+```{r, fig.height=8, fig.width=8}
+par(mfrow=c(2,2))
+plot(test_inter)
+```
+
+There are no outliers of concern (standardized residuals <4), 
+the residuals look very normal, but the variance of the 
+residuals appears to be non-constant. 
+
+Note that I did not test for any interactions between any
+other variables. 
+
+So at this point my final model is:
+
+```{r, results = 'asis', echo=FALSE}
+tab <- xtable(summary(test_inter), digits=3)
+print(tab, type='html')
+```
+
+After controlling for the age at survey, adolescents who 
+are very religious or spiritual, those who skip school more, 
+and those with a high value on the BSI paranoid scale are
+more likely to start drinking at a later age. 
+
+Adolescents with a high Interpersonal sensitivity BSI subscale value, 
+a high value on the Somatization BSI subscale, and males
+are more likely to start drinking at an earlier age (all p<.01).  
+
+This model explains 49.6% of the variance in the outcome. 
+
+
+
+
+
+
+
