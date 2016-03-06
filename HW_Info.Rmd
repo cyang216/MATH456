@@ -5,14 +5,14 @@ output: html_document
 ---
 
 ```{r results="asis", echo=FALSE}
-source("C:/Github/MATH456/stylesheets/custom.R")
+source("~/Github/MATH456/stylesheets/custom.R")
 ```
 
 Navbar: [[Home]](index.html) [[Schedule]](Schedule.html) [[Google Group]](https://groups.google.com/forum/#!forum/csuc_stat)  [[Google Drive]](https://drive.google.com/a/mail.csuchico.edu/folderview?id=0B83Z8_sNw3KPcnVrYzVFRHUtcHM&usp=sharing)
 
 
 
-```{r include = FALSE}
+```{r, include = FALSE}
 library(readr)
 #rubric <- read_csv(file.path("admin", "hw_rubric.csv"))
 rubric <- read_csv("admin/hw_rubric.csv")
@@ -24,6 +24,7 @@ This is where I will post homework solutions (full and partial), and some helper
 * Simple Linear regression [SLR_solutions](notes/solutions/SLR_solutions.html)
 * Multiple Linear regression [MLR_solutions](notes/solutions/MLR_solutions.html)
 * Plotting help for spline predictions [Lec04_solutions](notes/solutions/Lec04_solutions.html)
+* My model building [VariableSelection_solutions](notes/solutions/VariableSelection_solutions.html)
 
 
 
