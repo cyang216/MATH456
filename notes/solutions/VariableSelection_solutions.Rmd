@@ -8,13 +8,13 @@ output: html_document
 ```{r, warning=FALSE, message=FALSE}
 library(ggplot2);library(leaps);library(MASS)
 library(dplyr);library(xtable); library(knitr)
-lung  <- read.delim("~/GitHub/MATH456/data/lung_020716.txt")
-hiv <- read.delim("~/GitHub/MATH456/data/PARHIV_022216.txt")
+lung  <- read.delim("C:/GitHub/MATH456/data/lung_020716.txt")
+hiv <- read.delim("C:/GitHub/MATH456/data/PARHIV_022216.txt")
 opts_chunk$set(warning=FALSE, message=FALSE, fig.align='center') 
 ```
 
 ```{r results="asis", echo=FALSE}
-source("~/Github/MATH456/stylesheets/custom.R")
+source("C:/Github/MATH456/stylesheets/custom.R")
 ```
 
 **1. For the lung function data, use an automated selection process to predict
@@ -78,7 +78,7 @@ The reduced model excludes those parental variables.
 reduced <- lm(OCFEV1 ~ OCHEIGHT + OCWEIGHT + OCSEX, data=lung)
 ```
 
-An F test is then conducted to see if parental FEV adds a signficant amount of 
+An F test is then conducted to see if parental FEV adds a significant amount of 
 information to the model of the oldest child's FEV measurement. 
 
 $H_{0}: \beta_{4} = \beta_{5} = 0$  
@@ -89,7 +89,7 @@ anova(full, reduced)
 ```
 
 There is sufficient evidence to believe that the FEV1 measurement
-for at least one parent is sigificantly predictive of the FEV1 
+for at least one parent is significantly predictive of the FEV1 
 measurement for the oldest child. 
 
 
@@ -109,7 +109,7 @@ hiv1 <- hiv %>% select(-SMOKEP3M, -AGEMAR, -AGESMOKE) %>%
 
 I then also take the time to make sure factor variables are being treated
 as actual factors. This code then will be moved into the data management file
-after this point because it is a change that should be done permenantly to the
+after this point because it is a change that should be done permanently to the
 data set. _I am leaving the ordinal variables unchanged_. I am also creating
 the neighborhood score variable as introduced in the multiple regression chapter. 
 
@@ -296,7 +296,7 @@ plot(test_c, scale="bic", main="BIC")
 plot(test_c, scale="adjr2", main="Adjusted R^2")
 ```
 Interesting, looks like `BSI_anxiety` almost never makes it in, but then
-again, `BSI_interp` also does not rank high amongst the commonly selected
+again, `BSI_interp` also does not rank high among the commonly selected
 variables. 
 
 So no error, so the problem with linear dependency involves a categorical
@@ -375,7 +375,7 @@ test_inter <- lm(AGEALC ~ AGE + GENDER + HOWREL + BSI_somat + s1 +
 anova(test_somat_knot, test_inter)
 ```
 
-Adding these two variables provides a significant improvment to the
+Adding these two variables provides a significant improvement to the
 model. 
 ```{r}
 summary(test_inter)
