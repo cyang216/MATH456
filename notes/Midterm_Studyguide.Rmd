@@ -1,0 +1,40 @@
+---
+title: "Midterm study guide"
+author: "MATH 456"
+output: html_document
+---
+
+## Things to look out for with Regression
+1. Multicolinearity
+2. Outliers
+3. Poor model fit
+4. Violation of assumptions
+
+## Model assumptions
+1. Linearity between $Y$ and $X$.
+2. Residuals: $\epsilon_i \sim \mathcal{N}(0, \sigma^{2})$
+
+## Outliers
+1. Measures of influence
+    a. DFFITS
+    b. Leverage
+    c. Cooks Distance
+    d. Studentized residuals
+2. Identifying outliers
+    a. Residual plots
+    b. Determining outliers in Y
+    c. Determining outliers in X
+    d. Determining influential points
+    
+    
+## Variable selection procedures
+1. Pro's and cons for each method
+    a. Forward/Backward/Stepwise selections
+    b. Stepwise selection
+    c. Manual selection
+2. Measures of fit
+    a. Information criteria: AIC/BIC
+    b. R-squared
+    c. Cross-validation error
+    
+
