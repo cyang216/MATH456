@@ -4,15 +4,49 @@ author: "MATH 456"
 output: html_document
 ---
 
-## Things to look out for with Regression
-1. Multicolinearity
-2. Outliers
-3. Poor model fit
-4. Violation of assumptions
+```{r results="asis", echo=FALSE}
+source("C:/Github/MATH456/stylesheets/custom.R")
+```
+
+Navbar: [[Schedule]](../Schedule.html)[[Week 7 Overview]](../wk07.html) 
+
+# Linear Regression Model Building
+1. What is the purpose of the model?
+    a. Predictive
+    b. Interpretation
+2. How do we build the model?
+    a. Variable selection
+    b. Splines and non-linear terms
+3. Assess model fit
+    a. Assumptions
+    a. $R^{2}$, RMSE / CV error
+    b. Effect of outliers and influential points
+4. Report
+    a. Final model
+    b. Estimates (if interpreting) in context
+    c. RMSE & $R^{2}$
+
+
+# Things to look out for with Regression
+1. Violation of assumptions
+2. Nonsencical/blind/uninformative variable selection
+2. Multicolinearity
+3. Outliers
+4. Poor model fit
 
 ## Model assumptions
 1. Linearity between $Y$ and $X$.
 2. Residuals: $\epsilon_i \sim \mathcal{N}(0, \sigma^{2})$
+
+## Variable selection procedures
+1. Pro's and cons for each method
+    a. Manual selectio 
+    b. Forward/Backward/Stepwise selections
+    c. Stepwise selection
+2. Measures of fit
+    a. Information criteria: AIC/BIC
+    b. R-squared
+    c. Cross-validation (prediction/RMSE) error
 
 ## Outliers
 1. Measures of influence
@@ -25,16 +59,7 @@ output: html_document
     b. Determining outliers in Y
     c. Determining outliers in X
     d. Determining influential points
+3. Deciding what to do with them
+    a. Removal? Needs justification. 
+    b. Assess impact of removal. 
     
-    
-## Variable selection procedures
-1. Pro's and cons for each method
-    a. Forward/Backward/Stepwise selections
-    b. Stepwise selection
-    c. Manual selection
-2. Measures of fit
-    a. Information criteria: AIC/BIC
-    b. R-squared
-    c. Cross-validation error
-    
-

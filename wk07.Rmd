@@ -20,7 +20,7 @@ source("C:/Github/MATH456/stylesheets/custom.R")
 
 
 ### Wednesday 3/9/16
-* Exam review
+* Exam review [List of review topics](notes/Midterm_Studyguide.html)
 
 ### Friday 3/11/16
 
