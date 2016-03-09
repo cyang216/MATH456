@@ -5,48 +5,187 @@ date: "February 26, 2016"
 output: html_document
 ---
 
-```{r, echo=FALSE, warning=FALSE, message=FALSE}
-library(ggplot2)
+```{r,warning=FALSE, message=FALSE}
+library(ggplot2); library(car);library(knitr)
+opts_chunk$set(warning=FALSE, message=FALSE, fig.height=5, fig.width=5, fig.align='center') 
 ```
 
 # Indicators
-1. Create a model to analyze the relationship of education status to depression level as measured by
-CESD after controlling for age. Combine all education levels below a HS graduate into one reference 
-category called "Up to HS" prior to analysis.
+###Create a model to analyze the relationship of education status to depression level as measured by CESD after controlling for age.
+
+**1. Ensure that you are using the analyzable version of the depression data set.**
+```{r}
+depress <- read.delim("C:/Github/MATH456/data/Depress_030816.txt")
+```
+**3. Ensure that R is treating "Up to HS" as the reference category for education level.**
+```{r}
+depress$EDUCAT2 <- recode(depress$EDUCAT, "'<HS' = 'Up to HS grad'; 
+                                           'Some HS' = 'Up to HS grad'; 
+                                           'HS Grad' = 'Up to HS grad'")
+levels(depress$EDUCAT2) <- c("Up to HS grad", "Some college", "BS", "MS", "PhD")
+table(depress$EDUCAT2)
+```
+The table reads left to right in increasing educational order. This provides
+confirmation that the recode and reordering was successful. The first level
+(Up to HS grad) will be treated as the reference group.
+
+**4. Consider a transformation of `CESD`. Explain and justify using graphics.**
+```{r, fig.height=4, fig.width=4, fig.align='center'}
+hist(depress$CESD)
+```
+The value of CESD is skewed right. We can log-transform this variable, but
+since there are zero's in the data, a small non-zero constant must be added
+prior to taking the log. 
+```{r, fig.height=4, fig.width=4, fig.align='center'}
+min(depress$CESD[depress$CESD>0])
+depress$xcesd <- log(depress$CESD+1)
+hist(depress$xcesd)
+```
+
+**5. Check the model fit by examining the residuals**
+```{r, fig.align='center', fig.height=6}
+par(mfrow=c(2,2))
+model <- lm(xcesd ~ EDUCAT2 + AGE, data=depress)
+plot(model)
+```
+
+_Residuals vs Fitted_: The residuals are not quite centered around zero,
+the trend line is slightly above the zero line at all times. There is
+a slight curve to this line which may indicate heteroscedasciticy, but this 
+is not a gross violation.
+
+_Normal Q-Q_: There appears to be some deviation away from the normal reference
+in the tails. This implies that the residuals perhaps follow a $t-$ distribution
+better than a standard normal $Z$ distribution. 
+
+
+
+**6. Identify any potential outliers.**  
+The only points that R identifies with numbers really do not stick out from the
+rest of the data points. 
+_Residuals vs. Leverage_: The leverage cutoff value is `4/NROW(depress)` = `r round(4/NROW(depress),3)`, 
+which would cutoff nearly half of the data points being used. This is not a 
+useful nor helpful finding.
+
+This model does not have the best fit, which means the predictor variables used
+are likely not correct or optimal variables to use to predict depression score. 
+
+   
+**7. Interpret ALL coefficients in context of the problem.**
+```{r}
+summary(model)
+```
+For every year older a person is, the depression score significantly decreases 
+by about 1% (p=.003)
+Those with some college have a 46% lower depression score compared to those with
+up to a HS degree (p=.04). The effect of other education levels on log CESD 
+are not significantly different than the effect for those with up to a HS degree. 
+
+To further confirm that education level as a whole does not significantly affect
+a persons depression score I conduct an F test for
+$\beta_{some college} = \beta_{BS} = \beta_{MS} =\beta_{PhD}=0$.
+```{r}
+anova(model, lm(xcesd ~ AGE, data=depress))
+```
+This test fails to reject the null hypothesis that education does not affect
+depression level. 
+
+**8. Does this model do well at all in predicting CESD?**
+This model explains less than 5% of the variation in the log of CESD 
+(adjusted $R^{2}$ = .03). The test for overall model fit is significant 
+at the 5% level however (p=.01), which indicates that this model 
+(while not good) does better to predict CESD than just using the average 
+CESD value. This is likely due to the addition of age in the model. 
+So while Education level does not contribute to the understanding 
+of CESD, age does. 
 
 
 # Splines
-1. Using the `cars` data set built into R, build a model to predict the
-   distance a car takes to stop based on how fast it was going.  
-  
-```{r}
-x6 <- (cars$speed-6)
-x6[ x6<0 ] <- 0
+**1. Using the `cars` data set built into R, build a model to predict the distance a car takes to stop based on how fast it was going.**
 
-x12 <- (cars$speed-12)
-x12[ x12<0 ] <- 0
+Visualize the relationship between speed and distance.
+```{r}
+ggplot(cars, aes(x=speed, y=dist)) + geom_point() + geom_smooth()
+```
+  
+First glance doesn't look too non-linear, so let's create a simple linear regression model. 
+```{r}
+slr <- lm(dist~speed, data=cars)
+ggplot(cars, aes(x=speed, y=dist)) + geom_point() + geom_smooth(se=FALSE) + 
+  geom_line(aes(y=predict(slr)), col="red")
+```
+
+There doesn't appear to be a very strong curvature, so I don't think a 
+squared or cubic term is needed but let's confirm. 
+```{r}
+sp2 <- cars$speed^2
+sp3 <- cars$speed^3
+
+fit.sq <- lm(cars$dist ~ cars$speed + sp2)
+fit.cub <- lm(cars$dist ~ cars$speed + sp2 + sp3)
+
+ggplot(cars, aes(x=speed, y=dist)) +
+      geom_point() + geom_smooth(se=FALSE, lty=2) + 
+      geom_line(aes(x=speed, y=predict(fit.sq)), col="red", lwd=1.2) + 
+      geom_line(aes(x=speed, y=predict(fit.cub)), col="purple", lwd=1.2)
+```
+
+A cubic definitely over fits the data, the squared term may be ok. 
+Let's revisit the linear model and put a few knots where it 
+seems to deviate away from the lowess line. 
+```{r}
+x10 <- (cars$speed-10)
+x10[ x10<0 ] <- 0
 
 x18 <- (cars$speed-18)
 x18[ x18<0 ] <- 0
 
-t(cbind(cars$speed, x6, x12, x18)[8:20,])
-
-fit.lin.spline <- lm(cars$dist ~ cars$speed + x6 + x12 + x18)
+fit.lin.spline <- lm(cars$dist ~ cars$speed + x10 + x18)
 
 ggplot(cars, aes(x=speed, y=dist)) +
-    geom_point() + 
-    geom_line(aes(x=speed, y=predict(fit.lin.spline)))
-
-
-
+    geom_point() + geom_smooth(se=FALSE) + 
+    geom_line(aes(x=speed, y=predict(fit.lin.spline)), col="red")
 ```
+
+Perhaps a little better. There is still a wiggle around 18 mph, 
+so last attempt will be a natural spline with a polynomial of rank 3. 
+
+```{r}
+library(splines)
+fit.ns <- lm(cars$dist ~ ns(cars$speed,3))
+
+summary(fit.ns)
+
+ggplot(cars, aes(x=speed, y=dist)) +
+    geom_point() + geom_smooth(se=FALSE) + 
+    geom_line(aes(x=speed, y=predict(fit.ns)), col="red")
+```
+
+This doesn't seem to fit any better than the cubic spline, and
+the standard error on the estimate for the 2nd term is outrageously
+high. This is an indicator that this model does not fit well
+mathematically. 
+
+At this point my candidate models are the linear spline with 2 knots
+and the quadratic model. I will compare the models on $R^{2}$ and RMSE. 
+
+```{r}
+summary(fit.lin.spline)$adj.r.squared
+summary(fit.sq)$adj.r.squared
+
+summary(fit.lin.spline)$sigma
+summary(fit.sq)$sigma
+```
+
+The model with speed squared has a larger adjusted $R^{2}$ value and a 
+lower RMSE value. However this difference is so slight that I will conclude
+that these models perform equally well.
 
 
 2. Using the family lung function data, build a model to predict FEV1
    to height for the oldest child. 
 
 ```{r}
-
 fev <- read.table("C:/Github/MATH456/data/Lung_020716.txt", sep="\t", header=TRUE)
 names(fev) <- tolower(names(fev))
 qplot(x=ocheight, y=ocfev1, data=fev, geom='point') + geom_smooth()
@@ -122,4 +261,21 @@ ggplot(fev, aes(x=ocheight, y=ocfev1)) + geom_point() +
 
 
 
+```{r, results='asis'}
+out <- cbind(
+R.sq = c(summary(sqr.model)$adj.r.squared,
+                   summary(cub.model)$adj.r.squared,
+                   summary(lin_spl)$adj.r.squared,
+                   summary(fit.ns)$adj.r.squared),
+RMSE = c(summary(sqr.model)$sigma,
+          summary(cub.model)$sigma,
+          summary(lin_spl)$sigma,
+          summary(fit.ns)$sigma)
+)
+rownames(out) <- c("squared", "cubic", "linear spline", "natural spline")
+kable(out, digits=4)
+```
+
+All models perform equivalently. The linear spline has the highest R squared
+and lowest RMSE, and is easiest to interpret. 
 
