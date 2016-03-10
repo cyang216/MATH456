@@ -22,7 +22,7 @@ depress <- read.delim("C:/Github/MATH456/data/Depress_030816.txt")
 depress$EDUCAT2 <- recode(depress$EDUCAT, "'<HS' = 'Up to HS grad'; 
                                            'Some HS' = 'Up to HS grad'; 
                                            'HS Grad' = 'Up to HS grad'")
-levels(depress$EDUCAT2) <- c("Up to HS grad", "Some college", "BS", "MS", "PhD")
+depress$EDUCAT2 <- factor(depress$EDUCAT2, levels=c("Up to HS grad", "Some college", "BS", "MS", "PhD"))
 table(depress$EDUCAT2)
 ```
 The table reads left to right in increasing educational order. This provides
@@ -74,21 +74,35 @@ are likely not correct or optimal variables to use to predict depression score.
 **7. Interpret ALL coefficients in context of the problem.**
 ```{r}
 summary(model)
+round(expm1(model$coefficients)*c(1,rep(100,5)),2)
 ```
-For every year older a person is, the depression score significantly decreases 
-by about 1% (p=.003)
-Those with some college have a 46% lower depression score compared to those with
-up to a HS degree (p=.04). The effect of other education levels on log CESD 
-are not significantly different than the effect for those with up to a HS degree. 
 
-To further confirm that education level as a whole does not significantly affect
+* The baseline level of depression for someone who has not gone to college 
+  and is zero years old is 9.6. 
+* For every year older a person is, the depression score significantly decreases 
+  by about 1% (p=.003)
+* Those with some college have 9.6% lower depression score compared to those
+  with no college experience. This difference is not significant. 
+* Those with a BS degree have a 1.8% higher depression score compared to those
+  with no college experience. This difference is not significant.  
+* Those with a MS degree have a 45% lower depression score compared to those with
+  up to a HS degree (p=.02). 
+* Those with a PhD have a 22% lower depression score compared to those with
+  up to a HS degree. This difference is not significant. 
+
+_Take home message: go to grad school!_
+
+To test that education level as a whole does not significantly affect
 a persons depression score I conduct an F test for
 $\beta_{some college} = \beta_{BS} = \beta_{MS} =\beta_{PhD}=0$.
 ```{r}
 anova(model, lm(xcesd ~ AGE, data=depress))
 ```
-This test fails to reject the null hypothesis that education does not affect
-depression level. 
+
+The addition of education to the model of depression score does not significantly
+reduce the residual sums of squares (a.k.a. SSE). This indicates that education
+does not add information to predict or explain the depression score. Hence we would
+fail to reject the null hypothesis that education does not affect depression level. 
 
 **8. Does this model do well at all in predicting CESD?**
 This model explains less than 5% of the variation in the log of CESD 
