@@ -1,0 +1,58 @@
+---
+title: "Lec 06: Dimension Reduction using Principal Components"
+author: "MATH 456 - Spring 2016"
+output:
+  html_document:
+    highlight: pygments
+    theme: spacelab
+    toc: yes
+  pdf_document: default
+---
+```{r,echo=FALSE, warning=FALSE, message=FALSE}
+library(knitr); library(rmarkdown);library(ggplot2)
+library(xtable)
+options(xtable.comment = FALSE)
+opts_chunk$set(warning=FALSE, message=FALSE) 
+```
+
+```{r results="asis", echo=FALSE}
+source("C:/Github/MATH456/stylesheets/custom.R")
+```
+
+Navbar: [[Home]](../index.html) [[Schedule]](../Schedule.html) [[Data]](../data/Datasets.html) [[Week 9 Overview]](../wk09.html) [[HW Info]](../HW_Info.html)  [[Google Group]](https://groups.google.com/forum/#!forum/csuc_stat)
+
+# Introduction
+
+* Restructure interrelated variables
+* Simplify description
+* Reduce dimensionality
+* Avoid multicollinearity problems in regression
+
+It’s **"Principal"** Components (adjective), not **"Principle"** Components (noun)
+
+From [Grammerist](http://grammarist.com/spelling/principle-principal/): 
+
+> As a noun, principal refers to 
+  (1) one who holds a presiding position or rank, and 
+  (2) capital or property before interest, 
+  and it’s also an adjective meaning 
+  (3) first or most important in rank 
+> 
+> Principle is only a noun. In its primary sense, it refers to a basic truth, law, assumption, or rule.
+
+This third definition (3) is the context in which we will be using this term. 
+
+
+# Assigned Reading and additional references
+* Afifi Chapter 14
+
+
+# On Your Own
+##### On Your Own
+
+
+    
+    
+    
+    
+    
