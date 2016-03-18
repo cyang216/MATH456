@@ -13,14 +13,16 @@ source("C:/Github/MATH456/stylesheets/custom.R")
 
 
 ### Notes and Materials
+* Lec 06: Dimension Reduction [[PDF]](notes/lec06_DimensionReduction.pdf)[[HTML]](notes/lec06_DimensionReduction.html)
 
 ### Monday 3/21/16
-
+* Discuss PCA
 
 ### Wednesday 3/23/16
-
+* Work on PCA Homework
 
 ### Friday 3/25/16
+* Discuss Discrimenant Analysis
 
 * **Extra Credit** Attend the Department colloqium talk from 3-4pm.   
   Dr. Matt Jans from the UCLA Center for Health Policy Research is here
@@ -30,6 +32,5 @@ source("C:/Github/MATH456/stylesheets/custom.R")
 
 
 ## Looking Ahead
-Spring Break!
 
 
