@@ -1,0 +1,36 @@
+---
+title: "Week 10"
+author: "MATH 456, Spring 2016"
+date: " 03/28/16"
+output: html_document
+---
+```{r results="asis", echo=FALSE}
+source("C:/Github/MATH456/stylesheets/custom.R")
+```
+[[Schedule]](Schedule.html)  [[Week 9]](wk09.html) [[Week 11]](wk11.html)
+
+## Announcements
+
+
+### Notes and Materials
+* Lec 07: Inference on Categorical Data [[PDF]](notes/lec07_CategoricalDataAnalysis.pdf)[[HTML]](notes/lec07_CategoricalDataAnalysis.html)
+* OpenIntro Statistics [Free PDF Textbook](https://www.openintro.org/stat/textbook.php) Chapter 6 & 7
+* Open Intro Lab on categorical data [[HTML]](notes/OI_Inf_for_categorical_data/html)
+
+
+### Monday 3/21/16
+* Inference on Categorical data via [Open Intro Lab](OI_Inf_for_categorical_data/html) 
+
+### Wednesday 3/23/16
+* Contingency tables and Odds Ratios 
+* Chi-squared test of association
+* Chi-squared test of independence
+
+### Friday 3/25/16
+* M&M Experiment
+
+
+## Looking Ahead
+* Logistic Regression
+* Classifiers
+
