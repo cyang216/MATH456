@@ -22,7 +22,7 @@ source("C:/Github/MATH456/stylesheets/custom.R")
 * Work on PCA Homework
 
 ### Friday 3/25/16
-* Discuss Discrimenant Analysis
+* Exam and project discussion
 
 * **Extra Credit** Attend the Department colloqium talk from 3-4pm.   
   Dr. Matt Jans from the UCLA Center for Health Policy Research is here
@@ -32,5 +32,8 @@ source("C:/Github/MATH456/stylesheets/custom.R")
 
 
 ## Looking Ahead
+* Categorical Data Analysis - Prepare for Monday's lecture by
+    * Review OpenIntro Statistics [Free PDF Textbook](https://www.openintro.org/stat/textbook.php) Chapter 6 & 7
+    * Go through this Open Intro Lab on categorical data [[HTML]](notes/OI_Inf_for_categorical_data/html) (Uses the `openintro` package)
 
 

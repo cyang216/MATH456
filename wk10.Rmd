@@ -1,0 +1,34 @@
+---
+title: "Week 10"
+author: "MATH 456, Spring 2016"
+date: " 03/28/16"
+output: html_document
+---
+```{r results="asis", echo=FALSE}
+source("C:/Github/MATH456/stylesheets/custom.R")
+```
+[[Schedule]](Schedule.html)  [[Week 9]](wk09.html) [[Week 11]](wk11.html)
+
+## Announcements
+
+### Notes and Materials
+* Lec 07: Inference on Categorical Data [[PDF]](notes/lec07_CategoricalDataAnalysis.pdf)[[HTML]](notes/lec07_CategoricalDataAnalysis.html)
+
+##### On Your Own - Review of tests for one  sample proportions (Before Monday)
+* OpenIntro Statistics [Free PDF Textbook](https://www.openintro.org/stat/textbook.php) Chapter 6
+* Open Intro Lab on categorical data [[HTML]](notes/OI_Inf_for_categorical_data/html) (Uses the `openintro` package)
+
+### Monday 3/21/16
+* Review one and two sample proportions. 
+
+### Wednesday 3/23/16
+* Contingency tables and measures of association
+
+### Friday 3/25/16
+* Work on on your own questions
+
+
+## Looking Ahead
+* Logistic Regression
+* Classifiers
+

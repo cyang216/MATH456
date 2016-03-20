@@ -33,6 +33,7 @@ Navbar: [[Home]](../index.html) [[Schedule]](../Schedule.html) [[Data]](../data/
 * Quick-R http://www.statmethods.net/advstats/factor.html 
 * Computing and visualizing PCA in R via R Bloggers http://www.r-bloggers.com/computing-and-visualizing-pca-in-r/
 * Little book of R for Multivariate Analysis http://little-book-of-r-for-multivariate-analysis.readthedocs.org/en/latest/src/multivariateanalysis.html#principal-component-analysis
+* https://www.youtube.com/watch?v=Heh7Nv4qimU
 
 # Introduction (Afifi 14.1, 14.2)
 
@@ -42,7 +43,7 @@ Navbar: [[Home]](../index.html) [[Schedule]](../Schedule.html) [[Data]](../data/
 * Reduce dimensionality
 * Avoid multicollinearity problems in regression
 
-It’s **"Principal"** Components (adjective), not **"Principle"** Components (noun)
+It's**"Principal"** Components (adjective), not **"Principle"** Components (noun)
 
 From [Grammerist](http://grammarist.com/spelling/principle-principal/): 
 
