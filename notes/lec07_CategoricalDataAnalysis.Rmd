@@ -41,16 +41,16 @@ to employ the usual CI and HT tools. In other instances, such as those with
 contingency tables or when sample size conditions are not met, we will use a 
 different distribution, though the core ideas remain the same.
 
-Be sure to referece the categorical data sections of the [Data Visualization Tutorial](http://norcalbiostat.github.io/R-Bootcamp/labs/Data_Visualization_Tutorial_Full.html) or 
+Be sure to reference the categorical data sections of the [Data Visualization Tutorial](http://norcalbiostat.github.io/R-Bootcamp/labs/Data_Visualization_Tutorial_Full.html) or 
 the [Cookbook for R](http://www.cookbook-r.com/Graphs/Bar_and_line_graphs_(ggplot2)/) for
 more information and guidance on how to plot categorical data correctly. 
 
-## Assigned Reading
+#### Assigned Reading
 * OpenIntro Lab on categorical data [[HTML]](notes/OI_Inf_for_categorical_data/html)
 * OpenIntro Statistics [Free PDF Textbook](https://www.openintro.org/stat/textbook.php) Chapter 6 (6.1-6.4)
 * Afifi Chapter 12 (Logistic Regression)
 
-## Additional References 
+#### Additional References
 * Mike Marin: Relative Risk and Odds Ratio https://www.youtube.com/watch?v=V_YNPQoAyCc
 * An **excellent** additional textbook reference: _Categorical Data Analysis_ by Alan Agresti
 * Using R for Biomedical Statistics http://a-little-book-of-r-for-biomedical-statistics.readthedocs.org/en/latest/src/biomedicalstats.html#
@@ -61,9 +61,10 @@ more information and guidance on how to plot categorical data correctly.
 
 
 #### Spam Data
-This set of lecture notes uses the `spam` data set. 
+This set of lecture notes uses the `spam` data set.
 ```{r}
 email <- read.delim("C:/Dropbox/CSUC/Data/email.txt", header=TRUE, sep="\t")
+email <- email %>% mutate(hasnum = ifelse(number %in% c("big", "small"), 1, 0))
 ```
 
 Two categorical variables of current interest are
@@ -73,19 +74,44 @@ Two categorical variables of current interest are
     - `none`: No numbers 
     - `small`: Only values under 1 million
     - `big`: A value of 1 million or more
+* `hasnum`: 0/1 binary indicator for if the email contains any sized number
 
-# Review: Inference on a single proportion 
-This section is considered review and will not be covered directly in 
-class. If you have never analyzed proportions in R or it has been a while 
-since you took MATH 315 it is advised that you do not skip this section. 
 
-* Open Intro: Chapter 6.1
+#### Chi-Squared Distribution
+Much of categorical data analysis uses the $\chi^{2}$ distribution. 
 
-###### Complete the OpenIntro Lab on categorical data [[HTML]](notes/OI_Inf_for_categorical_data/html) **You must have the `openintro` package installed & loaded to have access to the custom `inference()` function used in the lab.**
+```{r, echo=FALSE, fig.align='center', fig.height=5, fig.width=5}
+x <- seq(0,10, by=.01)
+df <- c(1,2,3,4,6,8)
+plot(c(0,10), c(0,1), type="n", xlab="x", ylab="P(X=x)", axes=FALSE, 
+     main="Chi-Squared PDF")
+for(k in df){
+  lines(x, dchisq(x, k), col=k)
+}
+legend("topright", col=df, lty=1, legend=df, ncol=2, title="df")
+axis(1); axis(2, las=2); box()
+```
 
-### Example: Examining the frequency of number sizes in emails
+* The shape is controlled by a degrees of freedom parameter (df)
+* Is used in many statistical tests for categorical data. 
+* Is always positive (it's squared!)
+    - High numbers result in low p-values
+* Mathematically connected to many other distributions
+    * Special case of the gamma distribution (One of the most commonly used 
+      statistical distributions)
+    * The sample variance has a $\chi^{2}_{n-1}$ distribution.  
+    * The sum of $k$ independent standard normal distributions has a $\chi^{2}_{k}$ distribution. 
+    * The ANOVA F-statistic is the ratio of two $\chi^{2}$ distributions divided by 
+      their respective degrees of freedom. 
 
-#### One-way Tables
+
+[[top]](lec07_CategoricalDataAnalysis.html)
+
+
+# Review: Single categorical variable
+
+#### Tables
+
 A table for a single variable is called a _frequency table_. The values 
 displayed represent the number of records in the data set that fall into that
 particular category.
@@ -101,7 +127,7 @@ prop.table(table(email$number))
 ```
 
 We make this output more human readable as percentages by rounding the results
-and multplying by 100.
+and multiplying by 100.
 ```{r}
 round(prop.table(table(email$number))*100,2)
 ```
@@ -109,7 +135,7 @@ round(prop.table(table(email$number))*100,2)
 Out of the 3921 emails in this data set, 545 (13.9%) contain big numbers, 
 2827 (72.1%) contain small numbers, and 549 (14.0%) contain no numbers. 
 
-#### One variable barcharts
+#### Barcharts
 
 The most common method to display frequencies in a graphical manner is
 with a _bar chart_ (aka barplot or bar graph). One bar per distinct
@@ -121,45 +147,64 @@ ggplot(email, aes(number)) + geom_bar() + ylab("Frequency") + xlab("Size of numb
   ggtitle("Frequency of emails by size of the number") 
 ```
 
-#### Research Question: Do more than half of the emails flagged as spam contain numbers?
-We are only interested in the emails that are flagged spam, and that 
-contain any number, so let's do a little data cleaning first. 
+#### Inference
+This section is considered review and will not be covered directly in 
+class. If you have never analyzed proportions in R or it has been a while 
+since you took MATH 315 it is advised that you do the following:
 
+* Read Open Intro: Chapter 6.1
+* Complete OpenIntro Lab on categorical data [[HTML]](notes/OI_Inf_for_categorical_data/html)
+
+You must have the `openintro` package installed & loaded to have access
+to the custom `inference()` function used in the lab.
+
+
+### Example: Do more than half of the spam emails contain numbers?
+We are only interested in the emails that are flagged spam so we filter
+the data first. 
 ```{r}
-spam.num <- email %>% 
-              filter(spam==1) %>%  
-              mutate(hasnum = ifelse(number %in% c("big", "small"), 1, 0))
-# Confirm recode
-table(spam.num$number, spam.num$hasnum, useNA="always")
+spam <- email %>% filter(spam==1)
 ```
 
-* What is the proportion of spam emails that contain numbers? 
+#### Using case-level data
 Since we created `hasnum` as a binary indicator, we can calculate the
 sample proportion as the sample mean. 
 ```{r}
-mean(spam.num$hasnum)
+mean(spam$hasnum)
 ```
-* Construct a 99% CI for the proportion of spam emails with numbers. 
+* Construct a 95% CI for the proportion of spam emails with numbers. 
 Since this proportion follows the normal model we can conduct a t.test. 
 ```{r}
-t.test(spam.num$hasnum, alternative = "two.sided", conf.level=.99)
+t.test(spam$hasnum, alternative = "two.sided", conf.level=.95)
 ```
 
-Over half (59.4%, 95%CI: 52.7, 66.0) of emails that are flagged spam
-contain numbers (p<.0001). This is statistically significantly larger
-than half. 
+A significant majority (59.4%, 95%CI: 54.3-64.4) of emails that are flagged spam
+contain numbers (p<.0001).
 
+#### Using summary numbers only
+If we only had summary statistics, for example from a published table, 
+```{r}
+addmargins(table(spam$hasnum))
+```
+we can still conduct a test to determine if this proportion is 
+significantly more than half by calling `prop.test()`. 
+
+```{r}
+prop.test(x=218, n=367, p=.5)
+```
+
+Significantly more than half (59%, 95%CI 54.2%-64.4%) of emails that were
+flagged as spam contain numbers (p<.0004).
 
 [[top]](lec07_CategoricalDataAnalysis.html)
 
 
-
-# Review: Difference of two proportions
+# Difference of two proportions
 * OpenIntro Section 6.2
 
 Now let's consider comparisons of proportions in two independent samples. 
 
-**Example**: Comparison of proportions of head injuries sustained in auto 
+**Ex**: Comparison of proportions of head injuries sustained in auto 
 accidents by passengers wearing seat belts to those not wearing seat belts. 
 You may have already guessed the form of the estimate: $\hat{p}_1 - \hat{p}_2$.
 
@@ -172,48 +217,58 @@ Since the sample proportion can be calculated as the mean of a binary
 indicator variable, we can use the same `t.test` function in R
 to conduct a hypothesis test and create a confidence interval.
 
-## Tests of proportions using case level data
-Do emails that contain numbers more likely to be spam? 
+### Example 1: Do numbers in emails affect rate of spam? (Case level data) 
+If we look at the rate of spam for emails with and without numbers, 
+we see that 6% of emails with numbers are flagged as spam compared to 
+27% of emails without numbers are flagged as spam. 
 
 ```{r}
-email <- email %>% mutate(hasnum =ifelse(number %in% c("big", "small"), 0, 1))
+email %>% group_by(hasnum) %>% summarize(p.spam=round(mean(spam),2))
+```
+
+This is such a large difference that we don't really _need_ a statistical
+test to tell us that this difference is significant. 
+But we will do so anyhow for examples sake. 
+
+1. **State the research question:** Are emails that contain numbers more likely to be spam? 
+2. **Define your parameters:**   
+Let $p_{nonum}$ be the proportion of emails _without_ numbers that are flagged as spam.  
+Let $p_{hasnum}$ be the proportion of emails _with_ numbers that are flagged as spam.  
+
+3. **Set up your statistical hypothesis:**  
+$H_{0}: p_{nonum} = p_{hasnum}$   
+$H_{A}: p_{nonum} \neq p_{hasnum}$ 
+
+4. **Check assumptions:** Use the pooled proportion $\hat{p}$ to check the success-failure
+condition. 
+```{r}
+p.hat <- mean(email$spam)
+p.hat
+```
+
+* $\hat{p}*n_{nonum}$ = `p.hat * sum(email$hasnum==0)` = `r p.hat * sum(email$hasnum==0)`
+* $\hat{p}*n_{hasnum}$ = `p.hat * sum(email$hasnum==1)` = `r p.hat * sum(email$hasnum==1)`
+* $(1-\hat{p})*n_{nonum}$ = `(1-p.hat)* sum(email$hasnum==0)` = `r (1-p.hat)* sum(email$hasnum==0)`
+* $(1-\hat{p})*n_{hasnum}$ = `(1-p.hat)* sum(email$hasnum==1)` = `r (1-p.hat) * sum(email$hasnum==1)`
+
+The success-failure condition is satisfied since all values are at least 10, and we can
+safely apply the normal model.
+
+5. **Test the hypothesis** by calculating a test statistic and corresponding p-value. 
+   Interpret the results in context of the problem. 
+```{r}
 t.test(spam~hasnum, data=email)
 ```
 
-## Tests of proportions in R using summary numbers only
-Sometimes you only have a summary table of numbers to go on, not the raw data. 
-We can use the `prop.test()` function in R to conduct a test of equal proportions. 
+Significantly more emails with numbers were flagged as spam compared to emails
+without numbers (27.1% versus 6.4% , p<.0001). 
 
-This function calculates a test statistic and a p-value using a $\chi^2$ distribution. 
-
-* The $\chi^2$ distribution is mathematically related to many other distributions. 
-    * Specific of note here is that a $Z^{2}$ distribution has a $\chi^{2}_{1}$ distribution. 
-    * Other relationships that are very useful: 
-        * https://onlinecourses.science.psu.edu/stat414/node/154
-        * https://en.wikipedia.org/wiki/Chi-squared_distribution#Relation_to_other_distributions
-
-### Example 1: Spam vs Ham
-Recall that 218 out of 367 (59%) of all emails that were flagged spam contained numbers. 
-```{r}
-table((email$number !="none"), email$spam, dnn=c("Contain numbers", "Spam"))
-round(prop.table(table((email$number !="none"), email$spam, dnn=c("Contain numbers", "Spam")), 2)*100,2)
-```
-Is this proportion is significantly more than half by calling `prop.test()`. 
-
-```{r}
-prop.test(x=218, n=367, p=.5)
-```
-
-Significantly more than half (59%, 95%CI 54.2%-64.4%) of emails that were
-flagged as spam contain numbers (p<.0004).
-
-
-### Example 2: Are mammograms helpful?
-Open Intro: 6.2.3
+### Example 2: Are mammograms helpful? (Summary numbers only)
+**Read Open Intro: 6.2.3**
 
 Test whether there was a difference in breast cancer deaths in the mammogram 
 and control groups. By entering in $x$ and $n$ as vectors we can test 
-equivelance of these two proportions. The assumptions for using the normal model 
+equivalence of these two proportions. The assumptions for using the normal model 
 for this test have been discussed in detail in the textbook. 
 
 ```{r}
@@ -232,7 +287,7 @@ the risk of death compared to just the regular screening exams alone.
 
 # Contingency tables
 
-* Both the explanatory and the resopnse variables are categorical (Nominal or Ordinal)
+* Both the explanatory and the response variables are categorical (Nominal or Ordinal)
 * Tables representing all combinations of levels of explanatory and response variables
 * A.k.a Two-way tables or _cross-tabs_
 * Numbers in table represent Counts of the number of cases in each cell
@@ -248,22 +303,27 @@ tab
 addmargins(tab)
 ```
 
-#### Cell percents
-A simple `prop.table()` shows the cell percents. 
-All cells add up to 1. The `mosaicplot` is a visual
-representation of these percentages. The larger the 
-box the larger the proportion. 
+## Cell percents
+A simple `prop.table()` shows the cell percents. All cells add up to 1. 
 ```{r}
-prop.table(tab)
-addmargins(prop.table(tab))
+round(addmargins(prop.table(tab)),3)
+```
+The `mosaicplot` is a visual representation of these percentages. 
+The larger the box the larger the cell proportion. 
+```{r}
 mosaicplot(tab)
 ```
 
-We will come back to these mosaicplots later. 
+We will come back to the usefulness of mosaicplots in analyzing 
+contingency tables later. 
 
-#### Row percents
+## Row percents
 Here, the percents add up to 1 across the rows. 
-The reference group (denominator) is the row category.  
+The reference group (denominator) is the row margin.  
+This is used when you want to compare the distribution of
+percents within each column
+
+**Ex:** How does the distribution of number sizes differ for spam vs non-spam emails? 
 ```{r}
 row.pct <- round(prop.table(tab, 1)*100, 2)
 addmargins(row.pct, 2)
@@ -273,10 +333,11 @@ addmargins(row.pct, 2)
 * 74.8% _of non-spam emails_ contain small numbers. 
 
 #### Base graphics
-Does "ok", but it depends on how you set up your table (rows vs columns),
-and you  have to do more work to get a reasonable legend and y axis. 
+Does "ok", but it depends on how you set up your table (note I had to 
+transpose the table `t()` to plot the distribution of numbers within spam).
+Also you have to do more work to get a reasonable legend and axes. 
 ```{r}
-barplot(tab, beside=TRUE, legend=rownames(tab))
+barplot(t(tab), beside=TRUE, legend=rownames(t(tab)))
 ```
 
 #### GGplot2
@@ -294,9 +355,14 @@ ggplot(melted_tab, aes(x = factor(Spam), y= count, fill = Number)) +
 ```
 
 
-#### Column percents
+## Column percents
 Here, the percents add up to 1 down the columns. 
-The reference group (denominator) is the column category.  
+The reference group (denominator) is the column margin.  
+This is used when you want to compare the distribution of
+the rows within each column. 
+
+**Ex:** How does the distribution of spam differ across 
+number sizes?
 ```{r}
 col.pct <- round(prop.table(tab, 2)*100, 2)
 addmargins(col.pct,1)
@@ -306,13 +372,20 @@ addmargins(col.pct,1)
 * 94.1% _of emails with small numbers_ are not spam
 
 ```{r}
+barplot(tab, beside=TRUE, legend=rownames(tab))
+```
+
+Once the data is melted, all you have to do is swap x and color 
+variables to plot type of email within number size category. 
+```{r}
 ggplot(melted_tab, aes(x = Number, y= count, fill = factor(Spam))) + 
   geom_bar(stat="identity", width=.5, position = "dodge")  + 
   xlab("Size of number in email") + ylab("Frequency") + 
   scale_fill_discrete("Type of Email", labels=c("Ham", "Spam")) 
 ```
 
-#### Summary / Take home message
+
+## Summary / Take home message
 It is very important to be clear as to what comparison you (or the researcher)
 are interested in making. Sometimes both directions are equally important, 
 but often there is one primary direction that is of interest. 
@@ -320,25 +393,8 @@ but often there is one primary direction that is of interest.
 
 [[top]](lec07_CategoricalDataAnalysis.html)
 
-# Side Note: Chi-Squared Distribution
-Before we get into measures of, and tests for association we need to introduce
-the $\chi^{2}$ distribution. 
-
-* Controlled by a degrees of freedom parameter (df)
-* Special case of the gamma distribution (One of the most commonly used 
-  statistical distributions)
-* The sample variance has a $\chi^{2}_{n-1}$ distribution.  
-* The sum of $k$ independent standard normal distributions has a $\chi^{2}_{k}$ distribution. 
-* The ANOVA F-statistic is the ratio of two $\chi^{2}$ distributions divided by 
-  their respective degrees of freedom. 
-* Is used in many statistical tests for categorical data. 
-* Is always positive (it's squared!)
-    - High numbers result in low p-values
-
 
 # Measures of Association
-* Watch this 6 minute Marin Stats Lectures: https://www.youtube.com/watch?v=V_YNPQoAyCc
-
 We will consider two measures of association in this class. 
 
 * Relative Risk
@@ -346,7 +402,7 @@ We will consider two measures of association in this class.
 
 These both are calculated on a 2x2 contingency table similar to the following: 
 
-```{r, echo=FALSE, results='asis'}
+```{r, results='asis'}
 nnnn <- matrix(c("$n_{11}$", "$n_{12}$", "$n_{1.}$", 
                  "$n_{21}$", "$n_{22}$", "$n_{2.}$", 
                  "$n_{.1}$", "$n_{.2}$", "$n_{..}$"), nrow=3, byrow=TRUE,  
@@ -356,18 +412,21 @@ print(xtable(nnnn, align='cccc'), type='html')
 
 
 Sometimes the cell contents are abbreviated as:
-```{r, echo=FALSE, results='asis'}
+```{r, results='asis'}
 abcd <- matrix(c("a", "b", "c", "d"), nrow=2,  
           dimnames = list(c("Exposed", "Not-Exposed"), c("Diseased", "Not-Diseased")))
 print(xtable(abcd, align='ccc'), type='html')
 ```
 
+<br></br>
+
+##### Watch this 6 minute Marin Stats Lecture: https://www.youtube.com/watch?v=V_YNPQoAyCc
 
 ## Relative Risk
 
 The **Relative Risk (RR)** or **Risk Ratio** is the ratio of the probability of an 
-event occuring in an exposed group compared to the probabilty of 
-an event occuring in a non-exposed group. 
+event occurring in an exposed group compared to the probability of 
+an event occurring in a non-exposed group. 
 
 * Asymptotically approaches the OR for small probabilities. 
 * Often used in cohort studies and randomized control trials. 
@@ -416,8 +475,7 @@ raised to the $\pm 1.96$ times the standard deviation of the estimate.
 $$(\hat{\theta}e^{-1.96*\sqrt{V}}, \hat{\theta}e^{1.96*\sqrt{V}})$$
 
 
-
-## Example: Are emails with numbers in them more likely to be flagged as spam? 
+### Example: Are emails with numbers in them more likely to be flagged as spam? 
 Reconsider the 2x2 table that compares emails flagged as spam to
 those containing numbers. 
 
@@ -440,7 +498,7 @@ library(epiR)
 epi.2by2(tab_sn)
 ```
 
-* Emails contaiing numbers are 3.6 (3.09, 4.21) times as likely as emails 
+* Emails containing numbers are 3.6 (3.09, 4.21) times as likely as emails 
   without numbers to be flagged as spam.
 * Emails containing numbers have 5.4 (4.27, 6.80) times the odds of being
   flagged as spam compared to emails without numbers in them. 
@@ -454,48 +512,179 @@ The p-value for the Wald $\chi^{2}$ test is <.0001.
 
 [[top]](lec07_CategoricalDataAnalysis.html)
 
-# Tests of association
+# Tests of Association
 
-* Watch this 3 minute Marin Stats Lecture: https://www.youtube.com/watch?v=POiHEJqmiC0
+There are three main tests of association for $rxc$ contingency table. 
 
-## Pearsons' Chi-Square Test
+* Test of Goodness of Fit
+* Tests of Independence
+* Test of Homogeneity
 
-<!-- Can be used for nominal or ordinal explanatory and response variables
-Variables can have any number of distinct levels
-Tests whether the distribution of the response variable is the same for each level of the explanatory variable (H0: No association between the variables
-r = # of levels of explanatory variable
-c = # of levels of response variable 
+**Notation**
 
-Intuition behind test statistic
-Obtain marginal distribution of outcomes for the response variable
-Apply this common distribution to all levels of the explanatory variable, by multiplying each proportion by the corresponding sample size
-Measure the difference between actual cell counts and the expected cell counts in the previous step
+* $r$ is the number of rows and indexed by $i$
+* $c$ is the number of columns and indexed by $j$. 
+
+<br></br>
 
 
--->
+## Goodness of Fit
 
-http://inspire.stat.ucla.edu/unit_13/
+* OpenIntro Statistics: Chapter 6.3
+* Tests whether a set of multinomial counts is distributed according to a 
+  theoretical set of population proportions.
+* Does a set of categorical data come from a claimed distribution? 
+* Are the observed frequencies consistent with theory? 
+
+$H_{0}$: The data come from the claimed discrete distribution  
+$H_{A}$: The data to not come from the claimed discrete distribution. 
+
+<br></br>
+
+## Test of Independence
+
+* OpenIntro Statistics: Chapter 6.4
+* Determine whether two categorical variables are associated 
+  with one another in the population
+      - Ex. Race and smoking, or education level and political affiliation. 
+* Data are collected at random from a population and the two 
+  categorical variables are observed on each unit. 
+
+$H_{0}: p_{ij} = p_{i.}p_{.j}$   
+$H_{A}: p_{ij} \neq p_{i.}p_{.j}$ 
+
+<br></br>
+
+## Test of Homogeneity
+
+* A test of homogeneity tests whether two (or more) sets of multinomial 
+  counts come from different sets of population proportions.
+* Does two or more sub-groups of a population share the same distribution
+  of a single categorical variable?
+    - Ex: Do people of different races have the same proportion of smokers?
+    - Ex: Do different education levels have different proportions of 
+      Democrats, Republicans, and Independents?
+* Data on one characteristic is collected from randomly sampling 
+  individuals within each subroup of the second characteristic. 
+
+$H_{0}:$ 
+
+$$
+\begin{align*}
+& p_{11} = p_{12} = \ldots = p_{1c} \\
+       & p_{21} = p_{22} = \ldots = p_{2c} \\
+       & \vdots \\
+       & p_{r1} = p_{r2} = \ldots = p_{rc} \\
+\end{align*}
+$$
+
+$H_{A}:$ At least one of the above statements is false. 
 
 
-### Testing Homogeneity
+<br></br>
+
+
+All three tests use the **Pearsons' Chi-Square** test statistic. 
+
+<br></br>
+
+## Pearsons' Chi-Square
+The chi-squared test statistic is the sum of the squared differences 
+between the observed and expected values, divided by the expected value. 
+
+### One way table
+$$\chi^{2} = \sum^{r}_{i=1} \frac{(O_{i}-E_{i})^2}{E_{i}}$$
+
+* $O_{i}$ observed number of type $i$
+* $E_{i}$ expected number of type $i$. Equal to $Np_{i}$ under the null hypothesis
+* N is the total sample size
+* df = r-1
+
+### Two way tables
+$$\chi^{2} = \sum^{r}_{i=1}\sum^{c}_{j=1} \frac{(O_{ij}-E_{ij})^2}{E_{ij}}$$
+
+* $O_{ij}$ observed number in cell $ij$
+* $E_{ij} = Np_{i.}p_{.j}$ under the null hypothesis
+* N is the total sample size
+* df = (r-1)(c-1)
+
+<br></br>
+
+##### Watch this 3 minute Marin Stats Lecture: https://www.youtube.com/watch?v=POiHEJqmiC0
+
+<br></br>
+
+### Conducting these tests in R. 
+* Test of equal or given proportions using `prop.test()`
+```{r}
 prop.test(table(email$number, email$spam))
+```
 
-### Testing Goodness of Fit
+* Chi-squared contingency table tests and goodness-of-fit tests using `chisq.test()`.  
+This function can take raw data as input
+```{r}
+chisq.test(email$number, email$spam)
+```
+or a table object.
+```{r}
+chisq.test(tab)
+```
 
-### Testing Independence
+### prop.test vs chisq.test()
+```{r}
+pt.out <- prop.test(table(email$number, email$spam))
+cs.out <- chisq.test(tab)
+```
 
-Uses the Pearson $\chi^{2}$ test statistic = Sum of squared residuals. 
-mosaicplot(tab, shade=TRUE)
-http://www.datavis.ca/online/mosaics/about.html
+* Same calculated test statistic and p-value
+```{r}
+c(pt.out$statistic, pt.out$p.value)
+c(cs.out$statistic, cs.out$p.value)
+```
+* `prop.test` 
+    - has a similar output appearance to other hypothesis tests 
+    - shows sample proportions of outcome within each group
+* `chisq.test`
+    - stores the matricies of $O_{ij}$, $E_{ij}$, the residuals and standardized residuals
 
-* Blue (positive residuals) = More frequent than expected
-* Red (negative residuals) = Less frequent than expected. 
+```{r}
+cs.out$expected
+```
+
+_Reminder:_ You can always look at the `names()` of model objects or the help file
+to see what information is available for post-analysis investigation. 
+
+### Mosaicplots
+
+* The Pearson $\chi^{2}$ test statistic = Sum of squared residuals. 
+* A shaded mosaicplot shows the magnitude of the residuals. 
+    * Blue (positive residuals) = More frequent than expected
+    * Red (negative residuals) = Less frequent than expected. 
+
+```{r}
+mosaicplot(tab, shade=TRUE, main="Association of spam status and number size in emails")
+```
+
+There are more spam emails with no numbers, fewer Ham emails with no numbers, 
+and fewer spam emails with small numbers than would be expected
+if these factors were independent. 
+  
+* More information on mosaicplots - http://www.datavis.ca/online/mosaics/about.html
 
 
-## Other common tests of note for contingency tables. 
-* McNemar’s Test for Paired Samples
+# Assumptions and Extensions
+
+* Simple random sample
+* Adequate expected cell counts
+    - At least 5 in all cells of a 2x2, or at least 80% of cells in a larger table.
+    - NO cells with 0 cell count
+* Observations are independent
+
+If one or more of these assumptions are not satisfied, other methods
+may still be useful. 
+* McNemar’s Test for paired or correlated data
 * Fishers exact test for when cell sizes are small (<5-10)
-* Interrater reliability: Concordant and Discordant Pairs
+* Inter-rater reliability: Concordant and Discordant Pairs
 
 
 [[top]](lec07_CategoricalDataAnalysis.html)
@@ -509,9 +698,11 @@ For all hypothesis tests you must:
 - Write the conclusion of the statistical test in context of the problem. 
 
 ##### On Your Own
-1. Using the student `survey` data where the variable `smoker` is a binary indicator 
-   of smoking, test if males smoke more than females. _Hint: check your output 
-   carefully and consider if the difference was taken in the desired direction_
+<!-- TEST OF TWO PROPORTIONS --> 
+1. Using a two-sample t-test for proportions on the student `survey` data set
+   contained in the `MASS` library, test if males smoke more than females. 
+   _Hint: check your output carefully and consider if the difference was 
+   taken in the desired direction_
 <!--
 ```{r}
 library(MASS)
@@ -519,6 +710,8 @@ survey$yessmoker <- ifelse(survey$Smoke !="Never", 1, 0)
 t.test(yessmoker ~ Sex , data=survey, alternative = "less")
 ```
 --->
+
+<!-- RISK RATIO --> 
 2. Anti-tumor necrosis factor $\alpha$ (TNF$\alpha$) drugs are a class of drugs
    that are commonly used to treat inflammatory conditions such as arthritis. 
    However, these drugs tend to be associated with an increased risk of 
@@ -527,15 +720,75 @@ t.test(yessmoker ~ Sex , data=survey, alternative = "less")
    conducted a study to test the hypothesis that patients on these drugs 
    are at increased risk for coccidiomycosis (a fungal pneumonia). Calculate 
    and interpret the RR with 95% confidence interval.  Here are the tabular results. 
-   
-```{r, echo=FALSE, results='asis'}
+```{r, results='asis'}
 tnf <- matrix(c(7, 240, 4, 734), nrow=2, byrow=TRUE,  
           dimnames = list(c("TNF", "Other"), c("COC", "No COC")))
-print(xtable(tnf, align='ccc'), type='html')
+print(xtable(tnf, align='ccc', digits=0), type='html')
 ``` 
 
-   
-   
+<!-- GOODNESS OF FIT--> 
+3. Using the provided bag of M&M's, test the hypothesis that the color 
+   distribution has not changed since reported in 2008. 
+   https://www.exeter.edu/documents/mandm.pdf
     
+<!-- TEST OF INDEPENDENCE --> 
+4. In July 2008 the US National Institutes of 
+   Health announced that it was stopping a clinical study early because of 
+   unexpected results. The study population consisted of HIV-infected women 
+   in sub-Saharan Africa who had been given single dose Nevaripine (a 
+   treatment for HIV) while giving birth, to prevent transmission of HIV to 
+   the infant.  The study was a randomized comparison of continued treatment 
+   of a woman (after successful childbirth) with Nevaripine vs. Lopinavir, 
+   a second drug used to treat HIV. 240 women participated in the study; 
+   120 were randomized to each of the two treatments. Twenty-four weeks after 
+   starting the study treatment, each woman was tested to determine if the HIV 
+   infection was becoming worse (an outcome called **virologic failure**). 
+   Twenty-six of the 120 women treated with Nevaripine experienced virologic failure, 
+   while 10 of the 120 women treated with the other drug experienced virologic failure.
+   _(Lockman 2007)_
+    a. Create a two-way table presenting the results of this study. Include both margins. 
+    b. State appropriate hypotheses to test for independence of treatment and virologic failure.
+    c. Complete the hypothesis test and state an appropriate conclusion. 
+      (Reminder: verify any necessary conditions for the test.)
+   
+<!--
+```{r, echo=FALSE, results='asis'}
+hiv <- matrix(c(26, 94, 120, 10, 110, 120, 36, 204, 240), nrow=3, byrow=T,  
+       dimnames = list(c("Nevaripine", "Lopinavir", "Total"), c("Yes", "No", "Total")))
+print(xtable(hiv, align='cccc'), type='html')
+
+```
+
+(b)~$H_0: p_N = p_L$. There is no difference in virologic failure rates between the Nevaripine and Lopinavir groups. $H_A: p_N \ne p_L$. There is some difference in virologic failure rates between the Nevaripine and Lopinavir groups.
+(c)~Random assignment was used, so the observations in each group are independent. If the patients in the study are representative of those in the general population (something impossible to check with the given information), then we can also confidently generalize the findings to the population. The success-failure condition, which we would check using the pooled proportion ($\hat{p} = 36/240 = 0.15$), is satisfied. $Z=3.04$ $\to$ p-value $=0.0024$. Since the p-value is low, we reject $H_0$. There is strong evidence of a difference in virologic failure rates between the Nevaripine and Lopinavir groups do not appear to be independent.}
+-->
+
+
+<!-- INTERPRETING TABLES AND IDENTIFYING INDEPENDENCE OR HOMOGENEITY -->
+5. A 2010 survey asked 827 randomly sampled registered voters in California 
+   ``Do you support? Or do you oppose? Drilling for oil and natural gas off
+   the Coast of California? Or do you not know enough to say?" Below is the
+   distribution of responses, separated based on whether or not the respondent
+   graduated from college. 
+```{r, results='asis'}
+oil <- matrix(c(154, 132, 180, 126, 104, 131), nrow=3, byrow=T,  
+       dimnames = list(c("Support", "Oppose", "Do not know"), c("Grad", "Non-Grad")))
+print(xtable(oil, align='ccc', digits=0), type='html')
+
+```
+  a. What percent of college graduates and what percent of the non-college
+     graduates in this sample do not know enough to have an opinion on
+     drilling for oil and natural gas off the Coast of California?
+  b. Create an appropriate graphic to compare the distribution of 
+     opinions within college graduates and non-graduates. 
+  c. Is this a test of homogeneity or independence? Justify your answer. 
+
+<!-- ODDS RATIO --> 
+6. Consider only those participants who have an opinion on off shore drilling. 
+   Calculate the Odds Ratio for opposing off shore drilling for college grads
+   compared to non-grads. Include a 99% confidence interval and interpret the 
+   results in context of the problem.
+       
+				
     
     

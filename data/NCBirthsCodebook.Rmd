@@ -1,6 +1,9 @@
 ---
+output: pdf_document
+---
+  ---
 title: "Codebook for NCbirths"
-output: html_document
+output: pdf_document
 ---
 
 # Usage
@@ -14,8 +17,8 @@ In 2004, the state of North Carolina released to the public a large data set con
 # Format
 A data frame with 1000 observations on the following 13 variables.
 
-variable         | description
----------------- | -----------
+variable         |              Description
+---------------- | --------------------------------------------------------
 `fage`           | father's age in years.
 `mage`           | mother's age in years.
 `mature`         | maturity status of mother.
@@ -33,4 +36,4 @@ variable         | description
 
 
 
-_This information was copied from `?ncbirths` on `r Sys.Date()`_
+_This information was copied from `?ncbirths` on Nov 27, 2015_
