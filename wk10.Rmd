@@ -14,20 +14,18 @@ source("C:/Github/MATH456/stylesheets/custom.R")
 ### Notes and Materials
 * Lec 07: Inference on Categorical Data [[PDF]](notes/lec07_CategoricalDataAnalysis.pdf)[[HTML]](notes/lec07_CategoricalDataAnalysis.html)
 
-##### On Your Own - Review of tests for one and two sample proportions (Before Monday)
-* OpenIntro Statistics [Free PDF Textbook](https://www.openintro.org/stat/textbook.php) Chapter 6 & 7
+##### On Your Own - Review of tests for one  sample proportions (Before Monday)
+* OpenIntro Statistics [Free PDF Textbook](https://www.openintro.org/stat/textbook.php) Chapter 6
 * Open Intro Lab on categorical data [[HTML]](notes/OI_Inf_for_categorical_data/html) (Uses the `openintro` package)
 
-
 ### Monday 3/21/16
-* Review notes on one and two sample proportions. 
-* <span style="color:red">If there are no questions or discussion then we will start with contingency tables.</span>
+* Review one and two sample proportions. 
 
 ### Wednesday 3/23/16
 * Contingency tables and measures of association
 
 ### Friday 3/25/16
-* M&M Experiment
+* Work on on your own questions
 
 
 ## Looking Ahead

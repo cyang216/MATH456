@@ -227,7 +227,7 @@ border: 1px solid black;}
 <div id="spam-data" class="section level4">
 <h4>Spam Data</h4>
 <p>This set of lecture notes uses the <code>spam</code> data set.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">email &lt;-<span class="st"> </span><span class="kw">read.delim</span>(<span class="st">&quot;C:/Dropbox/CSUC/Data/email.txt&quot;</span>, <span class="dt">header=</span><span class="ot">TRUE</span>, <span class="dt">sep=</span><span class="st">&quot;</span><span class="ch">\t</span><span class="st">&quot;</span>)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">email &lt;-<span class="st"> </span><span class="kw">read.delim</span>(<span class="st">&quot;C:/GitHub/MATH456/data/email.txt&quot;</span>, <span class="dt">header=</span><span class="ot">TRUE</span>, <span class="dt">sep=</span><span class="st">&quot;</span><span class="ch">\t</span><span class="st">&quot;</span>)
 email &lt;-<span class="st"> </span>email %&gt;%<span class="st"> </span><span class="kw">mutate</span>(<span class="dt">hasnum =</span> <span class="kw">ifelse</span>(number %in%<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;big&quot;</span>, <span class="st">&quot;small&quot;</span>), <span class="dv">1</span>, <span class="dv">0</span>))</code></pre></div>
 <p>Two categorical variables of current interest are</p>
 <ul>
@@ -787,14 +787,7 @@ tab_sn</code></pre></div>
 <li>Data on one characteristic is collected from randomly sampling individuals within each subroup of the second characteristic.</li>
 </ul>
 <p><span class="math inline">\(H_{0}:\)</span></p>
-<p><span class="math display">\[
-\begin{align*}
-&amp; p_{11} = p_{12} = \ldots = p_{1c} \\
-       &amp; p_{21} = p_{22} = \ldots = p_{2c} \\
-       &amp; \vdots \\
-       &amp; p_{r1} = p_{r2} = \ldots = p_{rc} \\
-\end{align*}
-\]</span></p>
+<p><span class="math display">\[p_{11} = p_{12} = \ldots = p_{1c}\]</span> <span class="math display">\[p_{21} = p_{22} = \ldots = p_{2c}\]</span> <span class="math display">\[\qquad \vdots \]</span> <span class="math display">\[ p_{r1} = p_{r2} = \ldots = p_{rc}\]</span></p>
 <p><span class="math inline">\(H_{A}:\)</span> At least one of the above statements is false.</p>
 <p><br /></p>
 <p>All three tests use the <strong>Pearsons’ Chi-Square</strong> test statistic.</p>

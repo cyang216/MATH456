@@ -2,11 +2,11 @@
 title: 'Lec 07: Categorical Data Analysis'
 author: "MATH 456 - Spring 2016"
 output:
+  pdf_document: default
   html_document:
     highlight: pygments
     theme: spacelab
     toc: yes
-  pdf_document: default
 ---
 ```{r,echo=FALSE, warning=FALSE, message=FALSE}
 library(knitr); library(rmarkdown);library(ggplot2)
@@ -63,7 +63,7 @@ more information and guidance on how to plot categorical data correctly.
 #### Spam Data
 This set of lecture notes uses the `spam` data set.
 ```{r}
-email <- read.delim("C:/Dropbox/CSUC/Data/email.txt", header=TRUE, sep="\t")
+email <- read.delim("C:/GitHub/MATH456/data/email.txt", header=TRUE, sep="\t")
 email <- email %>% mutate(hasnum = ifelse(number %in% c("big", "small"), 1, 0))
 ```
 
@@ -569,14 +569,11 @@ $H_{A}: p_{ij} \neq p_{i.}p_{.j}$
 
 $H_{0}:$ 
 
-$$
-\begin{align*}
-& p_{11} = p_{12} = \ldots = p_{1c} \\
-       & p_{21} = p_{22} = \ldots = p_{2c} \\
-       & \vdots \\
-       & p_{r1} = p_{r2} = \ldots = p_{rc} \\
-\end{align*}
-$$
+$$p_{11} = p_{12} = \ldots = p_{1c}$$
+$$p_{21} = p_{22} = \ldots = p_{2c}$$
+$$\qquad \vdots $$
+$$ p_{r1} = p_{r2} = \ldots = p_{rc}$$
+
 
 $H_{A}:$ At least one of the above statements is false. 
 
