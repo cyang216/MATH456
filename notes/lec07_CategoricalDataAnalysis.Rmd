@@ -2,11 +2,11 @@
 title: 'Lec 07: Categorical Data Analysis'
 author: "MATH 456 - Spring 2016"
 output:
-  pdf_document: default
   html_document:
     highlight: pygments
     theme: spacelab
     toc: yes
+  pdf_document: default
 ---
 ```{r,echo=FALSE, warning=FALSE, message=FALSE}
 library(knitr); library(rmarkdown);library(ggplot2)
@@ -21,15 +21,6 @@ source("C:/Github/MATH456/stylesheets/custom.R")
 
 Navbar: [[Home]](../index.html) [[Schedule]](../Schedule.html) [[Data]](../data/Datasets.html) [[Week 10 Overview]](../wk10.html) [[HW Info]](../HW_Info.html)  [[Google Group]](https://groups.google.com/forum/#!forum/csuc_stat)
 
-# Assigned Reading & additional references
-* OpenIntro Lab on categorical data [[HTML]](notes/OI_Inf_for_categorical_data/html)
-* OpenIntro Statistics [Free PDF Textbook](https://www.openintro.org/stat/textbook.php) Chapter 6 (6.1-6.4)
-* Afifi Chapter 12 (Logistic Regression)
-
-**Additional references**
-
-* Data vis tutorial http://norcalbiostat.github.io/R-Bootcamp/labs/Data_Visualization_Tutorial_Full.html
-* Cookbook for R http://www.cookbook-r.com/Graphs/Bar_and_line_graphs_(ggplot2)/
 
 # Introduction 
 Up until now we have been analyzing continuous outcomes. We will now turn our
@@ -54,6 +45,14 @@ Be sure to referece the categorical data sections of the [Data Visualization Tut
 the [Cookbook for R](http://www.cookbook-r.com/Graphs/Bar_and_line_graphs_(ggplot2)/) for
 more information and guidance on how to plot categorical data correctly. 
 
+## Assigned Reading & additional references
+* OpenIntro Lab on categorical data [[HTML]](notes/OI_Inf_for_categorical_data/html)
+* OpenIntro Statistics [Free PDF Textbook](https://www.openintro.org/stat/textbook.php) Chapter 6 (6.1-6.4)
+* Afifi Chapter 12 (Logistic Regression)
+* Data vis tutorial http://norcalbiostat.github.io/R-Bootcamp/labs/Data_Visualization_Tutorial_Full.html
+* Cookbook for R http://www.cookbook-r.com/Graphs/Bar_and_line_graphs_(ggplot2)/
+
+
 #### Spam Data
 This set of lecture notes uses the `spam` data set. 
 ```{r}
@@ -73,12 +72,9 @@ This section is considered review and will not be covered directly in
 class. If you have never analyzed proportions in R or it has been a while 
 since you took MATH 315 it is advised that you do not skip this section. 
 
-## Inference for a single proportion
 * Open Intro: Chapter 6.1
-* Complete the OpenIntro Lab on categorical data [[HTML]](notes/OI_Inf_for_categorical_data/html)
 
-**You must have the `openintro` package installed & loaded to have access 
-to the custom `inference()` function used in the lab.**
+###### Complete the OpenIntro Lab on categorical data [[HTML]](notes/OI_Inf_for_categorical_data/html) **You must have the `openintro` package installed & loaded to have access to the custom `inference()` function used in the lab.**
 
 ### Example: Examining the frequency of number sizes in emails
 
@@ -149,13 +145,100 @@ than half.
 
 [[top]](lec07_CategoricalDataAnalysis.html)
 
-# Inference for two categorical variables
 
-## Two way (two variable) tables
+
+# Review: Difference of two proportions
+* OpenIntro Section 6.2
+
+Now let's consider comparisons of proportions in two independent samples. 
+
+**Example**: Comparison of proportions of head injuries sustained in auto 
+accidents by passengers wearing seat belts to those not wearing seat belts. 
+You may have already guessed the form of the estimate: $\hat{p}_1 - \hat{p}_2$.
+
+We are not going to go in depth into the calculations for the test statistic 
+for a test of the difference in proportions. The OpenIntro textbook explains 
+the assumptions and equations very well. Instead we are going to see how to 
+use R to perform these calculations for us. 
+
+Since the sample proportion can be calculated as the mean of a binary 
+indicator variable, we can use the same `t.test` function in R
+to conduct a hypothesis test and create a confidence interval.
+
+## Tests of proportions using case level data
+Do emails that contain numbers more likely to be spam? 
+
+```{r}
+email <- email %>% mutate(hasnum =ifelse(number %in% c("big", "small"), 0, 1))
+t.test(spam~hasnum, data=email)
+```
+
+## Tests of proportions in R using summary numbers only
+Sometimes you only have a summary table of numbers to go on, not the raw data. 
+We can use the `prop.test()` function in R to conduct a test of equal proportions. 
+
+This function calculates a test statistic and a p-value using a $\chi^2$ distribution. 
+
+* The $\chi^2$ distribution is mathematically related to many other distributions. 
+    * Specific of note here is that a $Z^{2}$ distribution has a $\chi^{2}_{1}$ distribution. 
+    * Other relationships that are very useful: 
+        * https://onlinecourses.science.psu.edu/stat414/node/154
+        * https://en.wikipedia.org/wiki/Chi-squared_distribution#Relation_to_other_distributions
+
+### Example 1: Spam vs Ham
+Recall that 218 out of 367 (59%) of all emails that were flagged spam contained numbers. 
+```{r}
+table((email$number !="none"), email$spam, dnn=c("Contain numbers", "Spam"))
+round(prop.table(table((email$number !="none"), email$spam, dnn=c("Contain numbers", "Spam")), 2)*100,2)
+```
+Is this proportion is significantly more than half by calling `prop.test()`. 
+
+```{r}
+prop.test(x=218, n=367, p=.5)
+```
+
+Significantly more than half (59%, 95%CI 54.2%-64.4%) of emails that were
+flagged as spam contain numbers (p<.0004).
+
+
+### Example 2: Are mammograms helpful?
+Open Intro: 6.2.3
+
+Test whether there was a difference in breast cancer deaths in the mammogram 
+and control groups. By entering in $x$ and $n$ as vectors we can test 
+equivelance of these two proportions. The assumptions for using the normal model 
+for this test have been discussed in detail in the textbook. 
+
+```{r}
+prop.test(x=c(500, 505), n=c(44925, 44910))
+```
+
+The interval for the difference in proportions covers zero and the p-value
+for the test is 0.894, therefore the proportion of deaths due to breast 
+cancer are equal in both groups. There is no indication from this data
+that mammograms in addition to regular breast cancer screening, change
+the risk of death compared to just the regular screening exams alone. 
+
+
+
+[[top]](lec07_CategoricalDataAnalysis.html)
+
+# Analysis of Contingency tables
+
+* Both the explanatory and the resopnse variables are categorical (Nominal or Ordinal)
+* Tables representing all combinations of levels of explanatory and response variables
+* A.k.a Two-way tables
+* Numbers in table represent Counts of the number of cases in each cell
 
 ```{r}
 tab <- table(email$spam, email$number)
 tab
+```
+
+* Row and column totals are called Marginal counts
+
+```{r}
+addmargins(tab)
 ```
 
 #### Cell percents
@@ -165,17 +248,18 @@ representation of these percentages. The larger the
 box the larger the proportion. 
 ```{r}
 prop.table(tab)
+addmargins(prop.table(tab))
 mosaicplot(tab)
 ```
 
 We will come back to these mosaicplots later. 
 
-
 #### Row percents
 Here, the percents add up to 1 across the rows. 
 The reference group (denominator) is the row category.  
 ```{r}
-round(prop.table(tab, 1)*100, 2)
+row.pct <- round(prop.table(tab, 1)*100, 2)
+addmargins(row.pct, 2)
 ```
 * 13.9% _of non-spam emails_ contain big numbers
 * 40.6% _of spam emails_ contain no numbers
@@ -207,7 +291,8 @@ ggplot(melted_tab, aes(x = factor(Spam), y= count, fill = Number)) +
 Here, the percents add up to 1 down the columns. 
 The reference group (denominator) is the column category.  
 ```{r}
-round(prop.table(tab, 2)*100, 2)
+col.pct <- round(prop.table(tab, 2)*100, 2)
+addmargins(col.pct,1)
 ```
 * 90.8% _of emails with big numbers_ are not spam
 * 27.1% _of emails with no numbers_ are spam
@@ -226,77 +311,12 @@ are interested in making. Sometimes both directions are equally important,
 but often there is one primary direction that is of interest. 
 
 
-## Difference of two proportions
-* OpenIntro Section 6.2
-
-Now let's consider comparisons of proportions in two independent samples. 
-
-**Example**: Comparison of proportions of head injuries sustained in auto 
-accidents by passengers wearing seat belts to those not wearing seat belts. 
-You may have already guessed the form of the estimate: $\hat{p}_1 - \hat{p}_2$.
-
-We are not going to go in depth into the calculations for the test statistic 
-for a test of the difference in proportions. The OpenIntro textbook explains 
-the assumptions and equations very well. Instead we are going to see how to 
-use R to perform these calculations for us. 
-
-Since the sample proportion can be calculated as the mean of a binary 
-indicator variable, we can use the same `t.test` function in R
-to conduct a hypothesis test and create a confidence interval.
-
-### Tests of proportions using case level data
-Do emails that contain numbers more likely to be spam? 
-
-```{r}
-email <- email %>% mutate(hasnum =ifelse(number %in% c("big", "small"), 0, 1))
-t.test(spam~hasnum, data=email)
-```
-
-
-
-### Tests of proportions in R using summary numbers only
-Sometimes you only have a summary table of numbers to go on, not the raw data. 
-We can use the `prop.test()` function in R to conduct a test of equal proportions. 
-
-This function calculates a test statistic and a p-value using a $\chi^2$ distribution. 
-
-* The $\chi^2$ distribution is mathematically related to many other distributions. 
-    * Specific of note here is that a $Z^{2}$ distribution has a $\chi^{2}_{1}$ distribution. 
-    * Other relationships that are very useful: 
-        * https://onlinecourses.science.psu.edu/stat414/node/154
-        * https://en.wikipedia.org/wiki/Chi-squared_distribution#Relation_to_other_distributions
-
-#### Example 1: Spam vs Ham
-Recall that 218 out of 367 (59%) of all emails that were flagged spam contained numbers. 
-```{r}
-table((email$number !="none"), email$spam, dnn=c("Contain numbers", "Spam"))
-round(prop.table(table((email$number !="none"), email$spam, dnn=c("Contain numbers", "Spam")), 2)*100,2)
-```
-We can test if that proportion is significantly more than half by calling `prop.test()`. 
-
-```{r}
-prop.test(x=218, n=367, p=.5, alternative="greater")
-```
-
-#### Example 2: Are mammograms helpful?
-Test whether there was a difference in breast cancer deaths in the mammogram 
-and control groups. By entering in $x$ and $n$ as vectors we can test 
-equivelance of these two proportions. The assumptions for using the normal model 
-for this test have been discussed in detail in the textbook. 
-
-```{r}
-prop.test(x=c(500, 505), n=c(44925, 44910))
-```
-
-
-
-
-
-
-
 [[top]](lec07_CategoricalDataAnalysis.html)
 
-# Chi-Squared tests for contingency tables. 
+
+
+
+
 
 prop.test(table(email$number, email$spam))
 
