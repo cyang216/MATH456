@@ -32,5 +32,8 @@ source("C:/Github/MATH456/stylesheets/custom.R")
 
 
 ## Looking Ahead
-* Categorical Data Analysis -- Prepare for Monday's lecture by doing this [Open Intro Lab](OI_Inf_for_categorical_data/html) 
+* Categorical Data Analysis - Prepare for Monday's lecture by
+    * Review OpenIntro Statistics [Free PDF Textbook](https://www.openintro.org/stat/textbook.php) Chapter 6 & 7
+    * Go through this Open Intro Lab on categorical data [[HTML]](notes/OI_Inf_for_categorical_data/html) (Uses the `openintro` package)
+
 

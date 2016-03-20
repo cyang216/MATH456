@@ -45,12 +45,19 @@ Be sure to referece the categorical data sections of the [Data Visualization Tut
 the [Cookbook for R](http://www.cookbook-r.com/Graphs/Bar_and_line_graphs_(ggplot2)/) for
 more information and guidance on how to plot categorical data correctly. 
 
-## Assigned Reading & additional references
+## Assigned Reading
 * OpenIntro Lab on categorical data [[HTML]](notes/OI_Inf_for_categorical_data/html)
 * OpenIntro Statistics [Free PDF Textbook](https://www.openintro.org/stat/textbook.php) Chapter 6 (6.1-6.4)
 * Afifi Chapter 12 (Logistic Regression)
-* Data vis tutorial http://norcalbiostat.github.io/R-Bootcamp/labs/Data_Visualization_Tutorial_Full.html
-* Cookbook for R http://www.cookbook-r.com/Graphs/Bar_and_line_graphs_(ggplot2)/
+
+## Additional References 
+* Mike Marin: Relative Risk and Odds Ratio https://www.youtube.com/watch?v=V_YNPQoAyCc
+* An **excellent** additional textbook reference: _Categorical Data Analysis_ by Alan Agresti
+* Using R for Biomedical Statistics http://a-little-book-of-r-for-biomedical-statistics.readthedocs.org/en/latest/src/biomedicalstats.html#
+* Graphics
+    * **New find!** Graphical Data Analysis with R http://www.gradaanwr.net/content/04-displaying-categorial-data/
+    * My Data viz tutorial http://norcalbiostat.github.io/R-Bootcamp/labs/Data_Visualization_Tutorial_Full.html
+    * Cookbook for R http://www.cookbook-r.com/Graphs/Bar_and_line_graphs_(ggplot2)/
 
 
 #### Spam Data
@@ -223,11 +230,11 @@ the risk of death compared to just the regular screening exams alone.
 
 [[top]](lec07_CategoricalDataAnalysis.html)
 
-# Analysis of Contingency tables
+# Contingency tables
 
 * Both the explanatory and the resopnse variables are categorical (Nominal or Ordinal)
 * Tables representing all combinations of levels of explanatory and response variables
-* A.k.a Two-way tables
+* A.k.a Two-way tables or _cross-tabs_
 * Numbers in table represent Counts of the number of cases in each cell
 
 ```{r}
@@ -313,37 +320,182 @@ but often there is one primary direction that is of interest.
 
 [[top]](lec07_CategoricalDataAnalysis.html)
 
+# Side Note: Chi-Squared Distribution
+Before we get into measures of, and tests for association we need to introduce
+the $\chi^{2}$ distribution. 
+
+* Controlled by a degrees of freedom parameter (df)
+* Special case of the gamma distribution (One of the most commonly used 
+  statistical distributions)
+* The sample variance has a $\chi^{2}_{n-1}$ distribution.  
+* The sum of $k$ independent standard normal distributions has a $\chi^{2}_{k}$ distribution. 
+* The ANOVA F-statistic is the ratio of two $\chi^{2}$ distributions divided by 
+  their respective degrees of freedom. 
+* Is used in many statistical tests for categorical data. 
+* Is always positive (it's squared!)
+    - High numbers result in low p-values
+
+
+# Measures of Association
+* Watch this 6 minute Marin Stats Lectures: https://www.youtube.com/watch?v=V_YNPQoAyCc
+
+We will consider two measures of association in this class. 
+
+* Relative Risk
+* Odds Ratio
+
+These both are calculated on a 2x2 contingency table similar to the following: 
+
+```{r, echo=FALSE, results='asis'}
+nnnn <- matrix(c("$n_{11}$", "$n_{12}$", "$n_{1.}$", 
+                 "$n_{21}$", "$n_{22}$", "$n_{2.}$", 
+                 "$n_{.1}$", "$n_{.2}$", "$n_{..}$"), nrow=3, byrow=TRUE,  
+          dimnames = list(c("Exposed", "Not-Exposed", "Total"), c("Diseased", "Not-Diseased", "Total")))
+print(xtable(nnnn, align='cccc'), type='html')
+```
+
+
+Sometimes the cell contents are abbreviated as:
+```{r, echo=FALSE, results='asis'}
+abcd <- matrix(c("a", "b", "c", "d"), nrow=2,  
+          dimnames = list(c("Exposed", "Not-Exposed"), c("Diseased", "Not-Diseased")))
+print(xtable(abcd, align='ccc'), type='html')
+```
+
+
+## Relative Risk
+
+The **Relative Risk (RR)** or **Risk Ratio** is the ratio of the probability of an 
+event occuring in an exposed group compared to the probabilty of 
+an event occuring in a non-exposed group. 
+
+* Asymptotically approaches the OR for small probabilities. 
+* Often used in cohort studies and randomized control trials. 
+
+Consider sample proportions Diseases within Exposed and Non-exposed groups.
+$$\hat{\pi}_{1} = \frac{n_{11}}{n_{1.}} \qquad \mbox{and} \qquad \hat{\pi}_{2} = \frac{n_{21}}{n_{2.}}$$
+
+The Relative Risk is calculated as 
+
+$$RR = \frac{\hat{\pi}_{1}}{\hat{\pi}_{2}} \qquad \mbox{or} \qquad \frac{a/(a+b)}{c/(c+d)}$$
+
+with variance 
+$$V = \frac{1-\hat{\pi}_{1}}{n_{11}} + \frac{1-\hat{\pi}_{2}}{n_{21}}$$
+
+
+## Odds Ratio 
+
+The **Odds Ratio (OR)** is a way to quantify how strongly the presence
+or absence of a characteristic affects the presence or absence of a
+second characteristic. 
+
+* Often used in case-control studies
+* The main interpretable estimate generated from logistic regression
+
+The **Odds of an event** is the probability it occurs divided by the 
+probability it does not occur. 
+
+$$ odds_{1} = \frac{n_{11}/n_{1.}}{n_{12}/n_{1.}} = \frac{n_{11}}{n_{12}} $$
+$$ odds_{2} = \frac{n_{21}/n_{2.}}{n_{22}/n_{2.}} = \frac{n_{21}}{n_{22}} $$
+
+The **Odds Ratio** for group 1 compared to group 2 is the ratio of the two 
+odds written above: 
+
+$$OR = \frac{odds_{1}}{odds_{2}} = \frac{n_{11}n_{22}}{n_{12}n_{21}} \qquad \mbox{or} \qquad \frac{ad}{bc}$$
+
+with variance $V = n^{-1}_{11} + n^{-1}_{12} + n^{-1}_{21} + n^{-1}_{22}$. 
+
+## Confidence Intervals
+
+Neither the Risk Ratio nor the Odds Ratio are linear functions, so a 95% CI 
+for the population estimates are not your typical $\hat{\theta} \pm 1.96\sqrt{Var(\hat{\theta})}$.
+
+Instead they are calculated as the point estimate $\hat{\theta}$ times $e$ 
+raised to the $\pm 1.96$ times the standard deviation of the estimate. 
+
+$$(\hat{\theta}e^{-1.96*\sqrt{V}}, \hat{\theta}e^{1.96*\sqrt{V}})$$
 
 
 
+## Example: Are emails with numbers in them more likely to be flagged as spam? 
+Reconsider the 2x2 table that compares emails flagged as spam to
+those containing numbers. 
 
+```{r}
+table(email$hasnum, email$spam, dnn=c("Has Number", "Spam"))
+```
 
-prop.test(table(email$number, email$spam))
+Note that both the columns and rows are swapped when compared to the a/b/c/d format. 
+For ease of interpretation I will recreate the table manually. 
+```{r}
+tab_sn <- matrix(c(149, 218, 400, 3154), nrow=2, byrow=T, 
+                 dimnames = list(c("Has Num", "No Num"), c("Spam", "Ham")))
+tab_sn
+```
 
-mosaicplot(tab, shade=TRUE)
+Now I use the `epi.2by2` function contained in the `epiR` package to calculate
+the Odds Ratio, the Risk Ratio, and their respective confidence intervals. 
+```{r}
+library(epiR)
+epi.2by2(tab_sn)
+```
 
-## Testing Equality of proportions
+* Emails contaiing numbers are 3.6 (3.09, 4.21) times as likely as emails 
+  without numbers to be flagged as spam.
+* Emails containing numbers have 5.4 (4.27, 6.80) times the odds of being
+  flagged as spam compared to emails without numbers in them. 
 
-## Testing Goodness of Fit
+Both intervals are greater than 1, therefore the event (spam) is statistically
+more likely to occur in the exposed group (has num) than in the control (no num) (p<.0001). 
+The p-value for the Wald $\chi^{2}$ test is <.0001. 
 
-## Testing Independence
-
-## Comments on Fishers Exact test
+* Mathematical reference for the Wald test Statistic http://www.statlect.com/Wald_test.htm 
 
 
 [[top]](lec07_CategoricalDataAnalysis.html)
 
-# Logistic Regression
+# Tests of association
+
+* Watch this 3 minute Marin Stats Lecture: https://www.youtube.com/watch?v=POiHEJqmiC0
+
+## Pearsons' Chi-Square Test
+
+<!-- Can be used for nominal or ordinal explanatory and response variables
+Variables can have any number of distinct levels
+Tests whether the distribution of the response variable is the same for each level of the explanatory variable (H0: No association between the variables
+r = # of levels of explanatory variable
+c = # of levels of response variable 
+
+Intuition behind test statistic
+Obtain marginal distribution of outcomes for the response variable
+Apply this common distribution to all levels of the explanatory variable, by multiplying each proportion by the corresponding sample size
+Measure the difference between actual cell counts and the expected cell counts in the previous step
 
 
-## Going further
-When your outcome has more than one level and you want to build a regression
-model to assess the impact a specific variable (or set of variables) has on 
-the levels of this outcome variable, you would need to turn to more
-generalized linear models such as: 
-* Multinomial distribution for a nominal outcome
-    - http://www.ats.ucla.edu/stat/r/dae/mlogit.htm
-* Ordinal logistic regression
+-->
+
+http://inspire.stat.ucla.edu/unit_13/
+
+
+### Testing Homogeneity
+prop.test(table(email$number, email$spam))
+
+### Testing Goodness of Fit
+
+### Testing Independence
+
+Uses the Pearson $\chi^{2}$ test statistic = Sum of squared residuals. 
+mosaicplot(tab, shade=TRUE)
+http://www.datavis.ca/online/mosaics/about.html
+
+* Blue (positive residuals) = More frequent than expected
+* Red (negative residuals) = Less frequent than expected. 
+
+
+## Other common tests of note for contingency tables. 
+* McNemar’s Test for Paired Samples
+* Fishers exact test for when cell sizes are small (<5-10)
+* Interrater reliability: Concordant and Discordant Pairs
 
 
 [[top]](lec07_CategoricalDataAnalysis.html)
@@ -357,10 +509,7 @@ For all hypothesis tests you must:
 - Write the conclusion of the statistical test in context of the problem. 
 
 ##### On Your Own
-1. Using the `survey` data set contained in the `MASS` library, recode the exercise 
-   variable into a dichotomous indicator of any exercise. Test the hypothesis that more 
-   than 75% of the students in the sample exercise at some level.
-2. Using the student `survey` data where the variable `smoker` is a binary indicator 
+1. Using the student `survey` data where the variable `smoker` is a binary indicator 
    of smoking, test if males smoke more than females. _Hint: check your output 
    carefully and consider if the difference was taken in the desired direction_
 <!--
@@ -370,7 +519,23 @@ survey$yessmoker <- ifelse(survey$Smoke !="Never", 1, 0)
 t.test(yessmoker ~ Sex , data=survey, alternative = "less")
 ```
 --->
-    
+2. Anti-tumor necrosis factor $\alpha$ (TNF$\alpha$) drugs are a class of drugs
+   that are commonly used to treat inflammatory conditions such as arthritis. 
+   However, these drugs tend to be associated with an increased risk of 
+   infectious complications. 
+   [Bergstrom, et al (2004)](http://onlinelibrary.wiley.com/doi/10.1002/art.20454/abstract) 
+   conducted a study to test the hypothesis that patients on these drugs 
+   are at increased risk for coccidiomycosis (a fungal pneumonia). Calculate 
+   and interpret the RR with 95% confidence interval.  Here are the tabular results. 
+   
+```{r, echo=FALSE, results='asis'}
+tnf <- matrix(c(7, 240, 4, 734), nrow=2, byrow=TRUE,  
+          dimnames = list(c("TNF", "Other"), c("COC", "No COC")))
+print(xtable(tnf, align='ccc'), type='html')
+``` 
+
+   
+   
     
     
     

@@ -97,7 +97,8 @@ img {
 <div id="TOC">
 <ul>
 <li><a href="#introduction">Introduction</a><ul>
-<li><a href="#assigned-reading-additional-references">Assigned Reading &amp; additional references</a></li>
+<li><a href="#assigned-reading">Assigned Reading</a></li>
+<li><a href="#additional-references">Additional References</a></li>
 </ul></li>
 <li><a href="#review-inference-on-a-single-proportion">Review: Inference on a single proportion</a><ul>
 <li><a href="#example-examining-the-frequency-of-number-sizes-in-emails">Example: Examining the frequency of number sizes in emails</a></li>
@@ -109,14 +110,19 @@ img {
 <li><a href="#example-2-are-mammograms-helpful">Example 2: Are mammograms helpful?</a></li>
 </ul></li>
 </ul></li>
-<li><a href="#analysis-of-contingency-tables">Analysis of Contingency tables</a><ul>
+<li><a href="#contingency-tables">Contingency tables</a></li>
+<li><a href="#side-note-chi-squared-distribution">Side Note: Chi-Squared Distribution</a></li>
+<li><a href="#measures-of-association">Measures of Association</a><ul>
+<li><a href="#relative-risk">Relative Risk</a></li>
+<li><a href="#odds-ratio">Odds Ratio</a></li>
+<li><a href="#confidence-intervals">Confidence Intervals</a></li>
+<li><a href="#example-are-emails-with-numbers-in-them-more-likely-to-be-flagged-as-spam">Example: Are emails with numbers in them more likely to be flagged as spam?</a></li>
+</ul></li>
+<li><a href="#tests-of-association">Tests of association</a><ul>
 <li><a href="#testing-equality-of-proportions">Testing Equality of proportions</a></li>
 <li><a href="#testing-goodness-of-fit">Testing Goodness of Fit</a></li>
 <li><a href="#testing-independence">Testing Independence</a></li>
-<li><a href="#comments-on-fishers-exact-test">Comments on Fishers Exact test</a></li>
-</ul></li>
-<li><a href="#logistic-regression">Logistic Regression</a><ul>
-<li><a href="#going-further">Going further</a></li>
+<li><a href="#fishers-exact-test">Fishers Exact test</a></li>
 </ul></li>
 <li><a href="#on-your-own">On Your Own</a></li>
 </ul>
@@ -190,14 +196,26 @@ border: 1px solid black;}
 </ul>
 <p>The methods you learned in previous classes will be useful in these settings. For example, sample proportions are well characterized by a nearly normal distribution when certain conditions are satisfied, making it possible to employ the usual CI and HT tools. In other instances, such as those with contingency tables or when sample size conditions are not met, we will use a different distribution, though the core ideas remain the same.</p>
 <p>Be sure to referece the categorical data sections of the <a href="http://norcalbiostat.github.io/R-Bootcamp/labs/Data_Visualization_Tutorial_Full.html">Data Visualization Tutorial</a> or the <a href="http://www.cookbook-r.com/Graphs/Bar_and_line_graphs_(ggplot2)/">Cookbook for R</a> for more information and guidance on how to plot categorical data correctly.</p>
-<div id="assigned-reading-additional-references" class="section level2">
-<h2>Assigned Reading &amp; additional references</h2>
+<div id="assigned-reading" class="section level2">
+<h2>Assigned Reading</h2>
 <ul>
 <li>OpenIntro Lab on categorical data <a href="notes/OI_Inf_for_categorical_data/html">[HTML]</a></li>
 <li>OpenIntro Statistics <a href="https://www.openintro.org/stat/textbook.php">Free PDF Textbook</a> Chapter 6 (6.1-6.4)</li>
 <li>Afifi Chapter 12 (Logistic Regression)</li>
-<li>Data vis tutorial <a href="http://norcalbiostat.github.io/R-Bootcamp/labs/Data_Visualization_Tutorial_Full.html" class="uri">http://norcalbiostat.github.io/R-Bootcamp/labs/Data_Visualization_Tutorial_Full.html</a></li>
+</ul>
+</div>
+<div id="additional-references" class="section level2">
+<h2>Additional References</h2>
+<ul>
+<li>Mike Marin: Relative Risk and Odds Ratio <a href="https://www.youtube.com/watch?v=V_YNPQoAyCc" class="uri">https://www.youtube.com/watch?v=V_YNPQoAyCc</a></li>
+<li>An <strong>excellent</strong> additional textbook reference: <em>Categorical Data Analysis</em> by Alan Agresti</li>
+<li>Using R for Biomedical Statistics <a href="http://a-little-book-of-r-for-biomedical-statistics.readthedocs.org/en/latest/src/biomedicalstats.html#" class="uri">http://a-little-book-of-r-for-biomedical-statistics.readthedocs.org/en/latest/src/biomedicalstats.html#</a></li>
+<li>Graphics
+<ul>
+<li><strong>New find!</strong> Graphical Data Analysis with R <a href="http://www.gradaanwr.net/content/04-displaying-categorial-data/" class="uri">http://www.gradaanwr.net/content/04-displaying-categorial-data/</a></li>
+<li>My Data viz tutorial <a href="http://norcalbiostat.github.io/R-Bootcamp/labs/Data_Visualization_Tutorial_Full.html" class="uri">http://norcalbiostat.github.io/R-Bootcamp/labs/Data_Visualization_Tutorial_Full.html</a></li>
 <li>Cookbook for R <a href="http://www.cookbook-r.com/Graphs/Bar_and_line_graphs_(ggplot2)/" class="uri">http://www.cookbook-r.com/Graphs/Bar_and_line_graphs_(ggplot2)/</a></li>
+</ul></li>
 </ul>
 <div id="spam-data" class="section level4">
 <h4>Spam Data</h4>
@@ -383,12 +401,12 @@ border: 1px solid black;}
 </div>
 </div>
 </div>
-<div id="analysis-of-contingency-tables" class="section level1">
-<h1>Analysis of Contingency tables</h1>
+<div id="contingency-tables" class="section level1">
+<h1>Contingency tables</h1>
 <ul>
 <li>Both the explanatory and the resopnse variables are categorical (Nominal or Ordinal)</li>
 <li>Tables representing all combinations of levels of explanatory and response variables</li>
-<li>A.k.a Two-way tables</li>
+<li>A.k.a Two-way tables or <em>cross-tabs</em></li>
 <li>Numbers in table represent Counts of the number of cases in each cell</li>
 </ul>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">tab &lt;-<span class="st"> </span><span class="kw">table</span>(email$spam, email$number)
@@ -490,28 +508,227 @@ melted_tab</code></pre></div>
 <h4>Summary / Take home message</h4>
 <p>It is very important to be clear as to what comparison you (or the researcher) are interested in making. Sometimes both directions are equally important, but often there is one primary direction that is of interest.</p>
 <p><a href="lec07_CategoricalDataAnalysis.html">[top]</a></p>
-<p>prop.test(table(email<span class="math inline">\(number, email\)</span>spam))</p>
-<p>mosaicplot(tab, shade=TRUE)</p>
 </div>
+</div>
+<div id="side-note-chi-squared-distribution" class="section level1">
+<h1>Side Note: Chi-Squared Distribution</h1>
+<p>Before we get into measures of, and tests for association we need to introduce the <span class="math inline">\(\chi^{2}\)</span> distribution.</p>
+<ul>
+<li>Controlled by a degrees of freedom parameter (df)</li>
+<li>Special case of the gamma distribution (One of the most commonly used statistical distributions)</li>
+<li>The sample variance has a <span class="math inline">\(\chi^{2}_{n-1}\)</span> distribution.<br />
+</li>
+<li>The sum of <span class="math inline">\(k\)</span> independent standard normal distributions has a <span class="math inline">\(\chi^{2}_{k}\)</span> distribution.</li>
+<li>The ANOVA F-statistic is the ratio of two <span class="math inline">\(\chi^{2}\)</span> distributions divided by their respective degrees of freedom.</li>
+<li>Is used in many statistical tests for categorical data.</li>
+<li>Is always positive (it’s squared!)
+<ul>
+<li>High numbers result in low p-values</li>
+</ul></li>
+</ul>
+</div>
+<div id="measures-of-association" class="section level1">
+<h1>Measures of Association</h1>
+<ul>
+<li>Watch this 6 minute Marin Stats Lectures: <a href="https://www.youtube.com/watch?v=V_YNPQoAyCc" class="uri">https://www.youtube.com/watch?v=V_YNPQoAyCc</a></li>
+</ul>
+<p>We will consider two measures of association in this class.</p>
+<ul>
+<li>Relative Risk</li>
+<li>Odds Ratio</li>
+</ul>
+<p>These both are calculated on a 2x2 contingency table similar to the following:</p>
+<table border="1">
+<tr>
+<th>
+</th>
+<th>
+Diseased
+</th>
+<th>
+Not-Diseased
+</th>
+<th>
+Total
+</th>
+</tr>
+<tr>
+<td align="center">
+Exposed
+</td>
+<td align="center">
+<span class="math inline">\(n_{11}\)</span>
+</td>
+<td align="center">
+<span class="math inline">\(n_{12}\)</span>
+</td>
+<td align="center">
+<span class="math inline">\(n_{1.}\)</span>
+</td>
+</tr>
+<tr>
+<td align="center">
+Not-Exposed
+</td>
+<td align="center">
+<span class="math inline">\(n_{21}\)</span>
+</td>
+<td align="center">
+<span class="math inline">\(n_{22}\)</span>
+</td>
+<td align="center">
+<span class="math inline">\(n_{2.}\)</span>
+</td>
+</tr>
+<tr>
+<td align="center">
+Total
+</td>
+<td align="center">
+<span class="math inline">\(n_{.1}\)</span>
+</td>
+<td align="center">
+<span class="math inline">\(n_{.2}\)</span>
+</td>
+<td align="center">
+<span class="math inline">\(n_{..}\)</span>
+</td>
+</tr>
+</table>
+Sometimes the cell contents are abbreviated as:
+<table border="1">
+<tr>
+<th>
+</th>
+<th>
+Diseased
+</th>
+<th>
+Not-Diseased
+</th>
+</tr>
+<tr>
+<td align="center">
+Exposed
+</td>
+<td align="center">
+a
+</td>
+<td align="center">
+c
+</td>
+</tr>
+<tr>
+<td align="center">
+Not-Exposed
+</td>
+<td align="center">
+b
+</td>
+<td align="center">
+d
+</td>
+</tr>
+</table>
+<div id="relative-risk" class="section level2">
+<h2>Relative Risk</h2>
+<p>The <strong>Relative Risk (RR)</strong> or <strong>Risk Ratio</strong> is the ratio of the probability of an event occuring in an exposed group compared to the probabilty of an event occuring in a non-exposed group.</p>
+<ul>
+<li>Asymptotically approaches the OR for small probabilities.</li>
+<li>Often used in cohort studies and randomized control trials.</li>
+</ul>
+<p>Consider sample proportions Diseases within Exposed and Non-exposed groups. <span class="math display">\[\hat{\pi}_{1} = \frac{n_{11}}{n_{1.}} \qquad \mbox{and} \qquad \hat{\pi}_{2} = \frac{n_{21}}{n_{2.}}\]</span></p>
+<p>The Relative Risk is calculated as</p>
+<p><span class="math display">\[RR = \frac{\hat{\pi}_{1}}{\hat{\pi}_{2}} \qquad \mbox{or} \qquad \frac{a/(a+b)}{c/(c+d)}\]</span></p>
+<p>with variance <span class="math display">\[V = \frac{1-\hat{\pi}_{1}}{n_{11}} + \frac{1-\hat{\pi}_{2}}{n_{21}}\]</span></p>
+</div>
+<div id="odds-ratio" class="section level2">
+<h2>Odds Ratio</h2>
+<p>The <strong>Odds Ratio (OR)</strong> is a way to quantify how strongly the presence or absence of a characteristic affects the presence or absence of a second characteristic.</p>
+<ul>
+<li>Often used in case-control studies</li>
+<li>The main interpretable estimate generated from logistic regression</li>
+</ul>
+<p>The <strong>Odds of an event</strong> is the probability it occurs divided by the probability it does not occur.</p>
+<p><span class="math display">\[ odds_{1} = \frac{n_{11}/n_{1.}}{n_{12}/n_{1.}} = \frac{n_{11}}{n_{12}} \]</span> <span class="math display">\[ odds_{2} = \frac{n_{21}/n_{2.}}{n_{22}/n_{2.}} = \frac{n_{21}}{n_{22}} \]</span></p>
+<p>The <strong>Odds Ratio</strong> for group 1 compared to group 2 is the ratio of the two odds written above:</p>
+<p><span class="math display">\[OR = \frac{odds_{1}}{odds_{2}} = \frac{n_{11}n_{22}}{n_{12}n_{21}} \qquad \mbox{or} \qquad \frac{ad}{bc}\]</span></p>
+<p>with variance <span class="math inline">\(V = n^{-1}_{11} + n^{-1}_{12} + n^{-1}_{21} + n^{-1}_{22}\)</span>.</p>
+</div>
+<div id="confidence-intervals" class="section level2">
+<h2>Confidence Intervals</h2>
+<p>Neither the Risk Ratio nor the Odds Ratio are linear functions, so a 95% CI for the population estimates are not your typical <span class="math inline">\(\hat{\theta} \pm 1.96*\sqrt{Var(\hat{\theta})}\)</span>.</p>
+<p>Instead they are calculated as the point estimate <span class="math inline">\(\hat{\theta}\)</span> times <span class="math inline">\(e\)</span> raised to the <span class="math inline">\(\pm 1.96\)</span> times the standard deviation of the estimate.</p>
+<p><span class="math display">\[(\hat{\theta}*e^{-1.96*\sqrt{V}}, \hat{\theta}*e^{1.96*\sqrt{V}})\]</span></p>
+</div>
+<div id="example-are-emails-with-numbers-in-them-more-likely-to-be-flagged-as-spam" class="section level2">
+<h2>Example: Are emails with numbers in them more likely to be flagged as spam?</h2>
+<p>Reconsider the 2x2 table that compares emails flagged as spam to those containing numbers.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">table</span>(email$hasnum, email$spam, <span class="dt">dnn=</span><span class="kw">c</span>(<span class="st">&quot;Has Number&quot;</span>, <span class="st">&quot;Spam&quot;</span>))</code></pre></div>
+<pre><code>##           Spam
+## Has Number    0    1
+##          0 3154  218
+##          1  400  149</code></pre>
+<p>Note that both the columns and rows are swapped when compared to the a/b/c/d format. For ease of interpretation I will recreate the table manually.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">tab_sn &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">c</span>(<span class="dv">149</span>, <span class="dv">218</span>, <span class="dv">400</span>, <span class="dv">3154</span>), <span class="dt">nrow=</span><span class="dv">2</span>, <span class="dt">byrow=</span>T, 
+                 <span class="dt">dimnames =</span> <span class="kw">list</span>(<span class="kw">c</span>(<span class="st">&quot;Has Num&quot;</span>, <span class="st">&quot;No Num&quot;</span>), <span class="kw">c</span>(<span class="st">&quot;Spam&quot;</span>, <span class="st">&quot;Ham&quot;</span>)))
+tab_sn</code></pre></div>
+<pre><code>##         Spam  Ham
+## Has Num  149  218
+## No Num   400 3154</code></pre>
+<p>Now I use the <code>epi.2by2</code> function contained in the <code>epiR</code> package to calculate the Odds Ratio, the Risk Ratio, and their respective confidence intervals.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(epiR)
+<span class="kw">epi.2by2</span>(tab_sn)</code></pre></div>
+<pre><code>##              Outcome +    Outcome -      Total        Inc risk *
+## Exposed +          149          218        367              40.6
+## Exposed -          400         3154       3554              11.3
+## Total              549         3372       3921              14.0
+##                  Odds
+## Exposed +       0.683
+## Exposed -       0.127
+## Total           0.163
+## 
+## Point estimates and 95 % CIs:
+## -------------------------------------------------------------------
+## Inc risk ratio                               3.61 (3.09, 4.21)
+## Odds ratio                                   5.39 (4.27, 6.80)
+## Attrib risk *                                29.34 (24.21, 34.48)
+## Attrib risk in population *                  2.75 (1.24, 4.25)
+## Attrib fraction in exposed (%)               72.28 (67.65, 76.24)
+## Attrib fraction in population (%)            19.62 (15.83, 23.23)
+## -------------------------------------------------------------------
+##  X2 test statistic: 237.889 p-value: &lt; 0.001
+##  Wald confidence limits
+##  * Outcomes per 100 population units</code></pre>
+<ul>
+<li>Emails contaiing numbers are 3.6 (3.09, 4.21) times as likely as emails without numbers to be flagged as spam.</li>
+<li>Emails containing numbers have 5.4 (4.27, 6.80) times the odds of being flagged as spam compared to emails without numbers in them.</li>
+</ul>
+<p>Both intervals are greater than 1, therefore the event (spam) is statistically more likely to occur in the exposed group (has num) than in the control (no num) (p&lt;.0001). The p-value for the Wald <span class="math inline">\(\chi^{2}\)</span> test is &lt;.0001.</p>
+<ul>
+<li>Mathematical reference for the Wald test Statistic <a href="http://www.statlect.com/Wald_test.htm" class="uri">http://www.statlect.com/Wald_test.htm</a></li>
+</ul>
+<p><a href="lec07_CategoricalDataAnalysis.html">[top]</a></p>
+</div>
+</div>
+<div id="tests-of-association" class="section level1">
+<h1>Tests of association</h1>
+<ul>
+<li>Watch this 3 minute Marin Stats Lecture: <a href="https://www.youtube.com/watch?v=POiHEJqmiC0" class="uri">https://www.youtube.com/watch?v=POiHEJqmiC0</a></li>
+</ul>
 <div id="testing-equality-of-proportions" class="section level2">
 <h2>Testing Equality of proportions</h2>
+<p>prop.test(table(email<span class="math inline">\(number, email\)</span>spam))</p>
 </div>
 <div id="testing-goodness-of-fit" class="section level2">
 <h2>Testing Goodness of Fit</h2>
 </div>
 <div id="testing-independence" class="section level2">
 <h2>Testing Independence</h2>
+<p>mosaicplot(tab, shade=TRUE)</p>
 </div>
-<div id="comments-on-fishers-exact-test" class="section level2">
-<h2>Comments on Fishers Exact test</h2>
-<p><a href="lec07_CategoricalDataAnalysis.html">[top]</a></p>
-</div>
-</div>
-<div id="logistic-regression" class="section level1">
-<h1>Logistic Regression</h1>
-<div id="going-further" class="section level2">
-<h2>Going further</h2>
-<p>When your outcome has more than one level and you want to build a regression model to assess the impact a specific variable (or set of variables) has on the levels of this outcome variable, you would need to turn to more generalized linear models such as: * Multinomial distribution for a nominal outcome - <a href="http://www.ats.ucla.edu/stat/r/dae/mlogit.htm" class="uri">http://www.ats.ucla.edu/stat/r/dae/mlogit.htm</a> * Ordinal logistic regression</p>
+<div id="fishers-exact-test" class="section level2">
+<h2>Fishers Exact test</h2>
 <p><a href="lec07_CategoricalDataAnalysis.html">[top]</a></p>
 </div>
 </div>
@@ -528,7 +745,6 @@ melted_tab</code></pre></div>
 <div id="on-your-own-1" class="section level5">
 <h5>On Your Own</h5>
 <ol style="list-style-type: decimal">
-<li>Using the <code>survey</code> data set contained in the <code>MASS</code> library, recode the exercise variable into a dichotomous indicator of any exercise. Test the hypothesis that more than 75% of the students in the sample exercise at some level.</li>
 <li>Using the student <code>survey</code> data where the variable <code>smoker</code> is a binary indicator of smoking, test if males smoke more than females. <em>Hint: check your output carefully and consider if the difference was taken in the desired direction</em> <!--
 
 ```r
@@ -551,7 +767,42 @@ t.test(yessmoker ~ Sex , data=survey, alternative = "less")
 ##            0.1610169            0.2393162
 ```
 ---></li>
+<li>Anti-tumor necrosis factor <span class="math inline">\(\alpha\)</span> (TNF<span class="math inline">\(\alpha\)</span>) drugs are a class of drugs that are commonly used to treat inflammatory conditions such as arthritis. However, these drugs tend to be associated with an increased risk of infectious complications. <a href="http://onlinelibrary.wiley.com/doi/10.1002/art.20454/abstract">Bergstrom, et al (2004)</a> conducted a study to test the hypothesis that patients on these drugs are at increased risk for coccidiomycosis (a fungal pneumonia). Calculate and interpret the RR with 95% confidence interval. Here are the tabular results.</li>
 </ol>
+<table border="1">
+<tr>
+<th>
+</th>
+<th>
+COC
+</th>
+<th>
+No COC
+</th>
+</tr>
+<tr>
+<td align="center">
+TNF
+</td>
+<td align="center">
+7.00
+</td>
+<td align="center">
+240.00
+</td>
+</tr>
+<tr>
+<td align="center">
+Other
+</td>
+<td align="center">
+4.00
+</td>
+<td align="center">
+734.00
+</td>
+</tr>
+</table>
 </div>
 </div>
 

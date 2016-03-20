@@ -1,0 +1,50 @@
+---
+title: 'Lec 08: Logistic Regression'
+author: "MATH 456 - Spring 2016"
+output:
+  html_document:
+    highlight: pygments
+    theme: spacelab
+    toc: yes
+  pdf_document: default
+---
+```{r,echo=FALSE, warning=FALSE, message=FALSE}
+library(knitr); library(rmarkdown);library(ggplot2)
+library(xtable); library(dplyr)
+options(xtable.comment = FALSE)
+opts_chunk$set(warning=FALSE, message=FALSE, fig.height=4, fig.width=5, fig.align='center') 
+```
+
+```{r results="asis", echo=FALSE}
+source("C:/Github/MATH456/stylesheets/custom.R")
+```
+
+Navbar: [[Home]](../index.html) [[Schedule]](../Schedule.html) [[Data]](../data/Datasets.html) [[Week 11 Overview]](../wk11.html) [[HW Info]](../HW_Info.html)  [[Google Group]](https://groups.google.com/forum/#!forum/csuc_stat)
+
+
+# Introduction 
+
+## Assigned Reading & additional references
+
+
+
+
+## Going further
+When your outcome has more than one level and you want to build a regression
+model to assess the impact a specific variable (or set of variables) has on 
+the levels of this outcome variable, you would need to turn to more
+generalized linear models such as: 
+* Multinomial distribution for a nominal outcome
+    - http://www.ats.ucla.edu/stat/r/dae/mlogit.htm
+* Ordinal logistic regression
+
+
+[[top]](lec08_LogisticRegression.html)
+
+# On Your Own
+
+##### On Your Own
+
+    
+    
+    
