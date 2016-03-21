@@ -50,7 +50,7 @@ From [Grammerist](http://grammarist.com/spelling/principle-principal/):
 > As a noun, principal refers to 
   (1) one who holds a presiding position or rank, and 
   (2) capital or property before interest, 
-  and it’s also an adjective meaning 
+  and it's also an adjective meaning 
   (3) first or most important in rank 
 > 
 > Principle is only a noun. In its primary sense, it refers to a basic truth, law, assumption, or rule.
@@ -179,7 +179,7 @@ We want
 
 * From $P$ original variables $X_{1}, \ldots , X_{P}$ get $P$ principal components 
 $C_{1}, \ldots , C_{P}$
-* Where each $C_{j}$ is a linear combination of the $X_{i}$’s: $C_{j} = a_{j1}X_{1} + a_{j2}X_{2} + \ldots + a_{jP}X_{P}$
+* Where each $C_{j}$ is a linear combination of the $X_{i}$'s: $C_{j} = a_{j1}X_{1} + a_{j2}X_{2} + \ldots + a_{jP}X_{P}$
 * The coefficients are chosen such that $Var(C_{1}) \geq Var(C_{2}) \geq \ldots \geq Var(C_{P})$
 * Any two PC's are uncorrelated: $Cov(C_{i}, C_{j})=0, \quad \forall i \neq j$
 
@@ -222,7 +222,7 @@ $$.
 So, 
 
 * Principal components are the eigenvectors
-* and their variances are the eigenvalues of the covariance matrix $\mathbf{\Sigma}$ of the $X$’s.
+* and their variances are the eigenvalues of the covariance matrix $\mathbf{\Sigma}$ of the $X$'s.
 * Variances of the $C_{j}$'s add up to the sum of the variances of the original variables (total variance).
 
 
