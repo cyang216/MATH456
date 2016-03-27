@@ -1,0 +1,295 @@
+---
+title: 'Dimension Reduction using Principal Components'
+output:
+  html_document:
+    highlight: pygments
+    theme: spacelab
+---
+```{r,echo=FALSE, warning=FALSE, message=FALSE}
+options(width =800)
+library(knitr); library(rmarkdown);library(ggplot2)
+library(xtable); library(dplyr)
+options(xtable.comment = FALSE)
+opts_chunk$set(warning=FALSE, message=FALSE) 
+```
+
+```{r results="asis", echo=FALSE}
+source("C:/Github/MATH456/stylesheets/custom.R")
+```
+
+Navbar: [[Home]](../index.html) [[Schedule]](../Schedule.html) [[Data]](../data/Datasets.html)  [[HW Info]](../HW_Info.html) 
+
+#### Generate hypothetical data
+Copied from lecture notes. 
+```{r}
+set.seed(456)
+library(MASS)
+m <- c(100, 50)
+s <- matrix(c(100, sqrt(.5*100*50), sqrt(.5*100*50), 50), nrow=2)
+data <- data.frame(mvrnorm(n=100, mu=m, Sigma=s))
+colnames(data) <- c("X1", "X2")
+```
+
+
+
+##### On Your Own
+1. **Confirm the total variance in the hypothetical example is preserved by calculating the
+   sum of the variances for each $X_{1}$ and $X_{2}$, and $C_{1}$ and $C_{2}$.**
+```{r}
+pr <- princomp(data)
+var(data$X1) + var(data$X2) 
+sum(pr$sdev^2)
+```
+
+The total variance in the data X's has been preserved. This is seen by the total
+variance in the data X's being equal to the total variances in the PC's. While 
+not identically equal, the total variance in the PC's is 99% of the total variance
+in the X's. 
+
+
+2. **Confirm the total variance of the principal components when using the
+   correlation matrix is equal to the number of principal components.**
+```{r}
+pr_corr <- princomp(data, cor=TRUE)
+sum(pr_corr$sdev^2)
+```
+There are two PC's, and the total variance of the PC's is equal to 2. 
+  
+3. **According to the PCA How-To manual by Emily Mankin, what are the two Principles of PCA?**
+
+    a. PCA Principle 1: In general high correlation between variables is a telltale sign of
+       high redundancy in the data.
+    b. PCA Principle 2: The most important dynamics are the ones with the largest variance. 
+
+
+4. **PCA vs FA**
+    a. **In your own words, what is the differnce between PCA and FA?**
+    
+    Principal components is a method of creating linear combinations of existing variables
+    where the new variables are pairwise independent and fewer PC's can explain most of
+    the variance in the data. 
+    
+    Factor analysis is used when there is a theoretical underlying latent construct
+    (latent factor) driving the measured data responses. Factor analysis is used to 
+    predict the responses on the measured data based on these latent constructs. 
+    
+    
+    b. **Explain what is meant by a "latent factor".** 
+    A latent factor or latent construct is a characteristic of a person that you wish
+    to know something about, but is directly unmeasurable. Examples include a persons
+    grit or preserverance, their level of parental bonding or community engagement. 
+
+
+5. For the depression data set, perform a PCA on the last seven variables 
+   `DRINK - CHRONILL`. Interpret the results. 
+
+```{r}
+depress  <- read.delim("C:/GitHub/MATH456/data/depress_030816.txt")
+dep_data <- depress[,31:37]
+```
+
+Calculate the PC's using the correlation matrix. 
+```{r}
+pc_dep  <- princomp(dep_data, cor=TRUE)
+```
+
+How much variance is explained by each PC? 
+```{r,fig.align='center', fig.height=4, fig.width=4}
+qplot(x=1:7, y=cumsum(pc_dep$sdev^2)/sum(pc_dep$sdev^2)*100, 
+           geom=c("point", "line"), main="Covariance") + 
+     xlab("PC number") + ylab("Cumulative %") + geom_hline(aes(yintercept=75)) + ylim(c(0,100))
+```
+
+We select four eigenvectors based on a cut off of 75% cumulative percent of
+variance explained. 
+
+Examine the factor loadings of the first four PC's to see if they can be interpreted. 
+
+We can look directly at the loading matrix
+```{r}
+pc_dep$loadings[,1:4]
+```
+
+Or we can create a visualization. First I turn the loading matrix into a named data frame. 
+```{r}
+library(reshape2)
+dep_cov <- data.frame(pc_dep$loadings[,1:4])
+melt_dcov <- cbind(x=names(dep_data), melt(dep_cov))
+head(melt_dcov)
+```
+
+Then create a barplot using the `value` as the heights of the bars, one
+panel per `variable` (principal component) and one bar per `x` 
+(individual variable). 
+```{r, fig.height=4, fig.width=10}
+ggplot(data=melt_dcov) +
+  geom_bar(aes(x=x, y=value, fill=x), stat="identity") +
+  facet_wrap(~variable, ncol=4)
+```
+
+Since we are using the correlation matrix to create the eigenvalues, 
+we can directly calculate the correlation between the individual variables and 
+each principal component. The strength and direction of the correlation
+corresponds to the direction and magnitude of the factor loading.
+However, the correlation is directly interpretable where as the factor
+loading is not. 
+
+```{r, results='asis'}
+pcload <-  matrix(pc_dep$loadings[,1:4], nrow=7)
+cor_PC_X <- matrix(rep(NA, 28), nrow=7, dimnames=list(names(dep_data), c("PC1", "PC2", "PC3", "PC4")))
+for(i in 1:4){
+  for(j in 1:7){
+    cor_PC_X[j,i] <- pcload[j,i] %*% matrix(pc_dep$sdev)[i] 
+ }
+}
+print(xtable(cor_PC_X, digits=3), type="html")
+```
+
+Using anything over .5 as an indication of "strong" correlation, `TREAT` 
+is strongly positivly with the first prinicipal component, and `CHRONILL`, 
+`HEALTH`, `BEDDAYS` are all strongly negatively correlated with PC1. 
+
+_It is key here to have the codebook open so you know what the variables
+mean, and what a higher value on each variable is interpreted as._
+In general, for all these variables a higher outcome indicates poorer health. 
+
+Summary: 
+
+* The first eigenvector is comprised of `health`, `treat`, `chronill`, `beddays`.  
+* The second eigenvector consists of `beddays` and `acuteill`.  
+* The third consists of `drink` and `regdoc`.  
+* The fourth consists of just `regdoc`.  
+
+A possible interpretation could be poor health for the first eigenvector, 
+recently sick for the second eigenvector, 
+healthy lifestyle for the third, and 
+regular doctor visits for the fourth.
+
+
+6. **Using the family lung function data perform a PCA on mother's height, weight, 
+   age, FEV1, and FVC. Use the covariance matrix, then repeat using the correlation 
+   matrix. Compare the results and comment.**
+
+Read in the data and extract just the variables of interest. 
+```{r}
+lung <- read.delim("C:/GitHub/MATH456/data/Lung_020716.txt")
+pc_lungdata <- lung[,c('MHEIGHT', 'MWEIGHT', 'MAGE', 'MFEV1', 'MFVC')]
+```
+
+To look at the correlation matrix for the X's to get an idea of what variables
+are correlated, I could use the `cor(pc_lungdata)` function but I would also
+like to get the pairwise p-values for a test of significant correlation. 
+This can be obtained by using the `rcorr` function in the `Hmisc` package. 
+```{r}
+library(Hmisc)
+rcorr(as.matrix(pc_lungdata), type="pearson")
+```
+
+This shows that height is significantly correlated with weight, FEV1 and FVC, 
+weight is correlated with FEV1 and FVC, AGE is correlated with FEV1 and FVC, 
+and fev1 and fvc are also highly correlated. This is a perfect situation for
+PCA!
+
+Create PC's using the covariance and correlation matricies separately.  
+```{r}
+lung_pc_cov <- princomp(pc_lungdata)
+lung_pc_corr <- princomp(pc_lungdata, cor=TRUE)
+```
+
+Assess the amount of variance explained per PC for each model. 
+We can see the cumulative % of variance explained by looking at the output
+directly, 
+```{r}
+summary(lung_pc_cov)
+summary(lung_pc_corr)
+```
+
+Or we can create a visualization. 
+```{r,fig.align='center', fig.height=4}
+a <- qplot(x=1:5, y=cumsum(lung_pc_cov$sdev^2)/sum(lung_pc_cov$sdev^2)*100, 
+           geom=c("point", "line"), main="Covariance") + 
+     xlab("PC number") + ylab("Cumulative %") + geom_hline(aes(yintercept=80)) + ylim(c(0,100))
+
+b <- qplot(x=1:5, y=cumsum(lung_pc_corr$sdev^2)/5*100, geom=c("point", "line"), main="Correlation") + 
+     xlab("PC number") + ylab("Cumulative %") + geom_hline(aes(yintercept=80))+ ylim(c(0,100))
+
+library(gridExtra)
+grid.arrange(a, b, nrow=1)
+```
+
+* Using the covariance matrix, one principal component accounts for approximately 79% 
+  of the data, and two explain 99% of the data. 
+* Using the correlation matrix, we see that three principal components are derived 
+  accounting for approximately 87.5% of the variance among the original variables. 
+
+
+Decide on a rough number of PC's to keep by making a screeplot. 
+```{r, fig.width=10, fig.height=4,  fig.align='center'}
+par(mfrow=c(1,2))
+screeplot(lung_pc_cov, type="lines", main="Covariance")
+screeplot(lung_pc_corr, type="lines", main="Correlation")
+```
+
+* According to the above plot 3 PC's would be retained using the covariance 
+  matrix, while 2 would be retained using the correlation matrix. 
+
+
+Examine the factor loadings and see if the PC's can be interpreted. 
+We could look at the matrix directly, 
+```{r}
+lung_pc_cov$loadings
+```
+
+Or we can create a visualization. First I turn the loading matrix into a named data frame. 
+```{r}
+library(reshape2)
+pc_cov_df <- data.frame(lung_pc_cov$loadings[,1:5])
+melt_cov <- cbind(x=names(pc_lungdata), melt(pc_cov_df))
+head(melt_cov)
+```
+
+Then create a barplot using the `value` as the heights of the bars, one
+panel per `variable` (principal component) and one bar per `x` 
+(individual variable). 
+```{r, fig.height=4, fig.width=10}
+ggplot(data=melt_cov) +
+  geom_bar(aes(x=x, y=value, fill=x), stat="identity") +
+  facet_wrap(~variable, ncol=5)
+```
+
+* Each PC seems to represent a single variable. This does not aid us well
+  as a dimension reduction tool. 
+* PC1 and PC2 still explain 99% of the variance in the data, and these seem
+  to only contain information from FVC and WEIGHT. 
+
+Now do the same for the correlation model. 
+
+```{r, fig.height=4, fig.width=10}
+pc_cor_df <- data.frame(lung_pc_corr$loadings[,1:5])
+melt_cor <- cbind(x=names(pc_lungdata), melt(pc_cor_df))
+head(melt_cor)
+
+ggplot(data=melt_cor) +
+  geom_bar(aes(x=x, y=value, fill=x), stat="identity") +
+  facet_wrap(~variable, ncol=5)
+```
+
+* Principal component 1 has substantial negative loadings of mother's height, FEV1, and FVC. 
+* Principal component 2 and 3 both have substantial loadings by mother's weight and age, 
+  the difference is that both age and weight are negativly associated with PC2, but age
+  is positivly associated with PC3. 
+
+
+**Summary**
+
+Using the covariance matrix appears to be a better choice since ideally we would
+like as few principal components as possible to account for as much variation among 
+the variables as possible. Furthermore the way the variables load onto the PC's 
+created by the covariance matrix are easier to iterpret. 
+
+
+    
+    
+    
+    
+    
