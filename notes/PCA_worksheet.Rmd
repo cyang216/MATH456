@@ -1,0 +1,227 @@
+---
+title: 'PCA on Parental HIV data'
+output:
+  html_document:
+    highlight: pygments
+    theme: spacelab
+---
+```{r, warning=FALSE, message=FALSE}
+options(width =800)
+library(knitr); library(rmarkdown);library(ggplot2)
+library(xtable); library(dplyr)
+options(xtable.comment = FALSE)
+opts_chunk$set(warning=FALSE, message=FALSE, fig.height=4, fig.width=5, fig.align='center') 
+```
+
+```{r results="asis", echo=FALSE}
+source("C:/Github/MATH456/stylesheets/custom.R")
+```
+
+## Goal: Use PCA to reduce the 25 parental bonding variables into a few components, 
+Then use those components in a regression model for overall BSI score. 
+```{r}
+hiv  <- read.delim("C:/GitHub/MATH456/data/PARHIV_022216.txt")
+parent <- select(hiv, PB01:PB25)
+names(parent)
+```
+
+Perform PCA using the correlation matrix.
+You can use the correlation or covariance matrix. 
+```{r, error=TRUE}
+pc_parent  <- princomp(parent, cor=TRUE)
+```
+
+Note the error. This is because of missing data. 
+Find out the ID of the people who are missing data (i.e. do not have 
+complete.cases) 
+```{r}
+which(complete.cases(parent)==FALSE)
+```
+
+and then remove them. 
+```{r}
+parent <- parent[-c(154, 180),]
+```
+
+**Note!** This is very important to not simply do `na.omit()` here or
+otherwise remove the cases with missing data without figuring out
+_which rows_ have the missing data. We will need this information
+later during regression modeling. 
+
+
+### Create a scree plot and interpret.   
+```{r}
+pc_parent  <- princomp(parent, cor=TRUE)
+screeplot(pc_parent, type='lines')
+```
+
+### Create a cumulative variance plot and interpret. 
+
+How much variance is explained by each PC? 
+```{r,fig.align='center', fig.height=4, fig.width=4}
+qplot(x=1:NCOL(parent), y=cumsum(pc_parent$sdev^2)/sum(pc_parent$sdev^2)*100, 
+           geom=c("point", "line"), main="Percent of varaince explained") + 
+           xlab("PC number") + ylab("Cumulative %") +  ylim(c(0,100))
+```
+
+<!-- The literature is divided on the number of dimensions of parental bonding
+with anywhere from two to ve dimensions. The rule of thumb per section
+14.5 is to select only the principal components that account for at least
+100/P% of the total variance. There are 25 variables here being analyzed,
+100/P = 4% and the rst six principal components should be kept.
+-->
+
+### Examine the factor loadings of the first $K$ PC's. 
+You choose $K$ using the information above. 
+I am using 10 as a demonstration, you will probably not use this many. 
+The rule of thumb per section 14.5 is to select only the principal components 
+that account for at least 100/P% of the total variance.
+
+```{r,fig.align='center', fig.height=4, fig.width=10}
+library(reshape2)
+load   <- data.frame(pc_parent$loadings[,1:10])
+melted <- cbind(x=names(parent), melt(load))
+
+ggplot(data=melted) +
+  geom_bar(aes(x=x, y=value, fill=x), stat="identity") +
+  facet_wrap(~variable, ncol=5)
+```
+
+
+    
+# Model BSI
+## Introduction
+The Brief Symptom Inventory (BSI) is designed to assess recent psychological symptoms. 
+The overall score (average of all components) is a measure of overall psychological distress level. 
+For more info see: http://link.springer.com/referenceworkentry/10.1007%2F978-1-4419-1005-9_3
+
+##### Review: Question Formulation: Data Analysis
+When starting to conduct an analysis of some data, what are the first few things
+you want to know? What questions do you ask? 
+
+<!--
+- What variables predict overall psychological distress? What is the effect of these variables on overall BSI?
+- Is there missing data? 
+- What is the variable type of selected predictors? Do they have to be recategorized? 
+-->
+
+<br></br>
+<br></br>
+<br></br>
+<br></br>
+
+## Build a model for BSI
+Use some demographic covariates (your choice, but justify why you chose them), along with
+the principal components you chose from the prior step. 
+
+
+
+1. Choose some predictor variables and make sure they are the correct variable type. 
+```{r}
+model.data <- hiv[, c('HOOKEY', 'SCHOOL', 'ETHN', 'BSI_overall')]
+str(model.data)
+model.data$ETHN <- factor(model.data$ETHN, labels = c('Latino', 'Black', 'Other'))
+model.data$HOOKEY <- factor(model.data$HOOKEY, labels = c('No', 'Yes'))
+model.data$SCHOOL <- factor(model.data$SCHOOL, labels = c('No', 'Yes'))
+```
+
+
+2. Extract the fist $K$ component variables $C_{i}$ for each person. 
+```{r}
+scores <- pc_parent$scores[,1:10]
+head(scores)
+```
+
+3. Add these scores to the demographic data. This is where we needed to know who
+   those two people with missing parental bonding data were. 
+```{r}
+dim(model.data)
+dim(scores)
+```
+
+Remove them from the model data. 
+```{r}
+model.data <- model.data[-c(154, 180),]
+dim(model.data)
+```
+
+Add the score data to the demographic data. 
+```{r}
+mod.dta <- cbind(model.data, scores)
+names(mod.dta)
+```
+
+4. Create a linear model of BSI. Refine as needed. 
+
+```{r}
+model <- lm(BSI_overall ~ ., data=mod.dta)
+summary(model)
+```
+
+Ethnicity does not look significant, but since there are
+multiple levels a deviance test needs to be checked. 
+
+```{r}
+reduced <- lm(BSI_overall ~ .,  data=mod.dta[,-3])
+anova(model, reduced)
+```
+
+This Likelihood ratio test indicates that there is no difference in 
+the amount of the variance in `BSI_overall` explained by the model
+with and without ethnicity, so it will be dropped. 
+
+```{r}
+summary(reduced)
+```
+
+Furthermore, it looks like PC's 2 through 9 are non-significant predictors
+of the outcome. This would be a good time to consider conducting an automated 
+variable selection procedure on the remaining variables. 
+**This is not always necessary**
+
+<!--
+Instead of manually adding and removing each variable I 
+will use a best subsets variable selection technique to see which variables
+are predictive of psychological levels. 
+
+```{r, fig.width=10}
+library(leaps)
+bss <- regsubsets(BSI_overall ~ ., data=mod.dta[,-3], 
+                  nbest=2, nvmax=NULL, method="exhaustive")
+
+par(mfrow=c(1,2))
+plot(bss, scale="bic", main="BIC")
+plot(bss, scale="adjr2", main="Adjusted R^2")
+```
+
+Similar to what the regression model indicated, PC 2 through 6 are not
+predictive. Let's see what a stepwise procedure generates.  
+
+```{r, results='hide'}
+library(MASS)
+null <- lm(BSI_overall ~ 1, data=mod.dta[,-3])
+full <- lm(BSI_overall ~ ., data=mod.dta[,-3])
+step <- stepAIC(null, scope=list(upper=full,lower=null), direction="both")
+```
+
+The results of the stepwise model are: 
+```{r}
+names(step$coefficients)
+```
+which corroborates the best subsets selections. 
+
+
+```{r,eval=FALSE}
+final.mod <- lm(BSI_overall ~ AGE + GENDER + LIVWITH + Comp.1 + Comp.7 + Comp.9 + Comp.10, data=mod.dta)
+summary(final.mod)
+```
+
+-->
+
+#### Interpret the final model. 
+The first, and 10th PC are negativly associated with recent psychological 
+symptoms (p<.0001, .02 respectively). This model does not fit very well, it 
+only explains 5% of the variance in BSI_overall.The RMSE (estimate of the 
+model error) is .59, which is larger than the overall 
+variance in the outcome (`r round(var(mod.dta$BSI_overall, na.rm=TRUE), 2)`). 
+
