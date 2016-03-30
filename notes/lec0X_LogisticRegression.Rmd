@@ -1,0 +1,88 @@
+---
+title: "Lec 0X: Logistic Regression"
+author: "MATH 456 - Spring 2016"
+output:
+  html_document:
+    highlight: pygments
+    theme: spacelab
+    toc: yes
+  pdf_document: default
+---
+```{r,echo=FALSE, warning=FALSE, message=FALSE}
+library(knitr); library(rmarkdown);library(ggplot2)
+library(xtable)
+options(xtable.comment = FALSE)
+opts_chunk$set(warning=FALSE, message=FALSE, fig.align='center', fig.height=4, fig.width=5) 
+```
+
+```{r results="asis", echo=FALSE}
+source("C:/Github/MATH456/stylesheets/custom.R")
+```
+
+Navbar: [[Home]](../index.html) [[Schedule]](../Schedule.html) [[Data]](../data/Datasets.html) [[Week 11 Overview]](../wk11.html) [[HW Info]](../HW_Info.html)  [[Google Group]](https://groups.google.com/forum/#!forum/csuc_stat)
+
+# Introduction
+
+* Logistic regression is a tool used to model a categorical outcome variable with
+  two levels: Y = 1 if event, = 0 if no event. 
+* Instead of modeling the outcome directly $E(Y|X)$ as with linear regression, 
+  we model the probabilty of an event occuring: $P(Y=1|X)$. 
+
+## Uses of Logistic Regression
+* Assess the effect covariates have on the probability of an outcome occuring. 
+    - Interpreting Coefficients
+* Predict the likelihood / chance / probability of an event occuring given a
+  certain covariate pattern.  
+
+We will start by learning how to do the first. 
+
+# Assigned Reading and additional references
+
+* Open Intro Section 8.4
+* Afifi Ch 12
+
+
+##  Spam vs Ham
+Let's revisit the `email` data set. The `spam` variable will be considered the
+outcome variable
+
+* When `spam=1` the email was flagged as spam (an event) 
+* When `spam=0` the email was not flagged as spam (non-event)
+
+We will use all 10 other variables in the data set as covariates.
+  
+
+# The Logistic Regression Model
+Let $p_{i} = P(y_{i}=1)$. Then the logistic model relating the probability of 
+an event based on a set of covariates $X$ is
+$$
+log\left(
+\frac{p_{i}}{1-p_{i}}
+\right) = \beta_{0} + \beta_{1}x_{1i} + \beta_{2}x_{2i} + \ldots + \beta_{p}x_{pi}
+$$
+
+The transformation $log\left(\frac{p_{i}}{1-p_{i}}\right)$ is called a **_logit_** 
+transformation. 
+
+```{r}
+p <- seq(0, 1, by=.01)
+logit.p <- log(p/(1-p))
+qplot(logit.p, p, geom="line", xlab = "logit(p)", main="The logistic transformation")
+```
+
+This in essence takes a binary outcome 0/1 variable, turns it into a continuous 
+probability (which only has a range from 0 to 1), and then turns
+the logit(p) now has a continuous distribution ranging from $-\infty$ to $\infty$. 
+This now has the same form as a Multiple Linear Regression (continuous outcome modeled
+on a set of covariates)
+
+
+# On Your Own
+##### On Your Own
+
+
+    
+    
+    
+    
+    
