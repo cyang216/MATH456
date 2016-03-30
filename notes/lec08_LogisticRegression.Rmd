@@ -22,7 +22,6 @@ source("C:/Github/MATH456/stylesheets/custom.R")
 Navbar: [[Home]](../index.html) [[Schedule]](../Schedule.html) [[Data]](../data/Datasets.html) [[Week 11 Overview]](../wk11.html) [[HW Info]](../HW_Info.html)  [[Google Group]](https://groups.google.com/forum/#!forum/csuc_stat)
 
 
-
 # Introduction
 
 * Logistic regression is a tool used to model a categorical outcome variable with
@@ -45,13 +44,11 @@ We will start by learning how to do the first.
 
 
 ##  Spam vs Ham
-Let's revisit the `email` data set. The `spam` variable will be considered the
-outcome variable
-
-* When `spam=1` the email was flagged as spam (an event) 
-* When `spam=0` the email was not flagged as spam (non-event)
-
-We will use all 10 other variables in the data set as covariates.
+Let's revisit the `email` data set where the `spam` variable is our binary
+outcome variable.
+```{r}
+email <- read.delim("C:/GitHub/MATH456/data/email.txt", header=TRUE, sep="\t")
+```
   
 
 # The Logistic Regression Model

@@ -48,7 +48,6 @@ more information and guidance on how to plot categorical data correctly.
 #### Assigned Reading
 * OpenIntro Lab on categorical data [[HTML]](notes/OI_Inf_for_categorical_data/html)
 * OpenIntro Statistics [Free PDF Textbook](https://www.openintro.org/stat/textbook.php) Chapter 6 (6.1-6.4)
-* Afifi Chapter 12 (Logistic Regression)
 
 #### Additional References
 * Mike Marin: Relative Risk and Odds Ratio https://www.youtube.com/watch?v=V_YNPQoAyCc
@@ -179,7 +178,7 @@ t.test(spam$hasnum, mu=.5, alternative = "two.sided", conf.level=.95)
 ```
 
 A significant majority (59.4%, 95%CI: 54.3-64.4) of emails that are flagged spam
-contain numbers (p<.0001).
+contain numbers (p=.0002).
 
 #### Using summary numbers only
 If we only had summary statistics, for example from a published table, 
