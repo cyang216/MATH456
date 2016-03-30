@@ -2,11 +2,11 @@
 title: 'Lec 07: Categorical Data Analysis'
 author: "MATH 456 - Spring 2016"
 output:
-  pdf_document: default
   html_document:
     highlight: pygments
     theme: spacelab
     toc: yes
+  pdf_document: default
 ---
 ```{r,echo=FALSE, warning=FALSE, message=FALSE}
 library(knitr); library(rmarkdown);library(ggplot2)
@@ -175,7 +175,7 @@ mean(spam$hasnum)
 * Construct a 95% CI for the proportion of spam emails with numbers. 
 Since this proportion follows the normal model we can conduct a t.test. 
 ```{r}
-t.test(spam$hasnum, alternative = "two.sided", conf.level=.95)
+t.test(spam$hasnum, mu=.5, alternative = "two.sided", conf.level=.95)
 ```
 
 A significant majority (59.4%, 95%CI: 54.3-64.4) of emails that are flagged spam
