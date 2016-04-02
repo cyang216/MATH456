@@ -118,7 +118,7 @@ the principal components you chose from the prior step.
 
 1. Choose some predictor variables and make sure they are the correct variable type. 
 ```{r}
-model.data <- hiv[, c('HOOKEY', 'SCHOOL', 'ETHN', 'BSI_overall')]
+model.data <- hiv[, c('HOOKEY', 'SCHOOL', 'ATTSERV', 'ETHN', 'BSI_overall')]
 str(model.data)
 model.data$ETHN <- factor(model.data$ETHN, labels = c('Latino', 'Black', 'Other'))
 model.data$HOOKEY <- factor(model.data$HOOKEY, labels = c('No', 'Yes'))

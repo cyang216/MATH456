@@ -30,6 +30,7 @@ Navbar: [[Home]](../index.html) [[Schedule]](../Schedule.html) [[Data]](../data/
 * Article: When can odds ratios mislead? http://www.ncbi.nlm.nih.gov/pmc/articles/PMC1112884/
 
 -- Additional References
+
 * http://www.ats.ucla.edu/stat/sas/faq/oratio.htm 
 
 # Introduction
@@ -139,7 +140,7 @@ rotate(dep_sex_xtab)
 epi.2by2(rotate(dep_sex_xtab))
 ```
 
-Females are 2.83 times as likely to be depressed compared to males (95% CI 1.35, 5.91).
+Females have 2.83 times the odds of being depressed compared to males (95% CI 1.35, 5.91).
 
 ## Using Logistic Regression
 We will come to the same conclusion by running a logistic regression model, 
@@ -154,7 +155,12 @@ exp(coef(dep_sex_model))
 
 The Odds Ratio for depression among Females compared to males is 2.83.
 
-We'll get to how to calculate a CI for the OR a little later. 
+You can calculate the CI for the OR by first calculating the CI for $\beta$, 
+and then exponentiating the result. 
+```{r}
+exp(confint(dep_sex_model))
+```
+
 
 # Multiple Logistic Regression (Afifi 12.5, 12.6)
 Just like multiple linear regression, additional predictors are simply included 
@@ -212,10 +218,11 @@ for the linear effects of age and income (p=.016).
 
 ```{r}
 exp(coef(mvmodel))
+exp(confint(mvmodel))
 ```
 
-* 
-* The Adjusted odds ratio for increase of 1 year of age is 0.98.
+* The Adjusted odds ratio (AOR)
+* The Adjusted odds ratio for increase of 1 year of age is 0.98 (95%CI .96, 1.0)
 * How about a 10 year increase in age? $e^{10*\beta_{age}} = e^{-.21} = .81$
 ```{r}
 exp(10*coef(mvmodel)[2])
