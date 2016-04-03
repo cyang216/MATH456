@@ -1,0 +1,37 @@
+---
+title: "Week 11"
+author: "MATH 456, Spring 2016"
+date: " 04/04/16"
+output: html_document
+---
+```{r results="asis", echo=FALSE}
+source("C:/Github/MATH456/stylesheets/custom.R")
+```
+[[Schedule]](Schedule.html) [[Week 10]](wk10.html) [[Week 12]](wk12.html)
+
+## Announcements
+The schedule has been updated to reflect upcoming due dates, and the change in plans if the strike does happen. 
+
+
+### Notes and Materials
+* Lec 08: Logistic Regression [[PDF]](notes/lec08_LogisticRegression.pdf)[[HTML]](notes/lec08_LogisticRegression.html)
+
+
+### Monday 04/04/16
+** Prepare before class - review the relevant materials and complete the preparation section**
+* Chi Square Tests: M&M Experiment.[[RMD]](notes/MnM_Experiment.Rmd) [[PDF]](notes/MnM_Experiment.pdf) [[HTML]](notes/MnM_Experiment.html)
+
+
+
+### Wednesday 04/06/16
+* Logistic Regression
+
+
+### Friday 04/08/16
+
+
+
+## Looking Ahead
+* Classifying observations into categories. 
+
+
