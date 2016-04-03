@@ -724,8 +724,10 @@ print(xtable(tnf, align='ccc', digits=0), type='html')
 
 <!-- GOODNESS OF FIT--> 
 3. Using the provided bag of M&M's, test the hypothesis that the color 
-   distribution has not changed since reported in 2008. 
-   https://www.exeter.edu/documents/mandm.pdf
+   distribution has not changed since reported in 2008.
+   https://www.exeter.edu/documents/mandm.pdf 
+   _Separate RMD file, done in class on Monday_ [[RMD]](MnM_Experiment.Rmd)
+   [[PDF]](MnM_Experiment.pdf) [[HTML]](MnM_Experiment.html)
     
 <!-- TEST OF INDEPENDENCE --> 
 4. In July 2008 the US National Institutes of 

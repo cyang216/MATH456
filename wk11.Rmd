@@ -16,7 +16,7 @@ source("C:/Github/MATH456/stylesheets/custom.R")
 
 
 ### Monday 04/04/16
-* Chi Square Tests: M&M Experiment.
+* Chi Square Tests: M&M Experiment.[[RMD]](notes/MnM_Experiment.Rmd) [[PDF]](notes/MnM_Experiment.pdf) [[HTML]](notes/MnM_Experiment.html)
 
 
 
