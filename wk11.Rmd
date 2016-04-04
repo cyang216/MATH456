@@ -18,7 +18,8 @@ The schedule has been updated to reflect upcoming due dates, and the change in p
 
 
 ### Monday 04/04/16
-** Prepare before class - review the relevant materials and complete the preparation section**
+
+**Prepare before class - review the relevant materials and complete the preparation section**  
 * Chi Square Tests: M&M Experiment.[[RMD]](notes/MnM_Experiment.Rmd) [[PDF]](notes/MnM_Experiment.pdf) [[HTML]](notes/MnM_Experiment.html)
 
 
