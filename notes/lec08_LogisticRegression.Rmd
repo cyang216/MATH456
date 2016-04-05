@@ -12,7 +12,7 @@ output:
 library(knitr); library(rmarkdown);library(ggplot2)
 library(xtable); library(dplyr)
 options(xtable.comment = FALSE)
-opts_chunk$set(warning=FALSE, message=FALSE, fig.height=4, fig.width=5, fig.align='center') 
+opts_chunk$set(warning=FALSE, message=FALSE) 
 ```
 
 ```{r results="asis", echo=FALSE}
@@ -64,7 +64,7 @@ by the  probability it does not occur: $(p/(1-p))$, the function
 $log\left(\frac{p_{i}}{1-p_{i}}\right)$ is also known as the _log odds_, 
 or more commonly called the **_logit_**. 
 
-```{r}
+```{r, fig.width=4, fig.height=3}
 p <- seq(0, 1, by=.01)
 logit.p <- log(p/(1-p))
 qplot(logit.p, p, geom="line", xlab = "logit(p)", main="The logit transformation")
@@ -155,8 +155,15 @@ exp(coef(dep_sex_model))
 
 The Odds Ratio for depression among Females compared to males is 2.83.
 
-You can calculate the CI for the OR by first calculating the CI for $\beta$, 
-and then exponentiating the result. 
+## Confidence Intervals
+The OR is **not** a linear function of the $x's$, but $\beta$ is. This means
+that a CI for the OR is created by calculating a CI for $\beta$, and then
+exponentiating the endpoints. A 95% CI for the OR can be calculated as: 
+
+$$e^{\hat{\beta} \pm 1.96 SE_{\beta}} $$
+
+
+In R this looks like: 
 ```{r}
 exp(confint(dep_sex_model))
 ```
@@ -221,12 +228,17 @@ exp(coef(mvmodel))
 exp(confint(mvmodel))
 ```
 
-* The Adjusted odds ratio (AOR)
-* The Adjusted odds ratio for increase of 1 year of age is 0.98 (95%CI .96, 1.0)
+* The Adjusted odds ratio (AOR) for increase of 1 year of age is 0.98 (95%CI .96, 1.0)
 * How about a 10 year increase in age? $e^{10*\beta_{age}} = e^{-.21} = .81$
 ```{r}
 exp(10*coef(mvmodel)[2])
 ```
+with a confidence interval of
+```{r}
+round(exp(10*confint(mvmodel)[2,]),3)
+```
+Controlling for gender and income, an individual has 0.81 (95% CI 0.68, 0.97)
+times the odds of being depressed compared to someone who is 10 years younger than them. 
 
 
 ## CAUTION
@@ -242,14 +254,89 @@ The Odds Ratio of death for females compared to males is ` 1.5/.66` = `r round(1
 * If you were to say that females were 2.3 times as likely to die compare to males, 
   you wouldn't necessarily translate that to a 40% vs 60% chance. 
 
-* In fact a very _incorrect_ way to interpret the above would be to take the probability
-  of dying for males and multiply it by 2.3. (2.3*4 = .92).  
+
+## Probability Interpretation
+For the above model of depression on age, income and gender the probability of
+depression is: 
+$$
+P(depressed) = \frac{e^{-0.676 - 0.02096*age - .03656*income + 0.92945*gender}}
+{1 + e^{-0.676 - 0.02096*age - .03656*income + 0.92945*gender}}
+$$
+
+Let's compare the probability of being depressed for males and females separately, 
+while holding age and income constant at their average value. 
+
+```{r}
+depress %>% summarize(age=mean(age), income=mean(income))
+```
+
+Plug the coefficient estimates and the values of the variables into the equation
+and calculate. 
+$$
+P(depressed|Female) = \frac{e^{-0.676 - 0.02096(44.4) - .03656(20.6) + 0.92945(1)}}
+{1 + e^{-0.676 - 0.02096(44.4) - .03656(20.6) + 0.92945(1)}}
+$$
+
+```{r}
+XB.f <- -0.676 - 0.02096*(44.4) - .03656*(20.6) + 0.92945
+exp(XB.f) / (1+exp(XB.f))
+```
+$$
+P(depressed|Male) = \frac{e^{-0.676 - 0.02096(44.4) - .03656(20.6) + 0.92945(0)}}
+{1 + e^{-0.676 - 0.02096(44.4) - .03656(20.6) + 0.92945(0)}}
+$$
+```{r}
+XB.m <- -0.676 - 0.02096*(44.4) - .03656*(20.6)
+exp(XB.m) / (1+exp(XB.m))
+```
+
+The probability for a 44.4 year old female who makes $20.6k annual income has a
+0.19 probability of being depressed. The probabilty of depression for a male of
+equal age and income is 0.86. 
 
 
+# Logistic models with interaction terms (Afifi 12.7)
 
-# Confidence intervals for the OR
+**This section follows the book very closely so minimal notes are presented**
 
+The inclusion of an interaction is necessary if the effect of an independent 
+variable depends on the level of another independent variable.
 
+#### Example: The relationsihp between income, employment status and depression. 
+Here I create the binary indicators of lowincome and underemployed as described
+in the textbook. In each case I ensure that missing data is retained.  
+```{r}
+depress$lowincome <- ifelse(depress$income < 10, 1, 0)
+depress$lowincome <- ifelse(is.na(depress$income), NA, depress$lowincome)
+
+depress$underemployed <- ifelse(depress$employ %in% c(2,3), 1, 0 )
+depress$underemployed <- ifelse(is.na(depress$employ) | depress$employ==7, NA, depress$underemployed)
+table(depress$underemployed, depress$employ, useNA="always")
+```
+
+The **Main Effects** model assumes that the effect of income on depression is
+indpendent of employment status, and the effect of employment status on
+depression is independent of income. 
+```{r}
+me_model <- glm(cases ~ lowincome + underemployed, data=depress, family="binomial")
+summary(me_model)
+```
+
+To formally test whether an interaction term is necessary, we add the interaction
+term into the model and assess whether the coefficient for the interaction term is
+significantly different from zero. 
+```{r}
+summary(glm(cases ~ lowincome + underemployed + lowincome*underemployed, data=depress, family="binomial"))
+```
+
+## Confouding and Effect Modification
+
+* **Confounder**: A covariate that is associated with both the outcome
+    and the risk factor. 
+* **Effect Modifier**: A covariate that modifies the effect a second 
+    covariate has on the outcome.
+
+# Refining and evaluating logistic regression
 
 
 
@@ -272,6 +359,13 @@ generalized linear models such as:
 ##### On Your Own
 1. What does an Odds Ratio of 1 signify? What if the OR < 1? What about when OR > 1? 
    You can use a pair of example variables such as X=gender and y=death if it helps you explain. 
-    
+2. Afifi 12.9 (a-c)
+3. Afifi 12.14 
+4. Afifi 12.15 
+5. Afifi 12.16
+6. Afifi 12.17
+7. Afifi 12.18
+8. Afifi 12.23
+
     
     
