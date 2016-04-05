@@ -34,13 +34,14 @@ wk10,W,3/30/2016,TRUE,Inference on Categorical Data,lec07_CategoricalDataAnalysi
 wk10,F,4/1/2016,TRUE,Contingency tables and Odds Ratios,,,
 wk11,Su,4/3/2016,FALSE,,,,
 wk11,M,4/4/2016,TRUE,M&M Experiment,MnM_Experiment,,
-wk11,W,4/6/2016,FALSE,Logistic Regression - Introduction,lec08_LogisticRegression,HW: Categorical data,
-wk11,F,4/8/2016,FALSE,Logistic regression - Interpretation and model fitting,Afifi Ch 12,,
+wk11,W,4/6/2016,TRUE,"Logistic Regression - Introduction, model fitting",lec08_LogisticRegression,HW: Categorical data,
+wk11,F,4/8/2016,TRUE,"Logistic regression - Variable selection, classwork",Afifi Ch 12,,
 wk12,Su,4/10/2016,FALSE,,,Quiz: Logistic Regression,
-wk12,M,4/11/2016,FALSE,"Logistic Regression, Project 2 Introduction",,,https://www.youtube.com/watch?v=7Jbb2ItbTC4
+wk12,M,4/11/2016,FALSE,"Project 2 Introduction, logistic regression classwork. ",,,https://www.youtube.com/watch?v=7Jbb2ItbTC4
 wk12,T,4/12/2016,FALSE,,,,http://blog.echen.me/2011/04/27/choosing-a-machine-learning-classifier/
 wk12,W,4/13/2016,FALSE,"<span style=""color:red"">Classes Canceled due to Strike</span>",,,https://www.youtube.com/watch?v=k7sTiTWWCXM
 wk12,F,4/15/2016,FALSE,"<span style=""color:red"">Classes Canceled due to Strike</span>",,,
+wk13,Su,4/17/2016,FALSE,,,Quiz: Logistic Regression,
 wk13,M,4/18/2016,FALSE,"<span style=""color:red"">Classes Canceled due to Strike</span>",,,
 wk13,T,4/19/2016,FALSE,,,Project 2 - Check in I,
 wk13,W,4/20/2016,FALSE,Classifiers - Introduction,lec09_Classifiers,,
