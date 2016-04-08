@@ -31,7 +31,10 @@ Navbar: [[Home]](../index.html) [[Schedule]](../Schedule.html) [[Data]](../data/
 
 -- Additional References
 
-* http://www.ats.ucla.edu/stat/sas/faq/oratio.htm 
+* Odds Ratios: http://www.ats.ucla.edu/stat/sas/faq/oratio.htm 
+* Model Selection
+    - http://faculty.mccombs.utexas.edu/carlos.carvalho/teaching/Section6.pdf
+    - http://www.utstat.toronto.edu/~brunner/oldclass/appliedf11/handouts/2101f11StepwiseLogisticR.pdf
 
 # Introduction
 

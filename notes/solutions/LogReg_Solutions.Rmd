@@ -1,0 +1,199 @@
+---
+title: 'Logistic Regression - Solutions'
+author: "MATH 456 - Spring 2016"
+output:
+  html_document:
+    highlight: pygments
+    theme: spacelab
+    toc: yes
+  pdf_document: default
+---
+```{r,echo=FALSE, warning=FALSE, message=FALSE}
+library(knitr); library(rmarkdown);library(ggplot2)
+library(xtable); library(dplyr)
+options(xtable.comment = FALSE)
+opts_chunk$set(warning=FALSE, message=FALSE) 
+```
+
+```{r results="asis", echo=FALSE}
+source("~/Github/MATH456/stylesheets/custom.R")
+```
+
+Navbar: [[Home]](../index.html) [[Schedule]](../Schedule.html) [[Data]](../data/Datasets.html) [[Week 11 Overview]](../wk11.html) [[HW Info]](../HW_Info.html)  [[Google Group]](https://groups.google.com/forum/#!forum/csuc_stat)
+
+# On Your Own
+ 
+```{r}
+depress <- read.delim("~/GitHub/MATH456/data/depress_030816.txt")
+names(depress) <- tolower(names(depress)) # make all variable names lower case. 
+depress$sex <- depress$sex -1 # Refactor to match book table.
+```
+
+##### On Your Own
+1. **What does an Odds Ratio of 1 signify? What if the OR < 1? What about when OR > 1?**
+
+   
+2. **Afifi 12.9a: Using the depression data set, fill in the following table. (Create a table of regular drinker against gender, with row and column totals.)**
+
+I have already recoded gender to be 0/1 Male/Female above when reading in the data. Now I examine the drinking variable. The codebook states that the variable `DRINK` is 1(Y), 2(N). This should be switched to Y=1 and N=0. Don't forget to check for any missing data. 
+```{r}
+depress$regdrink <- ifelse(depress$drink==2, 0, 1)
+depress$regdrink <- ifelse(is.na(depress$drink), NA, depress$regdrink)
+table(depress$regdrink, depress$drink, useNA="always")
+```
+
+Now I can build the desired table. Looking at the table in the book, both "positive" outcomes (Female, Regular drinker) that we have coded as 1 are in the top left. We know that if we do a simple table of `sex` against `regdrink` that it will put the (0,0) combination in the top left. So I re-create, and then use the `rotate()` function that was introduced in the lecture notes. 
+```{r, results='asis'}
+rotate <- function(x) t(apply(t(apply(x, 2, rev)), 2, rev))
+sd_tab <- addmargins(rotate(
+                     table(factor(depress$regdrink, labels=c("No", "Yes")),
+                           factor(depress$sex, labels=c("Male", "Female")))))
+print(xtable(sd_tab, align='cccc', digits=0), type='html')
+```
+
+The odds of a female (F) being a regular drinker can be calculated as: 
+$$odds(\mbox{regular drinker } | F) = \frac{P(\mbox{regular drinker } | Female)}{P(\mbox{not regular drinker } | Female)}$$
+$$ = \frac{139/183}{44/183} = 139/44$$
+
+* The odds of a woman being a regular drinker is `139/44` = `r round(139/44,2)`. 
+* The odds of a man being a regular drinker is `95/16` = `r round(95/16,2)`. 
+* The odds ratio for a woman being a regular drinker compared to a man is 
+`3.159/5.9375` = `r round(3.159/5.9375,2)`. 
+
+**Afifi 12.9b: Repeat the tabulation and calculation for part (a) separately for people who are depressed and those who are not. Copare the OR for the two groups.**
+
+```{r, results='asis'}
+D <- subset(depress, cases==1)
+D_tab <- addmargins(rotate(table(factor(D$regdrink, labels=c("No", "Yes")),
+                                 factor(D$sex, labels=c("Male", "Female")))))
+print(xtable(D_tab, align='cccc', digits=0), type='html')
+```
+* The odds for a depressed woman to be a regular drinker is `r round(D_tab[1,1]/D_tab[2,1],2)`.
+* The odds for a depressed man to be a regular drinker is `r round(D_tab[1,2]/D_tab[2,2],2)`. 
+* The OR for regular drinker among depressed patients for women compared to men is 
+`r round((D_tab[1,1]*D_tab[2,2])/(D_tab[2,1]*D_tab[1,2]),3)`. 
+
+
+```{r, results='asis'}
+ND <- subset(depress, cases==0)
+ND_tab <- addmargins(rotate(table(factor(ND$regdrink, labels=c("No", "Yes")),
+                                  factor(ND$sex, labels=c("Male", "Female")))))
+print(xtable(ND_tab, align='cccc', digits=0), type='html')
+```
+* The odds for a depressed woman to be a regular drinker is `r round(ND_tab[1,1]/ND_tab[2,1],2)`.
+* The odds for a depressed man to be a regular drinker is `r round(ND_tab[1,2]/ND_tab[2,2],2)`. 
+* The OR for regular drinker among depressed patients for women compared to men is 
+`r round((ND_tab[1,1]*ND_tab[2,2])/(ND_tab[2,1]*ND_tab[1,2]),3)`. 
+
+In the full sample, the odds for a woman being a regular drinker is about
+half the odds that a man has. In the depressed group women have 1.8 times 
+the odds that a man has of being a regular drinker, in the non depressed
+group this is much lower: women have less than one-half of of the odds 
+of being a regular drinker than a man does. 
+
+**Afifi 12.9c: Run a logistic regression analysis with `DRINK` as the dependent
+variable and `CESD` and `SEX` as the independent variables. Include an interaction
+term. Is it significant? How does this relate to part (b) above?**
+
+```{r, results='asis'}
+print(xtable(summary(glm(regdrink ~ cesd + sex + cesd*sex, data=depress, family="binomial"))), type='html')
+```
+
+The interaction between cesd and sex was not significant, indicating the odds ratio of regular drinking given cesd is not different for males and females. This is different from part b) where there is a clear difference in the odds ratio of regular drinking for females compared to males considering depression case. This can be explained by the relatively small number of depressed patients (50).
+
+3. **Afifi 12.14: Define low FEV1 to be an FEV1 measurement below the median
+FEV1 of the fathers in the family lung function data set.**
+```{r}
+lung <- read.delim("~/GitHub/MATH456/data/Lung_020716.txt")
+names(lung) <- tolower(names(lung))
+table(is.na(lung$ffev1)) # check for missing
+lung$lowfev <- ifelse(lung$ffev1 < median(lung$ffev1), 1, 0)
+```
+
+**What are the odds that a father in this data set has low FEV1?**
+```{r}
+table(lung$lowfev)
+```
+The odds that a father in this data set has low FEV1 is `74/76` = `r round(74/76,2)`. 
+This is sensible since low FEV was split at the median, meaning there are equal numbers
+of fathers in the low FEV group as there are in the non-low FEV group. 
+
+**What are the odds that a father from Glendora has low FEV1?** 
+```{r}
+lung$area <- factor(lung$area, labels=c("Burbank", "Lancaster", "LGB", "Glendora"))
+table(lung$lowfev, lung$area)
+```
+* The odds that a father from Glendora has low FEV1 is `25/33` = `r round(25/33,2)`. 
+* The odds that a father from Long Beach has low FEV1 is `9/10` = `r round(9/10,2)`. 
+* The odds ratio that a father from Glendora compared to a father from Long Beach
+is `0.76 / 0.9` = `r round(.76/.9, 2)`. 
+
+4. **Afifi 12.15: Perform a logistic regression of low FEV1 on area for the 
+   fathers. What is the intercept term? Is it what you expected?**
+```{r, results='asis'}
+print(xtable(summary(glm(lowfev ~ area, data=lung, family="binomial"))), type='html')
+```
+
+The coefficient for the intercept $\beta_{0}$ is 0, which corresponds to an 
+OR of $e^{0}=1$. The intercept term is the log odds of the reference area, 
+Burbank. This OR=1 is expected since there were exactly equal numbers of
+fathers in the low FEV group (12) as there are in the non-low group. 
+The test output demonstrates that the area effect is non-significant. 
+This is not expected since the types of environments and pollution differ 
+among these areas.
+   
+5. **Afifi 12.16: Define a new variable `valley` to be one if the family lives
+   in Burbank (San Fernando Valley), or in Glendora (San Gabriel Valley), and 
+   zero otherwise. Perform a stepwise logistic regression of `valley` on mothers
+   age, FEV1, fathers age and FEV1, and the number of children (1,2,3). 
+   Are these useful predictor variables? (i.e. canyou predict where someone 
+   lives based on the parents age, number of children and level of lung 
+   function?)** _Tidbit: "The Valley" refers to the San Fernando Valley._
+   
+Data Management: Check area for missing data, if none then create the new
+variable `valley`. Count the number of children a family has by counting
+the number of non-missing records for each child's gender. 
+```{r}  
+table(lung$area , useNA="always") # check for missing area data. 
+pred_valley <- lung %>% rowwise %>% 
+                mutate(valley = ifelse(area %in% c("Glendora","Burbank"), 1, 0), 
+                       nchild = sum(!is.na(ocsex),!is.na(mcsex),!is.na(ycsex))) %>%
+                select(mfev1, mage, ffev1, fage, nchild, valley)
+```
+
+Set up the null and full models, then perform a stepwise selection method
+using the BIC as the decision criteria by setting the penalty function $k$
+to $log(n)$.
+
+```{r, results='hide'}
+null <- glm(valley ~ 1, family=binomial, data=pred_valley)
+full <- glm(valley ~ ., family=binomial, data=pred_valley)
+pv_f <- step(null, scope=formula(full), direction="forward", k=log(NROW(pred_valley))) 
+pv_k <- step(full, scope=formula(null), direction="backward", k=log(NROW(pred_valley))) 
+pv_b <- step(null, scope=formula(full), direction="both", k=log(NROW(pred_valley))) 
+```
+
+What are the resulting models? 
+```{r}
+pv_f$call
+pv_k$call
+pv_b$call
+```
+They all come to the same conclusion. 
+```{r, results='asis'}
+print(xtable(summary(glm(valley ~ mage + fage, data=pred_valley, family="binomial"))), type='html')
+```
+The only variables that are predictive of identifying if someone lives in the 
+valley (not "The" valley) is the age of the parents. 
+
+The stepwise procedure selects mother’s and father’s age in the model of valley. 
+Neither the number of children, nor either parents FEV1 value were important for
+the model. The results indicate that the mothers are significantly younger in 
+the valley than in the other areas since the coefficient for mother’s age is significant.
+
+6. Afifi 12.17
+7. Afifi 12.18
+8. Afifi 12.23
+
+    
+    
