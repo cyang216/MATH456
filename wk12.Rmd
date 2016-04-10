@@ -1,0 +1,29 @@
+---
+title: "Week 12"
+author: "MATH 456, Spring 2016"
+date: " 04/11/16"
+output: html_document
+---
+```{r results="asis", echo=FALSE}
+source("C:/Github/MATH456/stylesheets/custom.R")
+```
+[[Schedule]](Schedule.html) [[Week 11]](wk11.html) [[Week 13]](wk13.html)
+
+## Announcements
+
+### Monday 
+* Project 2 introduction: Building a model to predict class memebership. [[PDF]](notes/ClassifyingProject.pdf)[[HTML]](notes/ClassifyingProject.html)
+
+
+### Wednesday & Friday 
+* Measures of model fit: Accuracy, sensitivity, specificity, 
+  AUC, ROC, use of cross-validation in assessing model fit. 
+* Lec09: Measures of model fit for classifying models [[PDF]](notes/lec09_PredictiveFit.pdf)[[HTML]](notes/lec09_PredictiveFit.html)
+
+
+
+## Looking Ahead
+* Classifying algorithms: Logistic regression, linear discriminant analysis, naieve Bayes, 
+Decision trees, Random forests, k-nearest neighbors. 
+
+
