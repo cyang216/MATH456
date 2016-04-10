@@ -662,11 +662,111 @@ pv_b &lt;-<span class="st"> </span><span class="kw">step</span>(null, <span clas
 <pre><code>## glm(formula = valley ~ mage + fage, family = binomial, data = pred_valley)</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">pv_b$call</code></pre></div>
 <pre><code>## glm(formula = valley ~ mage + fage, family = binomial, data = pred_valley)</code></pre>
+<p>They all come to the same conclusion.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(<span class="kw">xtable</span>(<span class="kw">summary</span>(<span class="kw">glm</span>(valley ~<span class="st"> </span>mage +<span class="st"> </span>fage, <span class="dt">data=</span>pred_valley, <span class="dt">family=</span><span class="st">&quot;binomial&quot;</span>))), <span class="dt">type=</span><span class="st">'html'</span>)</code></pre></div>
+<table border="1">
+<tr>
+<th>
+</th>
+<th>
+Estimate
+</th>
+<th>
+Std. Error
+</th>
+<th>
+z value
+</th>
+<th>
+Pr(&gt;|z|)
+</th>
+</tr>
+<tr>
+<td align="right">
+(Intercept)
+</td>
+<td align="right">
+2.4290
+</td>
+<td align="right">
+1.0477
+</td>
+<td align="right">
+2.32
+</td>
+<td align="right">
+0.0204
+</td>
+</tr>
+<tr>
+<td align="right">
+mage
+</td>
+<td align="right">
+-0.2328
+</td>
+<td align="right">
+0.0699
+</td>
+<td align="right">
+-3.33
+</td>
+<td align="right">
+0.0009
+</td>
+</tr>
+<tr>
+<td align="right">
+fage
+</td>
+<td align="right">
+0.1625
+</td>
+<td align="right">
+0.0662
+</td>
+<td align="right">
+2.46
+</td>
+<td align="right">
+0.0141
+</td>
+</tr>
+</table>
+<p>The only variables that are predictive of identifying if someone lives in the valley (not “The” valley) is the age of the parents.</p>
+<p>The stepwise procedure selects mother’s and father’s age in the model of valley. Neither the number of children, nor either parents FEV1 value were important for the model. The results indicate that the mothers are significantly younger in the valley than in the other areas since the coefficient for mother’s age is significant.</p>
 <ol start="6" style="list-style-type: decimal">
-<li>Afifi 12.17</li>
-<li>Afifi 12.18</li>
-<li>Afifi 12.23</li>
+<li><strong>Afifi 12.17: Assume a logistic regression model includes a continuous variable like age and a categorical variable like gender and an interaction term for these. Is the <span class="math inline">\(p\)</span> value for any of the main effects helpful in determining whether a) the interaction is significant, b) whether the main effect should be included in the model. Would your answers to a) or b) change if the categorical variable were RACE with three categories?</strong></li>
 </ol>
+<p>In a model which includes interaction terms, the p-values of the main effects is not helpful neither in selecting main effects nor the interactions. This is consistent regardless of the types of variables.</p>
+<ol start="7" style="list-style-type: decimal">
+<li><strong>Afifi 12.18: Perform a logistic regression analysis for the depression data which includes income and sex and models age as an a) quadratic or b) cubic function. Use likelihood ratio test statistics to determine whether these models are significantly better than a model which includes income and sex and models age as a linear function.</strong></li>
+</ol>
+<p>First I create the squared and cubic terms for age, and fit the model using age as linear, quadratic and cubic.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">age.sq &lt;-<span class="st"> </span>depress$age^<span class="dv">2</span>
+age.cb &lt;-<span class="st"> </span>depress$age^<span class="dv">3</span>
+
+lin &lt;-<span class="st"> </span><span class="kw">glm</span>(cases ~<span class="st"> </span>income +<span class="st"> </span>sex +<span class="st"> </span>age, <span class="dt">data=</span>depress, <span class="dt">family=</span><span class="st">&quot;binomial&quot;</span>)
+sqr &lt;-<span class="st"> </span><span class="kw">glm</span>(cases ~<span class="st"> </span>income +<span class="st"> </span>sex +<span class="st"> </span>age +<span class="st"> </span>age.sq, <span class="dt">data=</span>depress, <span class="dt">family=</span><span class="st">&quot;binomial&quot;</span>)
+cub &lt;-<span class="st"> </span><span class="kw">glm</span>(cases ~<span class="st"> </span>income +<span class="st"> </span>sex +<span class="st"> </span>age +<span class="st"> </span>age.sq +<span class="st"> </span>age.cb, <span class="dt">data=</span>depress, <span class="dt">family=</span><span class="st">&quot;binomial&quot;</span>)</code></pre></div>
+<p>Now perform LR tests to compare the models to determine if either of the models with non-linear age is better than linear age.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">anova</span>(lin, sqr)</code></pre></div>
+<pre><code>## Analysis of Deviance Table
+## 
+## Model 1: cases ~ income + sex + age
+## Model 2: cases ~ income + sex + age + age.sq
+##   Resid. Df Resid. Dev Df Deviance
+## 1       290     247.54            
+## 2       289     247.14  1  0.40255</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">anova</span>(lin, cub)</code></pre></div>
+<pre><code>## Analysis of Deviance Table
+## 
+## Model 1: cases ~ income + sex + age
+## Model 2: cases ~ income + sex + age + age.sq + age.cb
+##   Resid. Df Resid. Dev Df Deviance
+## 1       290     247.54            
+## 2       288     246.69  2  0.84787</code></pre>
+<p>Neither of the LR tests are significant, indicating that the linear model is adequate.</p>
 </div>
 </div>
 

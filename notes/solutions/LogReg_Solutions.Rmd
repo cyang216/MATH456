@@ -191,9 +191,44 @@ Neither the number of children, nor either parents FEV1 value were important for
 the model. The results indicate that the mothers are significantly younger in 
 the valley than in the other areas since the coefficient for mother’s age is significant.
 
-6. Afifi 12.17
-7. Afifi 12.18
-8. Afifi 12.23
+6. **Afifi 12.17: Assume a logistic regression model includes a continuous
+   variable like age and a categorical variable like gender and an interaction
+   term for these. Is the $p$ value for any of the main effects helpful in 
+   determining whether a) the interaction is significant, b) whether the main 
+   effect should be included in the model. Would your answers to a) or b) 
+   change if the categorical variable were RACE with three categories?** 
+   
+In a model which includes interaction terms, the p-values of the main effects 
+is not helpful neither in selecting main effects nor the interactions. This is 
+consistent regardless of the types of variables.
+       
+
+
+7. **Afifi 12.18: Perform a logistic regression analysis for the depression data
+   which includes income and sex and models age as an a) quadratic or b) cubic
+   function. Use likelihood ratio test statistics to determine whether these
+   models are significantly better than a model which includes income and sex
+   and models age as a linear function.**
+
+First I create the squared and cubic terms for age, and fit the model using
+age as linear, quadratic and cubic. 
+```{r}
+age.sq <- depress$age^2
+age.cb <- depress$age^3
+
+lin <- glm(cases ~ income + sex + age, data=depress, family="binomial")
+sqr <- glm(cases ~ income + sex + age + age.sq, data=depress, family="binomial")
+cub <- glm(cases ~ income + sex + age + age.sq + age.cb, data=depress, family="binomial")
+```
+
+Now perform LR tests to compare the models to determine if either of the models
+with non-linear age is better than linear age. 
+```{r}
+anova(lin, sqr)
+anova(lin, cub)
+```
+
+Neither of the LR tests are significant, indicating that the linear model is adequate. 
 
     
     
