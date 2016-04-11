@@ -18,7 +18,6 @@ source("C:/Github/MATH456/stylesheets/custom.R")
 ### Wednesday & Friday 
 * Measures of model fit: Accuracy, sensitivity, specificity, 
   AUC, ROC, use of cross-validation in assessing model fit. 
-* Lec09: Measures of model fit for classifying models [[PDF]](notes/lec09_PredictiveFit.pdf)[[HTML]](notes/lec09_PredictiveFit.html)
 
 
 

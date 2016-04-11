@@ -23,7 +23,8 @@ Navbar: [[Home]](../index.html) [[Schedule]](../Schedule.html) [[Data]](../data/
 
 # Assigned Reading & additional references
 
-* Afifi Chapter 11
+http://www.r-bloggers.com/in-depth-introduction-to-machine-learning-in-15-hours-of-expert-videos/
+
 
 **Additional references**
 
