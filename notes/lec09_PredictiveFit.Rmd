@@ -1,0 +1,206 @@
+---
+title: 'Lec 09: Assessing Model Predictions'
+author: "MATH 456 - Spring 2016"
+output:
+  html_document:
+    highlight: pygments
+    theme: spacelab
+    toc: yes
+  pdf_document: default
+---
+```{r,echo=FALSE, warning=FALSE, message=FALSE}
+library(knitr); library(rmarkdown);library(ggplot2)
+library(xtable); library(dplyr)
+options(xtable.comment = FALSE)
+opts_chunk$set(warning=FALSE, message=FALSE, fig.width=8, fig.height=5) 
+```
+
+```{r results="asis", echo=FALSE}
+source("C:/Github/MATH456/stylesheets/custom.R")
+```
+
+Navbar: [[Home]](../index.html) [[Schedule]](../Schedule.html) [[Data]](../data/Datasets.html) [[Week 12 Overview]](../wk12.html) [[HW Info]](../HW_Info.html)  [[Google Group]](https://groups.google.com/forum/#!forum/csuc_stat)
+
+# Assigned Reading & additional references
+
+* Afifi Chapter 11
+
+* The Wikipedia article on a Confusion Matrix. https://en.wikipedia.org/wiki/Confusion_matrix 
+    * Terminology that we will be looking at include: sensitivity, specificity, positive predictive value, 
+      negative predictive value, false positive rate, false negative rate and accuracy.
+    * Notice the connection between Type I and II error and false negatives and false positives. 
+* The Wikipedia article on Binary Classification https://en.wikipedia.org/wiki/Binary_classification 
+
+
+# Case example: Predicting Depression
+```{r}
+depress <- read.delim("C:/GitHub/MATH456/data/depress_030816.txt")
+names(depress) <- tolower(names(depress)) 
+```
+
+## Fitting the model
+Let's consider a model to predict depression using gender, income and age as predictors.
+
+```{r, results='asis'}
+depress$sex <- depress$sex -1 
+model <- glm(cases ~ sex + income + age, data=depress, family="binomial")
+print(xtable(summary(model), digits=3), type='html')
+```
+
+_Note: The constant displayed here differs from the book_
+
+## Creating predictions
+The generic `predict()` function will calculate the predicted probabilities
+for each record _used in the model_ based on the linear predictors for that record 
+$p_{i} = exp(X\beta) / (1+exp(X\beta))$. I highlight the _used in the model_ because
+due to missing data, not all records in the **depression** data set were used to
+build the model. 
+```{r}
+NROW(depress)
+length(model$y)
+```
+
+So let's make a new data frame that contains the true outcome $y$, and the 
+predicted probabilities based on the logistic model. 
+```{r}
+pred_data <- data.frame(y.obs = model$y, 
+                        p.hat = predict(model, type="response"))
+```
+
+What is the distribution of predicted probability of depression? 
+```{r}
+ggplot(pred_data, aes(x=p.hat)) + geom_density(col="blue") + 
+  geom_histogram(aes(y=..density..), colour="black", fill=NA)
+```
+
+The predicted probability of depression in this sample has an approximately 
+normal distribution that ranges from 0.009 to 0.457, with a mean of 0.170 and 
+median 0.157. 
+
+If the investigator wishes to classify cases, a cutoff point on the
+probability of being depressed, for example, must be found. This cutoff point
+is denoted (in the book) as $P_{c}$. We would classify a person as depressed
+if the probability of depression is greater than or equal to $P_{c}$. 
+
+As an example let's choose the median predicted probability as $P_{c}$. Records
+with `p.hat` > 0.157 are classified as being depressed, otherwise they are
+classified as not depressed. 
+```{r}
+pred_data$y.pred <- ifelse(pred_data$p.hat >= median(pred_data$p.hat), 1, 0)
+
+ggplot(pred_data, aes(p.hat, fill=factor(y.pred))) + 
+ # geom_density(color="black") + 
+  geom_histogram(aes(y=..density..), alpha=.5, color="black") +
+  scale_fill_discrete(name="Predicted Value", breaks=c(0,1), labels=c("Not Depressed", "Depressed") )
+```
+
+How much trust can we put into such predictions? In other words, can this equation
+predict correctly a high proportion of the time? 
+
+To understand the predictive ability of a model we turn to the 
+**confusion matrix** and measures of model accuracy.
+
+## Confusion Matrix. 
+When the real value of the outcome is known, a confusion matrix can be created 
+by looking at a 2x2 table of the predicted outcome against the true outcome. 
+Be sure to specify what the _positive_ outcome is: in this case we are modeling
+$P(cases=1)$, so '1' is the event of interest. 
+
+```{r}
+library(caret)
+confusionMatrix(pred_data$y.pred, pred_data$y.obs, positive='1')
+```
+
+This function is most useful because it provides direct calculations
+of many of the pieces of information you would need to make a decision
+on the performance of a model. Some of which are: 
+
+* Sensitivity: Probability of correctly predicting the outcome (true positive rate)
+* Specificity: Probability of correctly predicting the non-outcome (true negative rate)
+* False positive rate: Probability of incorrectly classifying someone as depressed when they really are not. 
+* Accuracy: Probability of correctly predicting the class (both positive and negative outcomes)
+
+In high dimensional studies (such as genomics), the false discovery rate (probability of a false positive) is a more informative metric than a p-value due to the issues behind multiple comparisons. 
+
+## Visualizing model performance. 
+The `ROCR` package provides two useful functions: `prediction` and 
+`performance`. After you load the library you create a `prediction`
+object by specifying the predicted probability and the true category labels. 
+```{r}
+library(ROCR)
+rocr.pred <- prediction(pred_data$p.hat, pred_data$y.obs)
+```
+
+Then we can evaluate the `performance` of the model by creating plots
+of the measure of interest as a function of the cutoff value. The bottom
+right plot (accuracy) is similar to the "total" line in Figure 12.5 in Afifi. 
+
+```{r, fig.width=10, fig.height=8}
+par(mfrow=c(2,2))
+plot(performance(rocr.pred, "tpr"));plot(performance(rocr.pred, "fpr"))
+plot(performance(rocr.pred, "err"));plot(performance(rocr.pred, "acc"))
+```
+
+By plotting the true positive rate against the false positive rate
+you can create the ROC curve. Recall that the greater the area under 
+the ROC curve (AUC), i.e. the further away the curved line is from 
+the dashed diagonal line, the better predictive ability a model has 
+(Afifi Figure 12.6). 
+
+```{r}
+plot(performance(rocr.pred, "tpr", "fpr"))
+lines(abline(h=.8, col=4))
+lines(abline(v=.51, col=4))
+lines(abline(a=0, b=1, lty="dashed"))
+```
+
+
+The blue lines on the above plot demonstrate that to obtain a high 
+proportion (say 0.80), of depressed persons correctly classified 
+as depressed (true positive rate) we would end up with a false positive 
+rate (classifying non-depressed persons as depressed) of over .5. For 
+most situations this would be considered an unacceptable level of misclassification. 
+
+
+### Choosing a cutoff values
+The cutoff value $P_{c}$ can be thought of as a _tuning_ parameter. 
+Tuning parameters are parameters that you can "tweak" to improve your
+model's fitness. 
+
+
+One way to choose a cutoff value is to find a balance between sensitivity and
+specificity. 
+```{r}
+sens <- performance(rocr.pred, "sens")
+spec <- performance(rocr.pred, "spec")
+
+x  <- unlist(sens@x.values)
+sn <- unlist(sens@y.values)
+sp <- unlist(spec@y.values)
+
+plot(c(0, .45), c(0, 1), type="n", axes=FALSE, ylab="", xlab="cutoff")
+lines(x, sn, col="red", lwd=2)
+lines(x, sp, col="blue", lwd=2)
+axis(1); axis(2, las=2)
+axis(4, las=2)
+box()
+legend("right", lwd=2, bty='n', col=c(2,4), legend=c("Sensitivity", "Specificity"))
+```
+
+
+
+
+[[top]](lec09_PredictiveFit.html)
+
+# On Your Own
+##### On Your Own
+
+1. Afifi 12.23
+2. For your model chosen in 12.23 create predicted classes based off a median
+   split of the predicted probabilities. Calculate and interpret in context 
+   of the problem the following measures: Sensitivity, specificity, false
+   positive rate, accuracy. 
+3. 
+    
+    
+    
