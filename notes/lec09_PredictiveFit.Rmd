@@ -1,5 +1,5 @@
 ---
-title: 'Lec 09: Assessing Model Predictions'
+title: 'Lec 09: Assessing Model Performance'
 author: "MATH 456 - Spring 2016"
 output:
   html_document:
@@ -23,13 +23,16 @@ Navbar: [[Home]](../index.html) [[Schedule]](../Schedule.html) [[Data]](../data/
 
 # Assigned Reading & additional references
 
-* Afifi Chapter 11
+* Afifi Chapter 12.8
 
 * The Wikipedia article on a Confusion Matrix. https://en.wikipedia.org/wiki/Confusion_matrix 
     * Terminology that we will be looking at include: sensitivity, specificity, positive predictive value, 
       negative predictive value, false positive rate, false negative rate and accuracy.
     * Notice the connection between Type I and II error and false negatives and false positives. 
 * The Wikipedia article on Binary Classification https://en.wikipedia.org/wiki/Binary_classification 
+* An Article discussing accuracy of a blood test for Down syndrome http://www.downsyndromeprenataltesting.com/how-accurate-is-the-new-blood-test-for-down-syndrome/ 
+* An article in Nature regarding the effect of false-positives on newborn screening results on families
+http://www.nature.com/gim/journal/v14/n1/full/gim20115a.html 
 
 
 # Case example: Predicting Depression
@@ -53,12 +56,8 @@ _Note: The constant displayed here differs from the book_
 The generic `predict()` function will calculate the predicted probabilities
 for each record _used in the model_ based on the linear predictors for that record 
 $p_{i} = exp(X\beta) / (1+exp(X\beta))$. I highlight the _used in the model_ because
-due to missing data, not all records in the **depression** data set were used to
+if there is missing data, not all records in the data set will be used to
 build the model. 
-```{r}
-NROW(depress)
-length(model$y)
-```
 
 So let's make a new data frame that contains the true outcome $y$, and the 
 predicted probabilities based on the logistic model. 
@@ -143,7 +142,7 @@ plot(performance(rocr.pred, "err"));plot(performance(rocr.pred, "acc"))
 
 By plotting the true positive rate against the false positive rate
 you can create the ROC curve. Recall that the greater the area under 
-the ROC curve (AUC), i.e. the further away the curved line is from 
+the ROC curve, i.e. the further away the curved line is from 
 the dashed diagonal line, the better predictive ability a model has 
 (Afifi Figure 12.6). 
 
@@ -162,7 +161,7 @@ rate (classifying non-depressed persons as depressed) of over .5. For
 most situations this would be considered an unacceptable level of misclassification. 
 
 
-### Choosing a cutoff values
+## Choosing a cutoff values
 The cutoff value $P_{c}$ can be thought of as a _tuning_ parameter. 
 Tuning parameters are parameters that you can "tweak" to improve your
 model's fitness. 
@@ -188,6 +187,71 @@ legend("right", lwd=2, bty='n', col=c(2,4), legend=c("Sensitivity", "Specificity
 ```
 
 
+## Hosmer Lemeshow goodness of fit test (Afifi pg 298)
+From [Wikipedia](https://en.wikipedia.org/wiki/Hosmer%E2%80%93Lemeshow_test): 
+The Hosmer-Lemeshow test is a statistical test for goodness of fit for logistic 
+regression models. It is used frequently in risk prediction models. The test 
+assesses whether or not the observed event rates match expected event rates in 
+subgroups of the model population. The Hosmer-Lemeshow test specifically 
+identifies subgroups as the deciles of fitted risk values. Models for which 
+expected and observed event rates in subgroups are similar are called well 
+calibrated.
+
+Let's walk through this method once in detail.  
+
+1. Calculate $p_{i}$ for $i = 1, \ldots, n$. 
+```{r}
+# We did this earlier by creating p.hat
+head(pred_data)
+```
+
+2. Divide the probability values into subgroups (usually deciles). 
+```{r}
+# Find the cut points for the groups
+deciles <- quantile(pred_data$p.hat, probs=seq(0,1,.1))
+deciles
+# Create categories based on these decile groups
+pred_data$group.p <- cut(pred_data$p.hat, deciles) 
+head(pred_data)
+```
+
+3. For each subgroup calculate the observed and expected number of depressed
+   patients in each decile.
+```{r}   
+HL <- pred_data %>% group_by(group.p) %>% summarize(O = sum(y.obs), E = sum(p.hat))
+```
+
+4. Calculate the Pearson $\chi^{2}$, and the associated p-value (2 df)
+```{r}
+HL.chisq <- sum((HL$O - HL$E)^2 / HL$E)
+HL.chisq
+1-pchisq(HL.chisq, 2)
+```
+
+Large values of the test statistic indicate poor fit of the model. Equivalently, 
+small $p$ values are an indication of a poor fit. Unfortunately, it does not
+tell you what is causing the poor fit or how to modify the variables to improve the fit. 
+
+
+If you don't want to do this by hand you can explore the function `hoslem.test` that 
+is found in the `ResourceSelection` package.
+
+* http://thestatsgeek.com/2014/02/16/the-hosmer-lemeshow-goodness-of-fit-test-for-logistic-regression/ 
+
+
+# False Discovery Rate in Genomics
+False discovery rate and Genome wide testing is very important concept 
+in genomic studies. Here are a few articles that 
+Remember: Reading journal articles is hard. It takes time to get good at it, 
+and even then you will struggle. 
+
+* An article about false discovery rates in gene wide association studies. http://genomesunzipped.org/2014/11/incorporating-false-discovery-rates-into-genetic-association-in-autism.php * Statistical significance in genetic association studies: http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3270946/ 
+* A fully reproducible (yay) article on statistical significance for genomewide studies.
+  This article took another article's data on the genes related to breast cancer and analyzed
+  the effect of p-values and family-wise error rates (Bonferroni, Tukey etc) on high dimensional data. 
+  http://www.pnas.org/content/100/16/9440.full 
+    - All the R code and data files are available here http://genomine.org/qvalue/results.html 
+
 
 
 [[top]](lec09_PredictiveFit.html)
@@ -195,12 +259,16 @@ legend("right", lwd=2, bty='n', col=c(2,4), legend=c("Sensitivity", "Specificity
 # On Your Own
 ##### On Your Own
 
-1. Afifi 12.23
-2. For your model chosen in 12.23 create predicted classes based off a median
+1. Discuss the relationship between sensitivity, specificity, and Type I and II errors. 
+2. Afifi 12.23
+3. For your model chosen in 12.23 create predicted classes based off a median
    split of the predicted probabilities. Calculate and interpret in context 
-   of the problem the following measures: Sensitivity, specificity, false
-   positive rate, accuracy. 
-3. 
+   of the problem the following measures: Sensitivity, specificity, accuracy,  
+   false positive rate, false discovery rate. 
+4. Consider a different cutoff value (instead of the median). 
+   Try to improve the _accuracy_ of your model. 
+
+
     
     
     
