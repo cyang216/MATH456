@@ -1,0 +1,75 @@
+---
+title: "M&M Experiment"
+author: "Solutions"
+date: "April 3, 2016"
+output: html_document
+---
+
+
+## Setup / Preparation. 
+**1. Is this a Test of Independence, a Test of Homogeneity or a test for Goodness of Fit? Explain.** 
+
+This is a test of goodness of fit because we are comparing an observed distribution to a theoretical or claimed distribution. 
+
+**2. State the null and alternative hypothesis.**
+
+$H_{0}: $  
+$H_{A}: $ At least one of these proportions is not as claimed. 
+
+**3. Write the equation to determine the test statistic.**
+
+$$\sum_{i}^{k}\frac{(O_{i}-E_{i})^2}{E_{i}}$$
+   
+   
+**4.	In what case would you reject the null hypothesis? **
+You would reject the null hypothesis when your test statistic is large enough. In this case, at the
+$\alpha=.05$ significance level and with $k-1=5$ degrees of freedom, "large enough" means observing
+a test statistic greater than 11.07. 
+```{r}
+qchisq(.95, 5)
+```
+
+## Calculating probabilities under a $\chi^{2}$ distribution in R. 
+
+**1. Calculate the p-value for your group's bag.**  
+```{r}
+g1 <- c(12, 10, 12, 4, 8, 10);  g2 <- c(12, 15, 11, 5, 3, 10)
+g3 <- c(13, 8, 12, 1, 12, 8);   g4 <- c(13, 7, 13, 8, 4, 11)
+p.exp <- c(.24, .2, .16, .14, .13, .13)
+```
+
+```{r, echo=FALSE, results='hide', warning=FALSE}
+c1 <- chisq.test(g1, p=p.exp);c2 <- chisq.test(g2, p=p.exp)
+c3 <- chisq.test(g3, p=p.exp);c4 <- chisq.test(g4, p=p.exp)
+```
+* Group 1: $\chi^{2}$ = `r round(c1$statistic,2)`.  The p-value is `r round(c1$p.value,2)`
+* Group 2: $\chi^{2}$ = `r round(c2$statistic,2)`.  The p-value is `r round(c2$p.value,2)`
+* Group 3: $\chi^{2}$ = `r round(c3$statistic,2)`.  The p-value is `r round(c3$p.value,2)`
+* Group 4: $\chi^{2}$ = `r round(c4$statistic,2)`.  The p-value is `r round(c4$p.value,2)`
+
+
+**2. Write a conclusion from this hypothesis test.**
+
+Group 3 should reject the null hypothesis and conclude that the distribution of M & M colors has
+changed since 2008. All other groups should not reject, citing insufficient evidence to conclude
+that the color distribution has changed. 
+
+
+## Performing the entire test in R. 
+
+1. Based on the class data what can you conclude about the color distribution of M & M's?
+
+```{r, warning=FALSE}
+class <- c(50, 40, 48, 18, 27, 39)
+chisq.test(class, p=p.exp)
+```
+
+There is sufficient evidence to believe that the Mars company has changed the distribution
+of colors in a bag of M&M's since 2008. 
+
+2.	Were your calculated chi square values consistent between your individual and the class data?
+Why do you believe this to be true?
+
+Behold the effects of sample size, and/or not accounting for clustering. 
+
+
