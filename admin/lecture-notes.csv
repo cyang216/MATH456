@@ -39,20 +39,21 @@ wk11,F,4/8/2016,TRUE,"Logistic regression - Variable selection, classwork",Afifi
 wk12,Su,4/10/2016,FALSE,,,Quiz: Logistic Regression,
 wk12,M,4/11/2016,TRUE,Introduction to Project 2,ClassifyingProject,,
 wk12,W,4/13/2016,TRUE,Assessing model fit,lec09_PredictiveFit,,
-wk12,F,4/15/2016,FALSE,,Afifi Ch 12.8,Project Approval,
-wk13,Su,4/17/2016,FALSE,,,Quiz: Model Fit,
+wk12,F,4/15/2016,FALSE,Review on Model building,Afifi Ch 12.8,Project Approval,
+wk13,Su,4/17/2016,FALSE,,,,
 wk13,M,4/18/2016,FALSE,"Classifiers - Logistic, LDA, NB",lec10_Classifiers,,
-wk13,W,4/20/2016,FALSE,,,,
+wk13,W,4/20/2016,FALSE,,,Quiz: Model Fit,
 wk13,F,4/22/2016,FALSE,,,,
-wk14,Su,4/24/2016,FALSE,,,Quiz: Classifiers,https://www.youtube.com/watch?v=7Jbb2ItbTC4
+wk14,Su,4/24/2016,FALSE,,,Quiz: Classifiers I,https://www.youtube.com/watch?v=7Jbb2ItbTC4
 wk14,M,4/25/2016,FALSE,"Classifiers - Decision trees, RF, KNN",,,http://blog.echen.me/2011/04/27/choosing-a-machine-learning-classifier/
 wk14,W,4/27/2016,FALSE,,,,https://www.youtube.com/watch?v=k7sTiTWWCXM
 wk14,F,4/29/2016,FALSE,,,Project 2 Draft Due (EOD),
+wk15,Su,5/1/2016,FALSE,,,Quiz: Classifiers II,
 wk15,M,5/2/2016,FALSE,Missing Data: Identification and Imputation,lec11_MissingData,Project 2 Draft Peer Review (EOD),
 wk15,W,5/4/2016,FALSE,Missing Data: MICE,,,
 wk15,F,5/6/2016,FALSE,,,,
 wk16,Su,5/8/2016,FALSE,,,Quiz: Missing Data,
-wk16,M,5/9/2016,FALSE,,,,
+wk16,M,5/9/2016,FALSE,Project work time,,,
 wk16,W,5/11/2016,FALSE,Exam Review,,,
 wk16,F,5/13/2016,FALSE,,,Final Exam - In class portion,
 Finals,W,5/18/2016,FALSE,Finals Week,,Project 2 Final Report (EOD),
