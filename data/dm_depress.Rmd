@@ -15,7 +15,8 @@ why this edit was made, and this file should be compiled.
 
 # Import the raw data
 ```{r}
-depress <- read.table("C:/GitHub/MATH456/data/Depress.txt", sep="\t", header=TRUE)  
+depress <- read.table("C:/GitHub/MATH456/data/Depress.txt", sep="\t", header=TRUE) 
+names(depress) <- tolower(names(depress))
 ```
 
 
@@ -25,12 +26,17 @@ and ordering applied.
 
 * 01-31-16 redefine `MARITAL` and `EDUCAT` as factor variables. 
 ```{r}
-depress$MARITAL <- factor(depress$MARITAL, 
-                          labels = c("Never Married", "Married", "Divorced", "Separated", "Widowed"))
-depress$EDUCAT <- factor(depress$EDUCAT, 
-                          labels = c("<HS", "Some HS", "HS Grad", "Some college", "BS", "MS", "PhD"))
-                          
-                          
+library(dplyr)
+depress <- depress %>% 
+              mutate(marital = factor(marital, 
+                                      labels = c("Never Married", "Married", "Divorced", "Separated", "Widowed")), 
+                     educat = factor(educat, 
+                                     labels = c("<HS", "Some HS", "HS Grad", "Some college", "BS", "MS", "PhD")), 
+                     employ = factor(employ, 
+                                     labels = c("FT", "PT", "Unemp", "Retired", "Houseperson", "In School", "Other")), 
+                     relig = factor(relig, 
+                                    labels = c("Protestant", "Catholic", "Jewish", "None", "Other"))
+                     )
 ```
 
 
@@ -40,15 +46,25 @@ a justification.
 
 * 01-31-16. Fix a typo in `AGE`.
 ```{r}
-depress$AGE[depress$AGE==9] <- 19
+depress$age[depress$age==9] <- 19
 ```
 
 * 01-31-16. Two values for religion were out of range, so they have been set to missing. 
+(Update: These got classified as "Other" in the above dplyr recoding.)
 ```{r}
-depress$RELIG <- ifelse(depress$RELIG == 6, NA, depress$RELIG)
+depress$relig <- ifelse(depress$relig == "Other", NA, depress$relig)
 ```
 
+* Rescale gender to be an indicator of female
+```{r}
+depress$sex <- depress$sex -1 
+```
 
+* Convert 1/2 (Yes/No) binary variables to 0/1 No/Yes
+```{r}
+convert_these_columns <- which(colnames(depress) %in% c("drink", "regdoc", "treat"))
+depress[,convert_these_columns] <- sapply(depress[,convert_these_columns], function(x){x <- ifelse(x==2, 0, x)})
+```
 
 # Save the cleaned data set with todays date. 
 The `sys.date()` function takes the current date from your computer. 
