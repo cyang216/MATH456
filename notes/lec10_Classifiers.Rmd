@@ -56,7 +56,7 @@ library(caret)
 ```
 
 Other packages you will need to install are: `pROC`, `caTools`, `bnclassify`,
-`mda`. 
+`mda`, `party`. 
 
 Typically you don't need pre-install these packages. You will be prompted to
 install them when you use their corresponding classifying algorithm. 
@@ -271,7 +271,6 @@ http://master.bioconductor.org/help/course-materials/2003/Milan/Lectures/anestis
 ## Discriminant analysis
 http://topepo.github.io/caret/Discriminant_Analysis.html
 
-
 <span style="color:red">explain this model</span>
 
 Here I test out several version of the LDA algorithm. 
@@ -283,10 +282,9 @@ Here I test out several version of the LDA algorithm.
    penalty that is applied to each regression coefficient $\beta$. 
 * `LDA.3` includes a stepwise feature selection procedure (`method=stepLDA`)
 
-The stepwise LDA
-procedure is _very_ verbose (it creates a lot of output) so I specifically
-am NOT showing the results here. (I put ` ```{r, results='hide'} ` in the 
-code chunk header).
+The stepwise LDA procedure is _very_ verbose (it creates a lot of output)
+so I specifically am NOT showing the results here. (I put ` ```{r, results='hide'} ` 
+in the code chunk header).
 ```{r, results='hide', cache=TRUE}
 LDA.1 <- train(cases ~ . ,
                 data=train, 
@@ -348,11 +346,53 @@ plot(NB)
 ## Decision Trees
 <span style="color:red">explain this model</span>
 
+
+```{r, cache=TRUE}
+DT <- train(cases ~ . ,
+                data=train, 
+                method="ctree", 
+                metric = "ROC",
+                trControl = ctrl)
+```
+
+```{r}
+DT
+plot(DT$finalModel)
+```
+
 ## Random Forests
 <span style="color:red">explain this model</span>
 
+
+```{r, cache=TRUE}
+RF <- train(cases ~ . ,
+                data=train, 
+                method="rf", 
+                metric = "ROC",
+                trControl = ctrl)
+```
+
 ## k-nearest neighbors
 <span style="color:red">explain this model</span>
+
+
+```{r, cache=TRUE}
+kNN <- train(cases ~ . ,
+                data=train, 
+                method="knn", 
+                metric = "ROC",
+                trControl = ctrl)
+```
+
+
+```{r}
+kNN
+```
+
+```{r}
+plot(kNN)
+```
+
 
 # Compare algorithm performance
 On the hold-out testing data set. 
@@ -365,11 +405,11 @@ in the next section.
 test.logreg <- confusionMatrix(predict(LogReg, test), test$cases)
 test.logreg
 ```
-Boosted Logistic Regresssion had perfect prediction!
-
 
 ```{r, echo=FALSE}
-test.nb <- confusionMatrix(predict(NB, test), test$cases)
+test.nb  <- confusionMatrix(predict(NB, test), test$cases)
+test.knn <- confusionMatrix(predict(kNN, test), test$cases)
+test.lda <- confusionMatrix(predict(LDA.2, test), test$cases)
 ```
 
 ## Summary
@@ -391,6 +431,8 @@ print(xtable(tab, digits=2), type='html')
 * http://rstudio-pubs-static.s3.amazonaws.com/35817_2552e05f1d4e4db8ba87b334101a43da.html
 * https://www.youtube.com/watch?v=s8pvp2Ctxfc
 * http://www.r-bloggers.com/in-depth-introduction-to-machine-learning-in-15-hours-of-expert-videos/
+
+http://michael.hahsler.net/SMU/EMIS7332/R/chap5.html
 
 
 [[top]](lec10_Classifiers.html)
