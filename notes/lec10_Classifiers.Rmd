@@ -2,11 +2,11 @@
 title: 'Lec 10: Classifiers'
 author: "MATH 456 - Spring 2016"
 output:
+  pdf_document: default
   html_document:
     highlight: pygments
     theme: spacelab
     toc: yes
-  pdf_document: default
 ---
 ```{r,echo=FALSE, warning=FALSE, message=FALSE}
 library(knitr); library(rmarkdown);library(ggplot2)
@@ -226,8 +226,8 @@ _as well as_ the `cesd` variable since `cases` is a dichotomized version of this
 variable. 
 
 **IMPORTANT NOTE** At this point I have loaded some other package that has a 
-`select` function. If you do not specify that here you want to specifically use
-the select function from the `dplyr` package, this WILL NOT WORK. 
+`select` function. <span style="color:red">If you do not specify that here you want to specifically use
+the select function from the `dplyr` package, this WILL NOT WORK. </span>
 ```{r}
 depress <- depress %>% dplyr::select(-id, -c1:-c20, -cesd)
 names(depress)
@@ -279,7 +279,7 @@ LogReg <- train(cases ~ . ,
 ```
 
 Easy enough. Now let's look at the results of the model. 
-```{r}
+```{r, echo=FALSE}
 LogReg
 ```
 
@@ -343,7 +343,7 @@ LDA.2 <- train(cases ~ . ,
 
 The results show that both have high sensitivity, low specificity,  with
 AUC values between 0.5 and 0.7. 
-```{r}
+```{r, echo=FALSE}
 LDA.1
 LDA.2
 ```
@@ -353,8 +353,8 @@ prior probabilities of being depressed and the mean value for each variable
 within each of the depression categories. Specifically you can also output
 the values for the $\beta$ regression coefficients. (_Not all methods
 allow you to extract the values of the coefficients_)
-```{r}
-print(xtable(coef(LDA.1$finalModel), digits=2), type='html')
+```{r, results='asis'}
+print(xtable(coef(LDA.1$finalModel), digits=2), type='latex')
 ```
 
 
@@ -409,7 +409,7 @@ NB <- train(cases ~ . ,
 This model takes slightly longer to fit compared to logistic regression, 
 and at least in this example throws some warnings about zero probabilities
 
-```{r}
+```{r, echo=FALSE}
 NB
 ```
 
@@ -468,19 +468,23 @@ DT <- train(cases ~ . ,
                 trControl = ctrl)
 ```
 
-```{r}
+```{r, echo=FALSE}
 DT
 ```
 
 Visualize the decision tree. 
-```{r}
-library(rpart.plot)
-plot(DT$finalModel, cex=.2)
+```{r, fig.height=8, fig.width=10}
+library(rpart.plot); library(rattle)
+fancyRpartPlot(DT$finalModel, sub="")
 ```
+
+_The progrma can't start because libatk-1.0.0.dll is missing from your computer. 
+Try reinstalling the program to fix the problem._ Hit "OK" and install gTk2. 
+You may have to restart R.
 
 Tree based models also provide a measure on the importance of each candidate
 variable. These can be visualized using a **Variable Importance Plot**.
-```{r}
+```{r, fig.width=6}
 plot(varImp(DT))
 ```
 
@@ -505,7 +509,11 @@ RF <- train(cases ~ . ,
                 trControl = ctrl)
 ```
 
-```{r}
+```{r, echo=FALSE}
+RF
+```
+
+```{r, fig.width=6}
 plot(RF)
 plot(varImp(RF))
 ```
@@ -524,7 +532,7 @@ kNN <- train(cases ~ . ,
 ```
 
 
-```{r}
+```{r, echo=FALSE}
 kNN
 ```
 
@@ -534,16 +542,14 @@ plot(kNN)
 
 
 # Compare algorithm performance
-A resampling technique can be used to compare models. 
+A resampling technique can be used to compare model performance. 
 (Ref: _Hothorn at al, "The design and analysis of benchmark experiments-
 Journal of Computational and Graphical Statistics (2005) vol 14 (3) pp 675-699)_)
 
 ```{r}
-rValues <- resamples(list(logreg=LogReg,lda1=LDA.1, lda2=LDA.2, nb=NB, 
-                          dt=DT, rf=RF, knn=kNN))
-par(mfrow=c(1,2))
-bwplot(rValues,metric="Sens")            # boxplot
-dotplot(rValues,metric="Sens")           # dotplot
+rValues <- resamples(list(logreg=LogReg,lda1=LDA.1, lda2=LDA.2, nb=NB, dt=DT, rf=RF, knn=kNN))
+bwplot(rValues,metric="ROC")           
+dotplot(rValues,metric="Sens")
 # Hint: Look at rValues$metrics for other metrics you can visualize & compare.  
 ```
 
@@ -592,20 +598,21 @@ rownames(Metrics) <- c("Boosted Logistic Regression", "LDA", "LDA w/stepwise",
 ```
 
 ```{r, echo=FALSE, results='asis'}
-print(xtable(Metrics, digits=3), type='html')
+print(xtable(Metrics, digits=3), type='latex')
 ```
 
 # Making predictions
 On the hold-out testing data set. 
 
-Recall there are 14/86 (16.3%) cases of diagnosed depression on the testing data set. 
 
-```{r}
+```{r, echo=1}
 confusionMatrix(predict(RF, test), test$cases, positive='Depressed')
+a <- round(confusionMatrix(predict(RF, test), test$cases, positive='Depressed')$overall, 3)
+acc.ci <- paste(a[1], "(", a[3], " ," , a[4], ")", sep="")
 ```
 
-The Random Forest model had an accuracy of .85 (0.76, 0.92) on the testing data set. 
-This model predicted depression correctly 100% of the time, and only 
+The Random Forest model had an accuracy of `r acc.ci` on the testing data set. 
+
 
 **Additional references**
 
@@ -621,7 +628,9 @@ http://michael.hahsler.net/SMU/EMIS7332/R/chap5.html
 
 # On Your Own
 ##### On Your Own
-
+Using the Parental HIV data set, build a predictive model for whether or not a
+student skips class `HOOKEY` using all 6 of the classifying algorithms discussed
+in this set of lecture notes. 
     
     
     
