@@ -33,6 +33,8 @@ Algorithm specific information is interspersed throughout the lecture notes.
 * Read/skim around to better understand these methods, but know that we could
   have spent easily an entire semester on machine learning algorithms. 
 * This is just an introduction!
+* Algorithms may take a while to computer, using `cache=TRUE` in the code chunk
+  used to fit the model is advised.
 
 # Introduction to Classifiers
 We will be discussing the following 6 classifying algorithms. These are also
@@ -46,8 +48,11 @@ build a model by learning from the relationships within the data.
 * Random Forests
 * k-nearest neighbors
 
-For an idea of how many algorithms are out there: http://topepo.github.io/caret/modelList.html 
-Many of the algorithms listed are similar in theory, but with different penalty functions. 
+For an idea of how many algorithms are out there: 
+
+* Data Mining Map: http://www.saedsayad.com/data_mining_map.htm 
+* http://topepo.github.io/caret/modelList.html 
+
 
 Most ML algorithms will use, in some way, every variable that you give it access
 to. To reduce model complexity and to reduce the chance of overfitting many models
@@ -153,10 +158,13 @@ factor variables were being treated appropriately. This is also the step that
 you would conduct a PCA or create aggregate scales like CESD (which was already
 created for us). 
 
-However, specifically we need to ensure that R knows `cases` is a binary class variable
-**with Depressed as the outcome of interest**. Ensure correct alphabetical order. 
+However, specifically we need to ensure that R knows `cases` is a binary class
+variable with positive outcome (class 1) of "Depressed". The way I handle this
+is to first change `cases` to a factor variable, and swap the ordering of the 
+levels. And then I apply named values to those levels. 
 ```{r}
-depress$cases <- factor(depress$cases, labels=c("NotDepressed", "YesDepressed"))
+depress$cases <- factor(depress$cases, levels=c(1,0))
+levels(depress$cases) <- c("Depressed", "NotDepressed")
 ```
 
 ### Identifying missing data
@@ -288,6 +296,11 @@ boosting iterations (a tuning parameter).
 plot(LogReg)
 ```
 
+Almost all predictors available were used in the final model. 
+```{r}
+predictors(LogReg)
+```
+
 **Additional Reading on Penalized methods**
 http://master.bioconductor.org/help/course-materials/2003/Milan/Lectures/anestisMilan3.pdf 
 
@@ -295,19 +308,20 @@ http://master.bioconductor.org/help/course-materials/2003/Milan/Lectures/anestis
 ## Discriminant analysis
 
 * Afifi Ch 11 introduces _Linear_ Discriminant analyses
+* No distributional assumptions
 * Finds a combination of features that separates two events
 * Not all combinations are linear. http://topepo.github.io/caret/Discriminant_Analysis.html
-* 
 
-Here I test out several discriminant function algorithms: 
 
-* `LDA.1` uses the a Linear Discriminant Analysis algorithm (`method =lda2`)
-   that includes a tuning parameter to control the number of discriminant functions. 
-* `LDA.2` uses a Penalized Linear Discriminant analysis algorithm (`method=PenalizedLDA`)
-   that is designed for situations in which there are many higly correlated predictors. 
-   Specifically I chose one that applied a direct penalty to the $\beta$ coefficients
-   and the number of discriminant functions used. http://projecteuclid.org/euclid.aos/1176324456 
-* `LDA.3` includes a stepwise feature selection procedure (`method=stepLDA`)
+### Linear Discriminant Analysis (LDA)
+* Define $Z$ to be a linear combination of $X$'s: $Z = a_{1}X_{1} + a_{2}X_{2} +, \ldots , +a_{p}X_{p}$
+* Select $a_{i}$'s to maximize the Mahalanobis distance between the average
+  value of Z in group 1 from the average value of Z in group 2. 
+
+Here I use two LDA algorithms: 
+* `LDA.1` uses the basic Linear Discriminant Analysis algorithm (`method =lda`)
+   which does not contain any tuning parameters. 
+* `LDA.2` includes a stepwise feature selection procedure (`method=stepLDA`)
 
 The stepwise LDA procedure is _very_ verbose (it creates a lot of output)
 so I specifically am NOT showing the results here. (I put ` ```{r, results='hide'} ` 
@@ -315,21 +329,11 @@ in the code chunk header).
 ```{r, results='hide', cache=TRUE}
 LDA.1 <- train(cases ~ . ,
                 data=train, 
-                method="lda2", 
+                method="lda", 
                 preProc = c("center", "scale"), 
                 metric = "ROC",
                 trControl = ctrl)
-
-ctrl <- trainControl(method="repeatedcv", repeats=3)
-
-
 LDA.2 <- train(cases ~ . ,
-                data=train, 
-                method="PenalizedLDA", 
-                preProc = c("center", "scale"), 
-                metric = "ROC",
-                trControl = ctrl)
-LDA.3 <- train(cases ~ . ,
                 data=train, 
                 method="stepLDA", 
                 preProc = c("center", "scale"), 
@@ -337,36 +341,73 @@ LDA.3 <- train(cases ~ . ,
                 trControl = ctrl)
 ```
 
-Results? 
+The results show that both have high sensitivity, low specificity,  with
+AUC values between 0.5 and 0.7. 
 ```{r}
 LDA.1
 LDA.2
-LDA.3
 ```
 
+The `finalModel` item within the model object contains information on the
+prior probabilities of being depressed and the mean value for each variable 
+within each of the depression categories. Specifically you can also output
+the values for the $\beta$ regression coefficients. (_Not all methods
+allow you to extract the values of the coefficients_)
 ```{r}
-plot(LDA.2)
+print(xtable(coef(LDA.1$finalModel), digits=2), type='html')
 ```
 
 
-**Additional references for LDA** 
+* Every variable in the data set was used in this model. 
+* Penalized models will _shrink_ these estimates down to zero for variables that
+  do not contribute. 
 
-* http://www.r-bloggers.com/computing-and-visualizing-lda-in-r/
+Compare this to the LDA with a stepwise variable selection procedure added: 
+```{r}
+LDA.2$finalModel
+```
+
+This algorithm only chose gender as a predictor of depression. 
+
+* LDA compared to PCA: http://www.r-bloggers.com/computing-and-visualizing-lda-in-r/
 
 
 ## Naieve Bayes
+Bayesian probability models have the following form: 
 
-<span style="color:red">explain this model</span>
-http://topepo.github.io/caret/Bayesian_Model.html
+$$ P(Y=1|X) \propto \pi(Y=1)P(X|Y=1) $$
+
+In english, this says that the posterior probability of an event occuring
+is proportional to the prior probability of the event occuring, times the
+likelihood of the event occuring given the observed data. 
+
+A naieve Bayes classifier can be thought of as fitting the joint probability
+model to optmize the joint likelihood $p(Y, X)$ whereas logisic regression
+optimizes the conditional probability $p(Y|X)$
+
+The Naieve Bayes classifier...
+
+* is easy and fast, performs well with multiple class (categorical) predictions. 
+* Assumes the effect of $x_{1}$ on P(Y=1) is independent of the value of $x_{2}$. 
+  (i.e. the X's are independent)
+* Performs better than logistic regression with less training data if the 
+  assumption of conditional independence is upheld
+
+
+A list of Bayesian methods included in `caret` package. 
+* http://topepo.github.io/caret/Bayesian_Model.html
 
 ```{r, cache=TRUE}
 NB <- train(cases ~ . ,
                 data=train, 
                 method="nb", 
+                preProc = c("center", "scale"), 
                 metric = "ROC",
                 trControl = ctrl)
 ```
 
+This model takes slightly longer to fit compared to logistic regression, 
+and at least in this example throws some warnings about zero probabilities
 
 ```{r}
 NB
@@ -378,10 +419,17 @@ using a Gaussian or a non-parametric kernel.
 plot(NB)
 ```
 
+There is also a slightly different set of predictors chosen in the final model. 
+```{r}
+predictors(NB$finalModel)
+```
+
+Additional References
+* http://www.analyticsvidhya.com/blog/2015/09/naive-bayes-explained/
+* http://www.saedsayad.com/naive_bayesian.htm
+
 
 ## Decision Trees
-<span style="color:red">explain this model</span>
-
 Tree based methods are:
 
 * Best when the relationship between the features and the response are complex
@@ -390,7 +438,7 @@ Tree based methods are:
 * Mimics human decision making
 * Tend to not have the same level of predictive accuracy as classical approaches. 
 * Non-parametric
-* Can over-fit the data more easily than other methods. 
+* Can overfit the data more easily than other methods. 
 
 
 ### General Algorithm/Process
@@ -491,24 +539,25 @@ A resampling technique can be used to compare models.
 Journal of Computational and Graphical Statistics (2005) vol 14 (3) pp 675-699)_)
 
 ```{r}
-rValues <- resamples(list(logreg=LogReg,lda1=LDA.1, lda2=LDA.2, lda3=LDA.3))
-bwplot(rValues,metric="ROC")            # boxplot
-dotplot(rValues,metric="ROC")           # dotplot
-splom(rValues,metric="ROC")
+rValues <- resamples(list(logreg=LogReg,lda1=LDA.1, lda2=LDA.2, nb=NB, 
+                          dt=DT, rf=RF, knn=kNN))
+par(mfrow=c(1,2))
+bwplot(rValues,metric="Sens")            # boxplot
+dotplot(rValues,metric="Sens")           # dotplot
+# Hint: Look at rValues$metrics for other metrics you can visualize & compare.  
 ```
-
-
 
 We can compare algorithms on their accuracy predicting the training
 data set. Here I create a confusion matrix by using each model to predict
 the class membership of data on the training data set. 
 ```{r}
-acc.log <- confusionMatrix(predict(LogReg, train), train$cases)
-acc.lda <- confusionMatrix(predict(LDA.2, train), train$cases)
-acc.nb  <- confusionMatrix(predict(NB, train), train$cases)
-acc.dt  <- confusionMatrix(predict(DT, train), train$cases)
-acc.rf  <- confusionMatrix(predict(RF, train), train$cases)
-acc.knn <- confusionMatrix(predict(kNN, train), train$cases)
+acc.log <- confusionMatrix(predict(LogReg, train), train$cases, positive='Depressed')
+acc.ld1 <- confusionMatrix(predict(LDA.1, train), train$cases, positive='Depressed')
+acc.ld2 <- confusionMatrix(predict(LDA.2, train), train$cases, positive='Depressed')
+acc.nb  <- confusionMatrix(predict(NB, train), train$cases, positive='Depressed')
+acc.dt  <- confusionMatrix(predict(DT, train), train$cases, positive='Depressed')
+acc.rf  <- confusionMatrix(predict(RF, train), train$cases, positive='Depressed')
+acc.knn <- confusionMatrix(predict(kNN, train), train$cases, positive='Depressed')
 ```
 
 Ok so how do extract the accuracy values? Lets see what data is in
@@ -516,31 +565,47 @@ the object created by the `confusionMatrix` function.
 ```{r}
 names(acc.log)
 names(acc.log$overall)
+names(acc.log$byClass)
 ```
 
 Now that I've identified that the value for Accuracy is the first element
 in the `$overall` list, I can extract these values and compare them in a 
-tabular format.
+tabular format. Furthermore the sensitivity, specificity and other table
+values can be found in the `$byClass` list. 
+
+For berivity sake (and to demonstrate some advanced R programming techniques)
+I create a function `getmetrics` to extract only the values of the performance 
+metrics I am interested in, then apply that function to all models in a list. 
 
 ```{r}
-Accuracy  <- c(acc.log$overall[1], acc.lda$overall[1], 
-               acc.nb$overall[1],  acc.dt$overall[1], 
-               acc.rf$overall[1],  acc.knn$overall[1])
-Algorithm <- c("Boosted Logistic Regression", "Linear Discriminant Analysis", 
+library(foreach)
+model.list <- list(acc.log, acc.ld1, acc.ld2, acc.nb, acc.dt, acc.rf, acc.knn)
+getmetrics <- function(x){
+  y <- x[[1]]
+  metrics <- c(y$overall[1], y$byClass[1:2])
+  return(metrics)
+  }
+
+Metrics <- foreach(i = 1:length(model.list), .combine=rbind) %do% getmetrics(model.list[i])
+rownames(Metrics) <- c("Boosted Logistic Regression", "LDA", "LDA w/stepwise",  
                "Naieve Bayes", "Decision Tree", "Random Forest", "k-Nearest neighbors")
-tab <- data.frame(Algorithm, Accuracy)
 ```
 
 ```{r, echo=FALSE, results='asis'}
-print(xtable(tab, digits=2), type='html')
+print(xtable(Metrics, digits=3), type='html')
 ```
 
 # Making predictions
 On the hold-out testing data set. 
 
+Recall there are 14/86 (16.3%) cases of diagnosed depression on the testing data set. 
 
-## Summary
+```{r}
+confusionMatrix(predict(RF, test), test$cases, positive='Depressed')
+```
 
+The Random Forest model had an accuracy of .85 (0.76, 0.92) on the testing data set. 
+This model predicted depression correctly 100% of the time, and only 
 
 **Additional references**
 
