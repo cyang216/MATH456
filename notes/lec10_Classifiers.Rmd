@@ -2,28 +2,616 @@
 title: 'Lec 10: Classifiers'
 author: "MATH 456 - Spring 2016"
 output:
+  pdf_document: default
   html_document:
     highlight: pygments
     theme: spacelab
     toc: yes
-  pdf_document: default
 ---
 ```{r,echo=FALSE, warning=FALSE, message=FALSE}
 library(knitr); library(rmarkdown);library(ggplot2)
 library(xtable); library(dplyr)
 options(xtable.comment = FALSE)
-opts_chunk$set(warning=FALSE, message=FALSE) 
+opts_chunk$set(warning=FALSE, message=FALSE, fig.height=4, fig.width=4, fig.align='center') 
 ```
 
 ```{r results="asis", echo=FALSE}
 source("C:/Github/MATH456/stylesheets/custom.R")
 ```
 
-Navbar: [[Home]](../index.html) [[Schedule]](../Schedule.html) [[Data]](../data/Datasets.html) [[Week 9 Overview]](../wk09.html) [[HW Info]](../HW_Info.html)  [[Google Group]](https://groups.google.com/forum/#!forum/csuc_stat)
+Navbar: [[Home]](../index.html) [[Schedule]](../Schedule.html) [[Data]](../data/Datasets.html) [[Week 13 Overview]](../wk13.html) [[HW Info]](../HW_Info.html)  [[Google Group]](https://groups.google.com/forum/#!forum/csuc_stat)
 
 # Assigned Reading & additional references
 
-http://www.r-bloggers.com/in-depth-introduction-to-machine-learning-in-15-hours-of-expert-videos/
+Reading: Afifi Chapter 11. Skim the math, read the rest **carefully**. 
+Skip/skim: 11.9-11.11
+
+Algorithm specific information is interspersed throughout the lecture notes. 
+
+* Lots of external reading/references
+* Easy to go down the rabbit hole on this stuff! 
+* Read/skim around to better understand these methods, but know that we could
+  have spent easily an entire semester on machine learning algorithms. 
+* This is just an introduction!
+* Algorithms may take a while to computer, using `cache=TRUE` in the code chunk
+  used to fit the model is advised.
+
+# Introduction to Classifiers
+We will be discussing the following 6 classifying algorithms. These are also
+sometimes called _Machine Learning_ (ML) algorithms. They are simply methods to
+build a model by learning from the relationships within the data. 
+
+* Logistic Regression
+* Linear Discriminant analysis 
+* Naieve Bayes
+* Decision Trees
+* Random Forests
+* k-nearest neighbors
+
+For an idea of how many algorithms are out there: 
+
+* Data Mining Map: http://www.saedsayad.com/data_mining_map.htm 
+* http://topepo.github.io/caret/modelList.html 
+
+
+Most ML algorithms will use, in some way, every variable that you give it access
+to. To reduce model complexity and to reduce the chance of overfitting many models
+apply a _penalty_ to the variable that diminishes their effect on the outcome, 
+or reduces their chance of being included into the model. 
+
+> Overfitting occurs when a statistical model describes random error or noise 
+> instead of the underlying relationship. Overfitting generally occurs when a 
+> model is excessively complex, such as having too many parameters relative to
+> the number of observations.
+(Ref: https://en.wikipedia.org/wiki/Overfitting)
+
+
+### Machine learning in R: the `caret` package
+
+We will be using the `caret` package in R to conduct all of our model building. 
+Please read this small vignette for this package. 
+
+https://cran.r-project.org/web/packages/caret/vignettes/caret.pdf
+
+```{r, echo=FALSE}
+library(caret)
+```
+
+Other packages you will need to install are: `pROC`, `caTools`, `bnclassify`,
+`mda`, `party`, `rpart.plot`, `rattle`, `penalizedLDA`.  
+
+* Typically don't need pre-install these 
+* You're prompted to install them when you use an algorithm that needs them
+* Once installed, they will automatically load as needed. 
+
+If you want to use classifying algorithms other than the ones we have discussed
+here, these references will be useful:
+
+* http://topepo.github.io/caret/bytag.html
+* http://artax.karlin.mff.cuni.cz/r-help/library/caret/html/train.html
+
+
+### Cross-Validation
+Many of these algorithms have _tuning parameters_ that have to be optimized. 
+The most common way to choose the optimal value of a tuning parameter is
+through _cross validation_ (CV). 
+
+Recall that CV involves splitting the data (again) into testing and training
+data sets, running a single model over a range of values for the tuning parameter, 
+and finding the value of the tuning parameter that provides the best fit. 
+
+We can specify how we want CV to occur in the `trainControl` function. 
+Here we are specifying that we want to use repeated cross-validation. 
+This means we apply k-fold CV (k defaults to 10 for this package) to one
+split of the data. Then repeat this process 2 more times on different 
+rando testing/training splits of the data. 
+```{r}
+ctrl <- trainControl(method="repeatedcv", repeats=3, 
+                     classProbs = TRUE, summaryFunction = twoClassSummary)
+```
+
+The `classProbs=TRUE` argument tells the function to calculate the probabilities
+of being in each class (depressed or not depressed), and to provide a summary
+information specific to two classes (confusion matrix). 
+
+### Fitting (Training) the model
+The workhorse in the caret package is the `train()` function.
+The generic syntax looks like the following: 
+
+```{r, eval=FALSE}
+train(y ~ . ,
+      data=, 
+      method=, 
+      preProc = c("center", "scale"), 
+      metric = , 
+      trControl = ctrl)
+```
+
+* `y~.` is the model syntax
+* `data` is the data set used to train the model on
+* `method` is the type of machine learning algorithm used
+* `preProc` is the type of pre-processing that you want to be done
+* `metric` is the performance metric that you want to optimize
+* `trControl` is the type of training control you want to implement. 
+
+
+Unless otherwise specified, this is the training control method that we will
+use for all algorithms explored below. 
+
+# Goal: Predict Depression
+_Note: The data management code file for the depression data set has been updated. 
+Go download it and update your analysis data file._
+```{r}
+depress <- read.delim("C:/GitHub/MATH456/data/depress_041616.txt")
+```
+
+## Pre-processing the data
+
+Assigned Reading: http://machinelearningmastery.com/how-to-prepare-data-for-machine-learning/ 
+
+Often ML algorithms perform better when the variables are also centered and scaled. 
+This can be done at the time of calling the algorithm, so we won't do that manually here. 
+
+### Recoding and ensuring variables have correct attributes
+In the data management code I have already recoded variables, ensured that all
+factor variables were being treated appropriately. This is also the step that 
+you would conduct a PCA or create aggregate scales like CESD (which was already
+created for us). 
+
+However, specifically we need to ensure that R knows `cases` is a binary class
+variable with positive outcome (class 1) of "Depressed". The way I handle this
+is to first change `cases` to a factor variable, and swap the ordering of the 
+levels. And then I apply named values to those levels. 
+```{r}
+depress$cases <- factor(depress$cases, levels=c(1,0))
+levels(depress$cases) <- c("Depressed", "NotDepressed")
+```
+
+### Identifying missing data
+```{r}
+table(is.na(depress))
+```
+Two pieces of missing data. We have N=294, so will just delete those 2 records for now. 
+
+```{r}
+depress <- na.omit(depress)
+```
+
+### Looking at distributions and outliers
+Ensure each variable has sufficient variation. 
+```{r, fig.width=10, fig.height=4}
+par(mfrow=c(1,2))
+hist(depress$age); hist(depress$income)
+```
+
+I then look at the categorical variables to see if there are any factor levels
+(categories) with a small number of records in them. This can lead to unstable
+estimates and algorithmic failure. 
+```{r}
+sapply(depress[,c('cases', 'marital', 'educat', 'employ', 'relig', 'health')], table)
+```
+
+There are very few records with education less than HS, employed "in school"
+or "other". Specifically `In school` doesn't even have enough observations
+to calculate a variance on. I will combine "In school" with "Other".
+
+```{r}
+library(car)
+depress$employ <- recode(depress$employ, "'In School' = 'Other'")
+table(depress$employ)
+```
+
+As I was building these lecture notes, I also came across problems with the
+education variable (as expected). So I will further collapse categories for
+this variable. 
+```{r}
+depress$educat <- recode(depress$educat, 
+                        "c('<HS', 'Some HS', 'HS Grad') = 'HS';
+                         c('Some college', 'BS') = 'UG';
+                         c('MS', 'PhD') = 'GD'")
+table(depress$educat)
+```
+
+Similarly I will look at the average value for all the 0/1 indicator variables in 
+the data set to get an idea of the proportion of 1's. If any have a very low percent
+of events (1's) in the data we will have to be mindful of how the algorithms are
+performing with that variable in the model. 
+```{r}
+sapply(depress[,c('sex', 'drink', 'regdoc', 'treat', 'beddays', 'acuteill', 'chronill')], mean)
+```
+
+### Manual variable selection. 
+Remove id, and the component variables `c1:c20` that are used to create `cesd`, 
+_as well as_ the `cesd` variable since `cases` is a dichotomized version of this
+variable. 
+
+**IMPORTANT NOTE** At this point I have loaded some other package that has a 
+`select` function. <span style="color:red">If you do not specify that here you want to specifically use
+the select function from the `dplyr` package, this WILL NOT WORK. </span>
+```{r}
+depress <- depress %>% dplyr::select(-id, -c1:-c20, -cesd)
+names(depress)
+```
+The remaining variables are ones that I want to keep as candidate variables
+for a model. 
+
+## Split the data into testing and training. 
+Instead of randomly sampling the entire data set to create the testing
+and training subsamples, the `createDataPartition` allows you to split
+the testing and training samples while stratifying on the outcome. 
+```{r}
+set.seed(1067)
+inTrain <- createDataPartition(y=depress$cases, p=.7, list=FALSE)
+train <- depress[inTrain,];dim(train)
+test  <- depress[-inTrain,];dim(test)
+```
+
+This is advantageous in that it ensures the relative proportion of the 
+outcome variable is the same on both the testing and training data sets. 
+```{r}
+prop.table(table(depress$cases))
+prop.table(table(train$cases))
+prop.table(table(test$cases))
+```
+
+Now we are ready to build our models on the training data. 
+
+# Use different classifying algorithms. 
+## Logistic Regression
+http://topepo.github.io/caret/Logistic_Regression.html
+
+There are several different algorithms to perform a "flavor" of logistic 
+regression analysis. We are going to use the `LogitBoost` algorithm. 
+
+> Boosting methods have been originally proposed as ensemble methods,
+> ... which rely on the principle of generating multiple predictions
+> and majority voting (averaging) among the individual classifiers
+> 
+> Citation: https://web.stanford.edu/~hastie/Papers/buehlmann.pdf
+
+```{r, cache=TRUE}
+LogReg <- train(cases ~ . ,
+                data=train, 
+                method="LogitBoost", 
+                preProc = c("center", "scale"), 
+                metric = "ROC",
+                trControl = ctrl)
+```
+
+Easy enough. Now let's look at the results of the model. 
+```{r, echo=FALSE}
+LogReg
+```
+
+This output gives you a summary of the sample size going into the model, 
+reminds you what the classes are, what pre-processing was done and what
+training control / optimization methods were used. 
+
+Then for each iteration the results show the sensitivity, specificity and
+area under the ROC curve. 
+
+We can also visualize how the AUC varied as a function of the number of
+boosting iterations (a tuning parameter).
+```{r}
+plot(LogReg)
+```
+
+Almost all predictors available were used in the final model. 
+```{r}
+predictors(LogReg)
+```
+
+**Additional Reading on Penalized methods**
+http://master.bioconductor.org/help/course-materials/2003/Milan/Lectures/anestisMilan3.pdf 
+
+
+## Discriminant analysis
+
+* Afifi Ch 11 introduces _Linear_ Discriminant analyses
+* No distributional assumptions
+* Finds a combination of features that separates two events
+* Not all combinations are linear. http://topepo.github.io/caret/Discriminant_Analysis.html
+
+
+### Linear Discriminant Analysis (LDA)
+* Define $Z$ to be a linear combination of $X$'s: $Z = a_{1}X_{1} + a_{2}X_{2} +, \ldots , +a_{p}X_{p}$
+* Select $a_{i}$'s to maximize the Mahalanobis distance between the average
+  value of Z in group 1 from the average value of Z in group 2. 
+
+Here I use two LDA algorithms: 
+* `LDA.1` uses the basic Linear Discriminant Analysis algorithm (`method =lda`)
+   which does not contain any tuning parameters. 
+* `LDA.2` includes a stepwise feature selection procedure (`method=stepLDA`)
+
+The stepwise LDA procedure is _very_ verbose (it creates a lot of output)
+so I specifically am NOT showing the results here. (I put ` ```{r, results='hide'} ` 
+in the code chunk header).
+```{r, results='hide', cache=TRUE}
+LDA.1 <- train(cases ~ . ,
+                data=train, 
+                method="lda", 
+                preProc = c("center", "scale"), 
+                metric = "ROC",
+                trControl = ctrl)
+LDA.2 <- train(cases ~ . ,
+                data=train, 
+                method="stepLDA", 
+                preProc = c("center", "scale"), 
+                metric = "ROC",
+                trControl = ctrl)
+```
+
+The results show that both have high sensitivity, low specificity,  with
+AUC values between 0.5 and 0.7. 
+```{r, echo=FALSE}
+LDA.1
+LDA.2
+```
+
+The `finalModel` item within the model object contains information on the
+prior probabilities of being depressed and the mean value for each variable 
+within each of the depression categories. Specifically you can also output
+the values for the $\beta$ regression coefficients. (_Not all methods
+allow you to extract the values of the coefficients_)
+```{r, results='asis'}
+print(xtable(coef(LDA.1$finalModel), digits=2), type='latex')
+```
+
+
+* Every variable in the data set was used in this model. 
+* Penalized models will _shrink_ these estimates down to zero for variables that
+  do not contribute. 
+
+Compare this to the LDA with a stepwise variable selection procedure added: 
+```{r}
+LDA.2$finalModel
+```
+
+This algorithm only chose gender as a predictor of depression. 
+
+* LDA compared to PCA: http://www.r-bloggers.com/computing-and-visualizing-lda-in-r/
+
+
+## Naieve Bayes
+Bayesian probability models have the following form: 
+
+$$ P(Y=1|X) \propto \pi(Y=1)P(X|Y=1) $$
+
+In english, this says that the posterior probability of an event occuring
+is proportional to the prior probability of the event occuring, times the
+likelihood of the event occuring given the observed data. 
+
+A naieve Bayes classifier can be thought of as fitting the joint probability
+model to optmize the joint likelihood $p(Y, X)$ whereas logisic regression
+optimizes the conditional probability $p(Y|X)$
+
+The Naieve Bayes classifier...
+
+* is easy and fast, performs well with multiple class (categorical) predictions. 
+* Assumes the effect of $x_{1}$ on P(Y=1) is independent of the value of $x_{2}$. 
+  (i.e. the X's are independent)
+* Performs better than logistic regression with less training data if the 
+  assumption of conditional independence is upheld
+
+
+A list of Bayesian methods included in `caret` package. 
+* http://topepo.github.io/caret/Bayesian_Model.html
+
+```{r, cache=TRUE}
+NB <- train(cases ~ . ,
+                data=train, 
+                method="nb", 
+                preProc = c("center", "scale"), 
+                metric = "ROC",
+                trControl = ctrl)
+```
+
+This model takes slightly longer to fit compared to logistic regression, 
+and at least in this example throws some warnings about zero probabilities
+
+```{r, echo=FALSE}
+NB
+```
+
+This plot shows you the change in AUC as a function of if the algorithm was
+using a Gaussian or a non-parametric kernel. 
+```{r}
+plot(NB)
+```
+
+There is also a slightly different set of predictors chosen in the final model. 
+```{r}
+predictors(NB$finalModel)
+```
+
+Additional References
+* http://www.analyticsvidhya.com/blog/2015/09/naive-bayes-explained/
+* http://www.saedsayad.com/naive_bayesian.htm
+
+
+## Decision Trees
+Tree based methods are:
+
+* Best when the relationship between the features and the response are complex
+    - lot of non-linear terms and interactions. 
+* Easy to explain & display graphically
+* Mimics human decision making
+* Tend to not have the same level of predictive accuracy as classical approaches. 
+* Non-parametric
+* Can overfit the data more easily than other methods. 
+
+
+### General Algorithm/Process
+1. Find the variable split that best separates the categories of the response variable
+2. Divide the data into two subsets based on that split
+3. Within each subset, find the next variable that best separates the data into two categories. 
+
+The goal is to minimize the residual error. Technically trees can be built so tall that
+each observation is perfectly predicted. This is called _over fitting_. This can be avoided
+by _pruning_ trees back (simplifying the tree). 
+
+* The level of pruning is a tuning parameter (`complexity`)
+* Optimal complexity parameter can be determined by CV. 
+
+
+References & Readings  
+* https://en.wikipedia.org/wiki/Decision_tree_learning 
+* https://rpubs.com/ryankelly/dtrees 
+* http://trevorstephens.com/post/72923766261/titanic-getting-started-with-r-part-3-decision
+
+
+```{r, cache=TRUE}
+DT <- train(cases ~ . ,
+                data=train, 
+                method="rpart", 
+                metric = "ROC",
+                trControl = ctrl)
+```
+
+```{r, echo=FALSE}
+DT
+```
+
+Visualize the decision tree. 
+```{r, fig.height=8, fig.width=10}
+library(rpart.plot); library(rattle)
+fancyRpartPlot(DT$finalModel, sub="")
+```
+
+_The progrma can't start because libatk-1.0.0.dll is missing from your computer. 
+Try reinstalling the program to fix the problem._ Hit "OK" and install gTk2. 
+You may have to restart R.
+
+Tree based models also provide a measure on the importance of each candidate
+variable. These can be visualized using a **Variable Importance Plot**.
+```{r, fig.width=6}
+plot(varImp(DT))
+```
+
+This echo's the decision tree plot in that top three primary variables important
+in predicting depression is the number of days spent in bed, the level of 
+general health, and employment status (specifically if they're unemployed)
+
+
+## Random Forests
+<span style="color:red">explain this model</span>
+
+A random forest grows a large number of decision trees in order to improve
+classification rate. 
+
+http://trevorstephens.com/post/73770963794/titanic-getting-started-with-r-part-5-random
+
+```{r, cache=TRUE}
+RF <- train(cases ~ . ,
+                data=train, 
+                method="rf", 
+                metric = "ROC",
+                trControl = ctrl)
+```
+
+```{r, echo=FALSE}
+RF
+```
+
+```{r, fig.width=6}
+plot(RF)
+plot(varImp(RF))
+```
+
+
+## k-nearest neighbors
+<span style="color:red">explain this model</span>
+
+
+```{r, cache=TRUE}
+kNN <- train(cases ~ . ,
+                data=train, 
+                method="knn", 
+                metric = "ROC",
+                trControl = ctrl)
+```
+
+
+```{r, echo=FALSE}
+kNN
+```
+
+```{r}
+plot(kNN)
+```
+
+
+# Compare algorithm performance
+A resampling technique can be used to compare model performance. 
+(Ref: _Hothorn at al, "The design and analysis of benchmark experiments-
+Journal of Computational and Graphical Statistics (2005) vol 14 (3) pp 675-699)_)
+
+```{r}
+rValues <- resamples(list(logreg=LogReg,lda1=LDA.1, lda2=LDA.2, nb=NB, dt=DT, rf=RF, knn=kNN))
+bwplot(rValues,metric="ROC")           
+dotplot(rValues,metric="Sens")
+# Hint: Look at rValues$metrics for other metrics you can visualize & compare.  
+```
+
+We can compare algorithms on their accuracy predicting the training
+data set. Here I create a confusion matrix by using each model to predict
+the class membership of data on the training data set. 
+```{r}
+acc.log <- confusionMatrix(predict(LogReg, train), train$cases, positive='Depressed')
+acc.ld1 <- confusionMatrix(predict(LDA.1, train), train$cases, positive='Depressed')
+acc.ld2 <- confusionMatrix(predict(LDA.2, train), train$cases, positive='Depressed')
+acc.nb  <- confusionMatrix(predict(NB, train), train$cases, positive='Depressed')
+acc.dt  <- confusionMatrix(predict(DT, train), train$cases, positive='Depressed')
+acc.rf  <- confusionMatrix(predict(RF, train), train$cases, positive='Depressed')
+acc.knn <- confusionMatrix(predict(kNN, train), train$cases, positive='Depressed')
+```
+
+Ok so how do extract the accuracy values? Lets see what data is in
+the object created by the `confusionMatrix` function. 
+```{r}
+names(acc.log)
+names(acc.log$overall)
+names(acc.log$byClass)
+```
+
+Now that I've identified that the value for Accuracy is the first element
+in the `$overall` list, I can extract these values and compare them in a 
+tabular format. Furthermore the sensitivity, specificity and other table
+values can be found in the `$byClass` list. 
+
+For berivity sake (and to demonstrate some advanced R programming techniques)
+I create a function `getmetrics` to extract only the values of the performance 
+metrics I am interested in, then apply that function to all models in a list. 
+
+```{r}
+library(foreach)
+model.list <- list(acc.log, acc.ld1, acc.ld2, acc.nb, acc.dt, acc.rf, acc.knn)
+getmetrics <- function(x){
+  y <- x[[1]]
+  metrics <- c(y$overall[1], y$byClass[1:2])
+  return(metrics)
+  }
+
+Metrics <- foreach(i = 1:length(model.list), .combine=rbind) %do% getmetrics(model.list[i])
+rownames(Metrics) <- c("Boosted Logistic Regression", "LDA", "LDA w/stepwise",  
+               "Naieve Bayes", "Decision Tree", "Random Forest", "k-Nearest neighbors")
+```
+
+```{r, echo=FALSE, results='asis'}
+print(xtable(Metrics, digits=3), type='latex')
+```
+
+# Making predictions
+On the hold-out testing data set. 
+
+
+```{r, echo=1}
+confusionMatrix(predict(RF, test), test$cases, positive='Depressed')
+a <- round(confusionMatrix(predict(RF, test), test$cases, positive='Depressed')$overall, 3)
+acc.ci <- paste(a[1], "(", a[3], " ," , a[4], ")", sep="")
+```
+
+The Random Forest model had an accuracy of `r acc.ci` on the testing data set. 
 
 
 **Additional references**
@@ -31,22 +619,18 @@ http://www.r-bloggers.com/in-depth-introduction-to-machine-learning-in-15-hours-
 * http://www.statmethods.net/advstats/discriminant.html
 * http://rstudio-pubs-static.s3.amazonaws.com/35817_2552e05f1d4e4db8ba87b334101a43da.html
 * https://www.youtube.com/watch?v=s8pvp2Ctxfc
-* http://www.r-bloggers.com/computing-and-visualizing-lda-in-r/
+* http://www.r-bloggers.com/in-depth-introduction-to-machine-learning-in-15-hours-of-expert-videos/
+
+http://michael.hahsler.net/SMU/EMIS7332/R/chap5.html
 
 
-# Introduction t
-Discriminant analysis 
-
-
-* Construct a rule to classify individuals into one of two or more groups.
-* Compute probability of belonging to a given group.
-
-
-[[top]](lec06_DimensionReduction.html)
+[[top]](lec10_Classifiers.html)
 
 # On Your Own
 ##### On Your Own
-
+Using the Parental HIV data set, build a predictive model for whether or not a
+student skips class `HOOKEY` using all 6 of the classifying algorithms discussed
+in this set of lecture notes. 
     
     
     

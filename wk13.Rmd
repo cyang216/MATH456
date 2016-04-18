@@ -1,0 +1,27 @@
+---
+title: "Week 13"
+author: "MATH 456, Spring 2016"
+date: " 04/18/16"
+output: html_document
+---
+```{r results="asis", echo=FALSE}
+source("C:/Github/MATH456/stylesheets/custom.R")
+```
+[[Schedule]](Schedule.html) [[Week 12]](wk12.html) [[Week 14]](wk14.html)
+
+## Announcements
+Continuing Student Registration Opens!
+
+
+### Monday & Wednesday
+* Introduction to Classifiers: Logistic regression, linear discriminant analysis, naieve Bayes [[PDF]](notes/lec10_Classifiers.pdf)[[HTML]](notes/lec10_Classifiers.html)
+
+
+### Friday 
+* Practice using classifiers / Project work time
+
+
+## Looking Ahead
+* More classifying algorithms: Decision trees, Random forests, k-nearest neighbors. 
+
+
