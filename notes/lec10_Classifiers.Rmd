@@ -263,11 +263,25 @@ http://topepo.github.io/caret/Logistic_Regression.html
 There are several different algorithms to perform a "flavor" of logistic 
 regression analysis. We are going to use the `LogitBoost` algorithm. 
 
+_Boosting:_ help or encourage, to increase or improve. 
+
+Boosting works on the idea that a set of _weak learners_ (a classifer 
+that is only slightly correlated with the true outcome) can be 
+combined to create a single _strong learner_ (a classifier
+that is strongly correlated with the true outcome). 
+
 > Boosting methods have been originally proposed as ensemble methods,
 > ... which rely on the principle of generating multiple predictions
 > and majority voting (averaging) among the individual classifiers
 > 
 > Citation: https://web.stanford.edu/~hastie/Papers/buehlmann.pdf
+
+Normal Linear Regression minimizes the error function
+$$ E(f) = (y(x) - f(x))^{2}$$
+
+The Boosted Logistic Regression minimizes the logistic loss function
+$$\sum_i log(1+e^{-y_{i}f(x_{i})})$$
+
 
 ```{r, cache=TRUE}
 LogReg <- train(cases ~ . ,
