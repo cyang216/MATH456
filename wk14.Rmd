@@ -1,0 +1,24 @@
+---
+title: "Week 14"
+author: "MATH 456, Spring 2016"
+date: " 04/25/16"
+output: html_document
+---
+```{r results="asis", echo=FALSE}
+source("C:/Github/MATH456/stylesheets/custom.R")
+```
+[[Schedule]](Schedule.html) [[Week 13]](wk13.html) [[Week 15]](wk15.html)
+
+## Announcements
+
+
+### Monday & Wednesday
+* Continuing Classifiers: Decision Trees, Random Forests, k-Nearest Neighbors [[PDF]](notes/lec10_Classifiers.pdf)[[HTML]](notes/lec10_Classifiers.html)
+
+
+### Friday 
+* Practice using classifiers / Project work time
+
+
+## Looking Ahead
+* Missing Data Imputation
