@@ -6,6 +6,7 @@ output:
     highlight: pygments
     theme: spacelab
     toc: yes
+    toc_float: yes
   pdf_document: default
 ---
 ```{r,echo=FALSE, warning=FALSE, message=FALSE}
@@ -16,12 +17,12 @@ opts_chunk$set(warning=FALSE, message=FALSE, fig.height=4, fig.width=4, fig.alig
 ```
 
 ```{r results="asis", echo=FALSE}
-source("~/Github/MATH456/stylesheets/custom.R")
+source("C:/Github/MATH456/stylesheets/custom.R")
 ```
 
 Navbar: [[Home]](../index.html) [[Schedule]](../Schedule.html) [[Data]](../data/Datasets.html) [[Week 13 Overview]](../wk13.html) [[HW Info]](../HW_Info.html)  [[Google Group]](https://groups.google.com/forum/#!forum/csuc_stat)
 
-# Assigned Reading & additional references
+# Assigned Reading
 
 Reading: Afifi Chapter 11. Skim the math, read the rest **carefully**. 
 Skip/skim: 11.9-11.11
@@ -142,7 +143,7 @@ use for all algorithms explored below.
 _Note: The data management code file for the depression data set has been updated. 
 Go download it and update your analysis data file._
 ```{r}
-depress <- read.delim("~/GitHub/MATH456/data/depress_041616.txt")
+depress <- read.delim("C:/GitHub/MATH456/data/depress_041616.txt")
 ```
 
 ## Pre-processing the data
@@ -368,7 +369,7 @@ within each of the depression categories. Specifically you can also output
 the values for the $\beta$ regression coefficients. (_Not all methods
 allow you to extract the values of the coefficients_)
 ```{r, results='asis'}
-print(xtable(coef(LDA.1$finalModel), digits=2), type='latex')
+print(xtable(coef(LDA.1$finalModel), digits=2), type='html')
 ```
 
 
@@ -418,14 +419,11 @@ NB <- train(cases ~ . ,
                 preProc = c("center", "scale"), 
                 metric = "ROC",
                 trControl = ctrl)
+NB
 ```
 
 This model takes slightly longer to fit compared to logistic regression, 
 and at least in this example throws some warnings about zero probabilities
-
-```{r}
-NB
-```
 
 This plot shows you the change in AUC as a function of if the algorithm was
 using a Gaussian or a non-parametric kernel. 
@@ -482,9 +480,6 @@ DT <- train(cases ~ . ,
                 method="rpart", 
                 metric = "ROC",
                 trControl = ctrl)
-```
-
-```{r}
 DT
 ```
 
@@ -524,7 +519,7 @@ plot(varImp(DT))
 ```
 
 This echo's the decision tree plot in that top three primary variables important
-in predicting depression is `r rownames(a$importance)[1:3]`. 
+in predicting depression is `r rownames(varImp(DT)$importance)[1:3]`. 
 
 
 ## Random Forests
@@ -550,11 +545,9 @@ RF <- train(cases ~ . ,
                 method="rf", 
                 metric = "ROC",
                 trControl = ctrl)
-```
-
-```{r, echo=FALSE}
 RF
 ```
+
 
 ```{r, fig.width=6}
 plot(RF)
@@ -652,7 +645,7 @@ rownames(Metrics) <- c("Boosted Logistic Regression", "LDA", "LDA w/stepwise",
 ```
 
 ```{r, echo=FALSE, results='asis'}
-print(xtable(Metrics, digits=3), type='latex')
+print(xtable(Metrics, digits=3), type='html')
 ```
 
 # Making predictions
@@ -678,10 +671,7 @@ The Random Forest model had an accuracy of `r acc.ci` on the testing data set.
 http://michael.hahsler.net/SMU/EMIS7332/R/chap5.html
 
 
-[[top]](lec10_Classifiers.html)
-
 # On Your Own
-##### On Your Own
 Using the Parental HIV data set, build a predictive model for whether or not a
 student skips class `HOOKEY` using all 6 of the classifying algorithms discussed
 in this set of lecture notes. 
