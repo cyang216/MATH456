@@ -2,11 +2,11 @@
 title: 'Lec 09: Assessing Model Performance'
 author: "MATH 456 - Spring 2016"
 output:
+  pdf_document: default
   html_document:
     highlight: pygments
     theme: spacelab
     toc: yes
-  pdf_document: default
 ---
 ```{r,echo=FALSE, warning=FALSE, message=FALSE}
 library(knitr); library(rmarkdown);library(ggplot2)
@@ -16,7 +16,7 @@ opts_chunk$set(warning=FALSE, message=FALSE, fig.width=8, fig.height=5)
 ```
 
 ```{r results="asis", echo=FALSE}
-source("C:/Github/MATH456/stylesheets/custom.R")
+source("~/Github/MATH456/stylesheets/custom.R")
 ```
 
 Navbar: [[Home]](../index.html) [[Schedule]](../Schedule.html) [[Data]](../data/Datasets.html) [[Week 12 Overview]](../wk12.html) [[HW Info]](../HW_Info.html)  [[Google Group]](https://groups.google.com/forum/#!forum/csuc_stat)
@@ -37,7 +37,7 @@ http://www.nature.com/gim/journal/v14/n1/full/gim20115a.html
 
 # Case example: Predicting Depression
 ```{r}
-depress <- read.delim("C:/GitHub/MATH456/data/depress_030816.txt")
+depress <- read.delim("~/GitHub/MATH456/data/depress_030816.txt")
 names(depress) <- tolower(names(depress)) 
 ```
 

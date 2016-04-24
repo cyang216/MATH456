@@ -2,11 +2,11 @@
 title: 'Lec 10: Classifiers'
 author: "MATH 456 - Spring 2016"
 output:
-  pdf_document: default
   html_document:
     highlight: pygments
     theme: spacelab
     toc: yes
+  pdf_document: default
 ---
 ```{r,echo=FALSE, warning=FALSE, message=FALSE}
 library(knitr); library(rmarkdown);library(ggplot2)
@@ -16,7 +16,7 @@ opts_chunk$set(warning=FALSE, message=FALSE, fig.height=4, fig.width=4, fig.alig
 ```
 
 ```{r results="asis", echo=FALSE}
-source("C:/Github/MATH456/stylesheets/custom.R")
+source("~/Github/MATH456/stylesheets/custom.R")
 ```
 
 Navbar: [[Home]](../index.html) [[Schedule]](../Schedule.html) [[Data]](../data/Datasets.html) [[Week 13 Overview]](../wk13.html) [[HW Info]](../HW_Info.html)  [[Google Group]](https://groups.google.com/forum/#!forum/csuc_stat)
@@ -142,7 +142,7 @@ use for all algorithms explored below.
 _Note: The data management code file for the depression data set has been updated. 
 Go download it and update your analysis data file._
 ```{r}
-depress <- read.delim("C:/GitHub/MATH456/data/depress_041616.txt")
+depress <- read.delim("~/GitHub/MATH456/data/depress_041616.txt")
 ```
 
 ## Pre-processing the data
@@ -293,7 +293,7 @@ LogReg <- train(cases ~ . ,
 ```
 
 Easy enough. Now let's look at the results of the model. 
-```{r, echo=FALSE}
+```{r}
 LogReg
 ```
 
@@ -357,7 +357,7 @@ LDA.2 <- train(cases ~ . ,
 
 The results show that both have high sensitivity, low specificity,  with
 AUC values between 0.5 and 0.7. 
-```{r, echo=FALSE}
+```{r}
 LDA.1
 LDA.2
 ```
@@ -423,7 +423,7 @@ NB <- train(cases ~ . ,
 This model takes slightly longer to fit compared to logistic regression, 
 and at least in this example throws some warnings about zero probabilities
 
-```{r, echo=FALSE}
+```{r}
 NB
 ```
 
@@ -467,12 +467,14 @@ by _pruning_ trees back (simplifying the tree).
 * The level of pruning is a tuning parameter (`complexity`)
 * Optimal complexity parameter can be determined by CV. 
 
-
 References & Readings  
-* https://en.wikipedia.org/wiki/Decision_tree_learning 
-* https://rpubs.com/ryankelly/dtrees 
-* http://trevorstephens.com/post/72923766261/titanic-getting-started-with-r-part-3-decision
 
+* https://en.wikipedia.org/wiki/Decision_tree_learning   
+* https://rpubs.com/ryankelly/dtrees  
+* http://trevorstephens.com/post/72923766261/titanic-getting-started-with-r-part-3-decision  
+
+The last article from Trevor Stephens does a _very_ good job explaining and interpreting 
+Decision Trees using the Titanic data. 
 
 ```{r, cache=TRUE}
 DT <- train(cases ~ . ,
@@ -482,19 +484,38 @@ DT <- train(cases ~ . ,
                 trControl = ctrl)
 ```
 
-```{r, echo=FALSE}
+```{r}
 DT
 ```
 
-Visualize the decision tree. 
+Visualize the decision tree.  
+
+_Note: Mac users may have to install X11 as part of installing `rattle`. If you run into
+problems, either come see me or don't use the `rattle` library. Then you'll have to replace
+`fancyRpartPlot` with a simple `plot()`. Another common error during installation that may
+occur will give you the following error: "The program can't start because libatk-1.0.0.dll 
+is missing from your computer. Try reinstalling the program to fix the problem._ 
+Hit "OK" and install gTk2. You may have to restart R.
+
 ```{r, fig.height=8, fig.width=10}
 library(rpart.plot); library(rattle)
 fancyRpartPlot(DT$finalModel, sub="")
 ```
 
-_The progrma can't start because libatk-1.0.0.dll is missing from your computer. 
-Try reinstalling the program to fix the problem._ Hit "OK" and install gTk2. 
-You may have to restart R.
+The boxes show several pieces of information:
+
+* The name at the top is the predicted class for all observations in that node. 
+* There are two colors to the plot: Blue for one group and Green for the other. The level
+  of color intensity is a measure of the node "purity". A pure node is one that contains all
+  observations of one class
+* The percentages in the third row show the proportion of observations in each class. 
+* The bottom percentage is how many observations are in this node. 
+
+Below each node is the splitting criteria. This is where having proper variable names and
+factor levels makes this plot easier to read. 
+
+This tree is grown to a certain length, one that balances node purity and model complexity. 
+The larger/deeper/more complex the tree, the higher chance you will overfit the data. 
 
 Tree based models also provide a measure on the importance of each candidate
 variable. These can be visualized using a **Variable Importance Plot**.
@@ -503,16 +524,24 @@ plot(varImp(DT))
 ```
 
 This echo's the decision tree plot in that top three primary variables important
-in predicting depression is the number of days spent in bed, the level of 
-general health, and employment status (specifically if they're unemployed)
+in predicting depression is `r rownames(a$importance)[1:3]`. 
 
 
 ## Random Forests
-<span style="color:red">explain this model</span>
 
-A random forest grows a large number of decision trees in order to improve
-classification rate. 
+* Grow a lot of decision trees, each more complex/deeper than above. 
+* Add a randomness component to ensure each tree grown is different. 
+    - Randomly sample with replacement a certiain % of observations  (Bootstrapping)
+    - Randomly sample a smaller group (usually $\sqrt(p)$) of candidate variables. 
+* Average the outcomes across groups. Also called voting majority or Aggregation
 
+FYI: Bootstrapping + Aggregation == Bagging. 
+
+A bonus feature of bagging is that the sample of records that were not chosen to
+build the tree on (called the Out of Bag (OOB) sample) acts as a testing data 
+sample to assess how well each tree is performing. 
+
+**Additional Reading**
 http://trevorstephens.com/post/73770963794/titanic-getting-started-with-r-part-5-random
 
 ```{r, cache=TRUE}
@@ -532,10 +561,25 @@ plot(RF)
 plot(varImp(RF))
 ```
 
-
 ## k-nearest neighbors
-<span style="color:red">explain this model</span>
 
+* Calculate the euclidean distance between a point with unknown class 
+  and every other point with known class membership. 
+* Using a majority vote, assign the class label to the unknown point based on a 
+  majority vote of the $k$ nearest neighbors. 
+
+PROS
+* Unbiased
+* Easy to understand
+* Non-parametric
+
+CONS
+* Too simple
+
+**Additional Reading**
+
+* https://www.datacamp.com/community/tutorials/machine-learning-in-r
+* http://www.analyticsvidhya.com/blog/2015/08/learning-concept-knn-algorithms-programming/
 
 ```{r, cache=TRUE}
 kNN <- train(cases ~ . ,
@@ -543,10 +587,6 @@ kNN <- train(cases ~ . ,
                 method="knn", 
                 metric = "ROC",
                 trControl = ctrl)
-```
-
-
-```{r, echo=FALSE}
 kNN
 ```
 
