@@ -1,0 +1,169 @@
+---
+title: 'Categorical Data Analysis'
+author: "MATH 456 - Spring 2016 Solutions"
+output:
+  html_document:
+    highlight: pygments
+    theme: spacelab
+  pdf_document: default
+---
+```{r,echo=FALSE, warning=FALSE, message=FALSE}
+library(knitr); library(rmarkdown);library(ggplot2)
+library(xtable); library(dplyr)
+options(xtable.comment = FALSE)
+opts_chunk$set(warning=FALSE, message=FALSE, fig.height=4, fig.width=5, fig.align='center') 
+```
+
+```{r results="asis", echo=FALSE}
+source("C:/Github/MATH456/stylesheets/solutions.R")
+```
+
+# Two-sample test for the difference in proportions
+**1. Using a two-sample t-test for proportions on the student `survey` data set
+   contained in the `MASS` library, test if males smoke more than females.**
+  
+```{r}
+library(MASS)
+survey$yessmoker <- ifelse(survey$Smoke !="Never", 1, 0)
+t.test(yessmoker ~ Sex , data=survey, alternative = "less")
+```
+
+In this sample 23.9% of males smoke compared to 16.1% of females. This difference is marginally 
+statistically significantly different (p=.07). 
+
+# Risk Ratios
+**2. Anti-tumor necrosis factor $\alpha$ (TNF$\alpha$) drugs are a class of drugs
+   that are commonly used to treat inflammatory conditions such as arthritis. 
+   However, these drugs tend to be associated with an increased risk of 
+   infectious complications. 
+   [Bergstrom, et al (2004)](http://onlinelibrary.wiley.com/doi/10.1002/art.20454/abstract) 
+   conducted a study to test the hypothesis that patients on these drugs 
+   are at increased risk for coccidiomycosis (a fungal pneumonia). Calculate 
+   and interpret the RR with 95% confidence interval.  Here are the tabular results.**
+```{r, results='asis'}
+tnf <- matrix(c(7, 240, 4, 734), nrow=2, byrow=TRUE,  
+          dimnames = list(c("TNF", "Other"), c("COC", "No COC")))
+print(xtable(tnf, align='ccc', digits=0), type='html')
+``` 
+
+```{r}
+library(epiR)
+epi.2by2(tnf)
+```
+
+Patients on the TNF$\alpha$ class of drugs have 5.23 (1.54, 17.71) times the risk of 
+contracting coccidiomycosis compared to patients on other drugs. 
+
+
+# Goodness of Fit. 
+**3. Using the provided bag of M&M's, test the hypothesis that the color 
+   distribution has not changed since reported in 2008.**
+   
+   Solutions are posted at http://norcalbiostat.github.io/MATH456/notes/solutions/MnM_Experiment_S16_Solutions.html
+    
+# Test of Independence 
+**4. In July 2008 the US National Institutes of 
+   Health announced that it was stopping a clinical study early because of 
+   unexpected results. The study population consisted of HIV-infected women 
+   in sub-Saharan Africa who had been given single dose Nevaripine (a 
+   treatment for HIV) while giving birth, to prevent transmission of HIV to 
+   the infant.  The study was a randomized comparison of continued treatment 
+   of a woman (after successful childbirth) with Nevaripine vs. Lopinavir, 
+   a second drug used to treat HIV. 240 women participated in the study; 
+   120 were randomized to each of the two treatments. Twenty-four weeks after 
+   starting the study treatment, each woman was tested to determine if the HIV 
+   infection was becoming worse (an outcome called **virologic failure**). 
+   Twenty-six of the 120 women treated with Nevaripine experienced virologic failure, 
+   while 10 of the 120 women treated with the other drug experienced virologic failure.
+   _(Lockman 2007)_**
+   
+   
+  **a. Create a two-way table presenting the results of this study. Include both margins.**
+    
+```{r, results='asis'}
+hiv <- matrix(c(26, 94, 120, 10, 110, 120, 36, 204, 240), nrow=3, byrow=T,  
+       dimnames = list(c("Nevaripine", "Lopinavir", "Total"), c("Yes", "No", "Total")))
+print(xtable(hiv, align='cccc'), type='html')
+```
+
+  **b. State appropriate hypotheses to test for independence of treatment and virologic failure.**
+
+$H_0: p_N = p_L$. There is no difference in virologic failure rates between the Nevaripine and Lopinavir groups.  
+$H_A: p_N \ne p_L$. There is some difference in virologic failure rates between the Nevaripine and Lopinavir groups.
+
+ **c. Complete the hypothesis test and state an appropriate conclusion.
+      (Reminder: verify any necessary conditions for the test.)**
+   
+Random assignment was used, so the observations in each group are independent. If the patients in the study are representative of those in the general population (something impossible to check with the given information), then we can also confidently generalize the findings to the population. 
+```{r}
+# pooled.p.hat
+(26+10)/(120+120)
+```
+The success-failure condition, which we would check using the pooled proportion ($\hat{p} = 36/240 = 0.15$), is satisfied. We can then conduct a test of two proportions using summary data via the `prop.test()` function. 
+```{r}
+prop.test(x=c(26,10), n=c(120, 120), alternative="two.sided")
+```
+The $\chi^{2}$ test statistic is 7.35, with 1 degree of freedom results in a p-value of $=0.0067$. Since the p-value is low, we reject $H_0$. There is strong evidence of a difference in virologic failure rates between the Nevaripine and Lopinavir groups do not appear to be independent.
+
+
+# Interpreting tables and identifying independence or homogeneity
+**5. A 2010 survey asked 827 randomly sampled registered voters in California 
+   _"Do you support? Or do you oppose? Drilling for oil and natural gas off
+   the Coast of California? Or do you not know enough to say?"_ Below is the
+   distribution of responses, separated based on whether or not the respondent
+   graduated from college.**
+```{r, results='asis'}
+oil <- matrix(c(154, 132, 180, 126, 104, 131), nrow=3, byrow=T,  
+       dimnames = list(c("Support", "Oppose", "Do not know"), c("Grad", "Non-Grad")))
+print(xtable(addmargins(oil), align='cccc', digits=0), type='html')
+```
+  **a. What percent of college graduates and what percent of the non-college
+     graduates in this sample do not know enough to have an opinion on
+     drilling for oil and natural gas off the Coast of California?**
+  
+```{r}
+prop.table(oil, 2)
+```
+23.7% (104/438) of college graduates and  33.7% (131/389) of the non-college
+     graduates in this sample reported not knowing enough to form an opinion on the matter. 
+     
+  **b. Create an appropriate graphic to compare the distribution of 
+     opinions within college graduates and non-graduates.**
+```{r}
+mosaicplot(oil, shade=TRUE)
+```
+There is little reason to believe that the distribution of opinions within
+college graduates differs from that of graduates. The standardized residuals
+for each cell are within 2 standard deviations of the mean. 
+
+  **c. Is this a test of homogeneity or independence? Justify your answer.**
+
+This is a test of homogeneity since we are interested in identifying if the proportion of
+support, opposition, or unawareness is similar between the graduate and non-graduate groups
+of respondents. 
+
+# Odds Ratios
+**6. Consider only those participants who have an opinion on off shore drilling. 
+   Calculate the Odds Ratio for opposing off shore drilling for college grads
+   compared to non-grads. Include a 99% confidence interval and interpret the 
+   results in context of the problem.**
+
+Since the "positive" outcome is opposing off shore drilling, we have to rebuild the
+matrix so that the `epi.2by2` function understands the direction of interest. 
+Also, the rows and columns have to be swapped from how it is displayed above because
+graduate studies would be considered the "exposure", and support or opposition is the 
+"exposure". 
+```{r}
+opinion <- matrix(c(180, 126, 154, 132), nrow=2, byrow=T, dimnames = list(c("Grad", "Non-Grad"), c("Oppose", "Support")))
+opinion
+```
+Now I can load the `epiR` library and calculate the OR and 99 %CI. 
+```{r}
+epi.2by2(opinion, conf.level = .99)
+```
+
+The odds of a graduate student opposing offshore drilling is 1.22 (0.80, 1.88)
+times the odds for a non-graduate student. 
+				
+    
+    
