@@ -1,0 +1,16 @@
+base
+knitr
+rmarkdown
+ggplot2
+xtable
+dplyr
+lattice
+caret
+car
+caTools
+MASS
+klaR
+rpart
+rpart.plot
+rattle
+randomForest
