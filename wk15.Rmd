@@ -1,0 +1,30 @@
+---
+title: "Week 15"
+author: "MATH 456, Spring 2016"
+date: ' 05/2/16'
+output: html_document
+---
+```{r results="asis", echo=FALSE}
+source("C:/Github/MATH456/stylesheets/custom.R")
+```
+[[Schedule]](Schedule.html) [[Week 14]](wk14.html) [[Week 16]](wk16.html)
+
+## Announcements
+
+Peer Review of Project due EOD Monday
+
+## Notes and Code
+[[PDF]](notes/lec11_MissingData.pdf)[[HTML]](notes/lec11_MissingData.html)
+
+### Monday
+Introduction to Missing Data: Terminology and problems
+
+### Wednesday
+General strategies for handling missing data
+
+
+### Friday 
+Imputation methods in using R [Notes will be finished by then]
+
+## Looking Ahead
+* Final Exam
