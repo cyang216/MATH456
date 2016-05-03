@@ -1,6 +1,9 @@
 ---
 title: 'Lec 11: Missing Data'
 author: "MATH 456 - Spring 2016"
+header-includes:
+   - \usepackage{tikz}
+   - \usepackage{pgfplots}
 output:
   html_document:
     highlight: pygments
@@ -10,8 +13,7 @@ output:
   pdf_document: default
 ---
 ```{r,echo=FALSE, warning=FALSE, message=FALSE}
-library(knitr); library(rmarkdown);library(ggplot2)
-library(xtable); library(dplyr); library(gridExtra)
+library(xtable); library(rmarkdown); library(knitr)
 options(xtable.comment = FALSE)
 opts_chunk$set(warning=FALSE, message=FALSE, fig.height=4, fig.width=4, fig.align='center') 
 ```
@@ -33,6 +35,33 @@ source("C:/Github/MATH456/stylesheets/custom.R")
   Annual Review of Public Health, 2007, 28:95–111
   http://arjournals.annualreviews.org/doi/pdf/10.1146/annurev.publhealth.28.082206.094100
 * http://www.analyticsvidhya.com/blog/2016/03/tutorial-powerful-packages-imputing-missing-values/ 
+* http://www.r-bloggers.com/imputing-missing-data-with-r-mice-package/
+
+## Packages used in this lecture
+The following packages can be used to create (`missForest`), visualize(`VIM`) and 
+impute (`mice`) missing data. 
+
+* VIM `install.packages("VIM")` 
+* MICE `install.packages("mice")` 
+* missForest `install.packages("missForest")` 
+
+```{r, results='hide'}
+lib <- c("VIM", "mice", "missForest", "ggplot2","scales", "lattice")
+invisible(lapply(lib, library, character.only=T))
+```
+
+A more in-depth tutorial on these packages can be found at 
+http://www.analyticsvidhya.com/blog/2016/03/tutorial-powerful-packages-imputing-missing-values/
+
+<span style ="color:red">**dplyr warning!**</span> Many of the packages used here
+contain functions that are also contained in `dpyr`. If you want to use functions 
+from the `dplyr` package in the same script fill you need to specify which function
+comes from which package. 
+* Packages load in order that they were called
+  * If you load MASS and then dplyr, when you call `select` it will use the version from `dplyr`.
+  * If you load dplyr and then MASS, when you call `select` it will use the version from `MASS`.
+* Avoid this by calling specifically `MASS::select` or `dplyr::select` when using these functions. 
+
 
 # Terminology
 
@@ -40,7 +69,9 @@ source("C:/Github/MATH456/stylesheets/custom.R")
 * Unit non-response: Records have some background data on all units, but some units don’t respond to any question. 
 * Monotonone missing data: Variables can be ordered such that one block of variables more observed than the next. 
 
-## Recap: Identifying Item non-response
+# Identifying missing data
+
+#### Recap on NA's
 
 * Missing data in `R` is denoted as `NA`
 * Arithmetic functions on missing data will return missing
@@ -65,6 +96,74 @@ The function `table()` will not show NA by default.
 table(survey$M.I)
 table(survey$M.I, useNA="always")
 ```
+
+#### What percent of the data set is missing? 
+```{r}
+round(prop.table(table(is.na(survey)))*100,1)
+```
+
+4% of the data points are missing. 
+
+#### How much missing is there per variable? 
+```{r}
+prop.miss <- apply(survey, 2, function(x) round(sum(is.na(x))/NROW(x),4))
+prop.miss
+```
+
+The amount of missing data per variable varies from 0 to 19%. 
+
+#### Can we visualize this? 
+
+* Using `ggplot2`
+```{r, fig.width=6}
+pmpv <- data.frame(variable = names(survey), pct.miss =prop.miss)
+
+ggplot(pmpv, aes(x=variable, y=pct.miss)) +
+  geom_bar(stat="identity") + ylab("Percent") + scale_y_continuous(labels=percent, limits=c(0,1)) + 
+  geom_text(data=pmpv, aes(label=paste0(round(pct.miss*100,1),"%"), y=pct.miss+.025), size=4)
+```
+
+Using `mice`
+```{r}
+md.pattern(survey)
+```
+
+This somewhat ugly output tells us that 168 records have no missing data, 
+38 records are missing only `Pulse` and 20 are missing both `Height` and 
+`M.I`. 
+
+Or using the `VIM` package: 
+```{r, fig.width=8, fig.height=4, results='hide'}
+aggr(survey, col=c('chartreuse3','mediumvioletred'),
+              numbers=TRUE, sortVars=TRUE,
+              labels=names(survey), cex.axis=.7,
+              gap=3, ylab=c("Missing data","Pattern"))
+```
+
+The plot on the left is a simplified, and ordered version of the ggplot from
+above, except the bars appear to be inflated because the y-axis goes up to 
+15% instead of 100%. 
+
+The plot on the right shows the missing data patterns, and indiate that 71%
+of the records has complete cases, and that everyone who is missing `M.I.`
+is also missing Height. 
+
+Another plot that can be helpful to identify patterns of missing data is 
+a margin plot. 
+
+* Two continuous variables are plotted against each other.  
+* Blue bivariate scatterplot and univariate boxplots are for the 
+observations where values on both variables are observed.  
+* Red univariate dotplots and boxplots are drawn for the data that is only 
+  observed on one of the two variables in question.  
+* The darkred text indicates how many records are missing on both. 
+```{r}
+marginplot(survey[,c(6,10)])
+```
+
+This shows us that the obserations missing pulse have the same median
+height, but those missing height have a higher median pulse rate. 
+
 
 
 ## Effects of Nonresponse
@@ -118,18 +217,18 @@ Process by which some units observed, some units not observed
 * Missing at Random (MAR): The probability that a data point is missing is independent
   can be explained or modeled by other observed variables. 
     - P(Y missing|x, Y) = P(Y missing | X)
-    - Ex: Y = age, X = sex
-		    - Pr (Y miss| X = male) = 0.2
-		    - Pr (Y miss| X = female) = 0.3
-		    - Older people are less likely to fill out an income survey, so the missing data on
-      income is related to age. After accounting for age the missing data
-      is unrelated to income. 
+    - Ex: Y = age, X = sex  
+		    - Pr (Y miss| X = male) = 0.2  
+		    - Pr (Y miss| X = female) = 0.3  
+		    - Males people are less likely to fill out an income survey
+		    - The missing data on income is related to gender 
+		    - After accounting for gender the missing data is unrelated to income.   
 * Not missing at Random (NMAR): The probability that a data point is missing depends
-  on the value of the variable in question. 
-    - P(Y missing | X, Y) = P (Y missing|X, Y)
-    - Ex: Y = income, X = immigration status
-        - Richer person may be less willing to disclose income
-        - Illegal immigrant may be less willing to disclose income
+  on the value of the variable in question.   
+    - P(Y missing | X, Y) = P (Y missing|X, Y)  
+    - Ex: Y = income, X = immigration status  
+        - Richer person may be less willing to disclose income  
+        - Illegal immigrant may be less willing to disclose income  
 
 
  Does it matter to inferences?  <span style ="color:red">**Yes!**</span>
@@ -222,7 +321,7 @@ compound only can detect levels above 10.
 ```{r}
 z <- rnorm(100, 10, 1)
 y <- z
-y[y>10] <- NA
+y[y<10] <- NA
 mean(y, na.rm=TRUE)
 ```
 
@@ -248,7 +347,7 @@ What can we learn from evidence in the data set at hand?
     * Example: Response more likely in one geographic area than another
       by chi-square test
 * No evidence in data set to rule out MAR (although there may be evidence
-  from an external data source that bears on this
+  from an external data source)
   
 ## What is plausible?
 
@@ -423,35 +522,54 @@ Read more about this here: https://support.sas.com/documentation/cdl/en/statug/6
 
 Imputation methods for complex survey data and data not missing at random is an open research topic. 
 
-# Imputation Methods in R
+# Multiple Imputation using Chained Equations (MICE)
 
-## Packages 
-We will go through a few new R packages that will help
-intelligently impute missing data. Install all of them
-sooner rather than later. We will use some of the functions 
-(such as `prodNA`) to more easily generate missing values 
-in a data frame.
+* Generates multiple imputations for incomplete multivariate data by Gibbs sampling. 
+* Missing data can occur anywhere in the data. 
+* Impute an incomplete column by generating 'plausible' synthetic values 
+  given other columns in the data. 
+* For predictors that are incomplete themselves, the most recently generated 
+  imputations are used to complete the predictors prior to imputation of the 
+  target column.
+* A separate univariate imputation model can be specified for each column. 
+* The default imputation method depends on the measurement level of the target column. 
 
-Most of the following demonstrations come directly from the
-following tutorial: 
-http://www.analyticsvidhya.com/blog/2016/03/tutorial-powerful-packages-imputing-missing-values/
 
-* VIM `install.packages("VIM")` 
-* HMISC `install.packages("Hmisc")` 
-* Amelia `install.packages("Amelia")`
-* MICE `install.packages("mice")` 
-* missForest `install.packages("missForest")` 
+Consider a data matrix with 3 variables $y_{1}$, $y_{2}$, $y_{3}$, each with missing values. 
+At iteration $(\ell)$:
 
-```{r, results='hide'}
-lib <- c("VIM", "Hmisc", "Amelia", "mice", "missForest")
-invisible(lapply(lib, library, character.only=T))
-```
+1. Fit a model on $y_{1}^{(\ell-1)}$ using current values of $y_{2}^{(\ell-1)}, y_{3}^{(\ell-1)}$ 
+2. Impute missing $y_{1}$, generating $y_{1}^{(\ell)}$ 
+3. Fit a model on $y_{2}^{(\ell-1)}$ using current versions of $y_{1}^{(\ell)}, y_{3}^{(\ell-1)}$ 
+4. Impute missing  $y_{2}$, generating $y_{2}^{(\ell)}$ 
+5. Fit a model on $y_{3}$ using current versions of $y_{1}^{(\ell)}, y_{2}^{(\ell)}$ 
+6. Impute missing  $y_{3}$, generating $y_{3}^{(\ell)}$ 
+7. Start next cycle using updated values $y_{1}^{(\ell)}, y_{2}^{(\ell)}, y_{3}^{(\ell)}$
 
-#### **Data Example: Iris data**
-Let's use the `iris` training data to compare imputation methods. 
-Set a seed and use the `prodNA()` function from the `missForest`
-package to create 10% missing values in this data set. 
 
+  
+(Select) Built-in elementary imputation methods are:
+
+* _pmm_: Predictive mean matching (any) **DEFAULT FOR NUMERIC**
+* _norm.nob_: Linear regression ignoring model error (numeric)
+* _norm.boot_: Linear regression using bootstrap (numeric)
+* _norm.predict_: Linear regression, predicted values (numeric)
+* _mean_: Unconditional mean imputation (numeric)
+* _logreg_: Logistic regression (factor, 2 levels) **DEFAULT**
+* _logreg.boot_: Logistic regression with bootstrap
+* _polyreg_: Polytomous logistic regression (factor, >= 2 levels) **DEFAULT**
+* _lda_: Linear discriminant analysis (factor, >= 2 categories)
+* _cart_: Classification and regression trees (any)
+* _rf_: Random forest imputations (any)
+
+
+## Example: Prescribed amount of missing. 
+We will demonstrate using the Iris data set after we make a certain % of the 
+data missing. This allows us to be able to  estimate the bias incurred by 
+using these imputation methods.
+
+For the `iris` data we set a seed and use the `prodNA()` function from the 
+`missForest` package to create 10% missing values in this data set. 
 ```{r}
 iris <- iris
 prop.table(table(is.na(iris)))
@@ -460,13 +578,67 @@ iris.mis <- prodNA(iris, noNA=0.1)
 prop.table(table(is.na(iris.mis)))
 ```
 
-## Hmisc
+#### Multiply impute the missing data using `mice()`
+```{r}
+imp_iris <- mice(iris.mis, m=5, meth="pmm", seed=500, printFlag=FALSE)
+summary(imp_iris)
+```
 
-## missForest
+* The `meth`od can be either a single string, or a vector of strings with length `ncol(data)`
+    - specifying the elementary imputation method to be used for each column in data. 
+    - If specified as a single string, the same method will be used for all columns. 
+    - Columns that need not be imputed have the empty method ''
+* `printFlag`: Use print=FALSE for silent computation.
 
-## MICE
+#### Check the imputation method used on each variable.
+```{r}
+imp_iris$meth
+```
 
-## AMELIA
+#### Look at the values generated for imputation
+This just shows what values were imputed for this variable at each imputation. 
+```{r}
+imp_iris$imp$Sepal.Length
+```
+
+#### Create a complete data set by filling in the missing data using the imputations
+```{r}
+iris_1 <- complete(imp_iris, action=1)
+```
+If action is a scalar between 1 and x$m, the function returns the data with imputation number action filled in. Thus, action=1 returns the first completed data set, action=2 returns the second completed data set, and so on
+
+##### Alternative - Stack the imputed data sets in _long_ format.
+```{r}
+iris_long <- complete(imp_iris, 'long')
+```
+
+By looking at the `names` of this new object we can confirm that there are indeed
+5 complete data sets with $n=150$ in each. 
+
+```{r}
+names(iris_long)
+table(iris_long$.imp)
+```
+
+## Visualize Imputations
+Let's compare the imputed values to the observed values to see if they are indeed "plausible"
+We want to see that the distribution of of the magenta points (imputed) matches the distribution of the blue ones (observed). 
+
+#### Univariately
+```{r}
+densityplot(imp_iris)
+```
+or
+```{r}
+stripplot(imp_iris, pch=16)
+```
+
+#### Multivariately 
+```{r, fig.width=6, fig.height=6}
+xyplot(imp_iris, Sepal.Length ~ Sepal.Width + Petal.Length + Petal.Width | Species ,pch=16)
+```
+
+## Conduct an analysis and pool results. 
 
 
 # Final thoughts
