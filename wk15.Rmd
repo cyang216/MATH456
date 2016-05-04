@@ -14,17 +14,16 @@ source("C:/Github/MATH456/stylesheets/custom.R")
 Peer Review of Project due EOD Monday
 
 ## Notes and Code
-[[PDF]](notes/lec11_MissingData.pdf)[[HTML]](notes/lec11_MissingData.html)
+Lecture 11: Missing Data [[PDF]](notes/lec11_MissingData.pdf)[[HTML]](notes/lec11_MissingData.html)
 
 ### Monday
 Introduction to Missing Data: Terminology and problems
 
 ### Wednesday
-General strategies for handling missing data
-
+Multiple Imputation using Chained Equations
 
 ### Friday 
-Imputation methods in using R [Notes will be finished by then]
+Classwork
 
 ## Looking Ahead
 * Final Exam
