@@ -1,16 +1,13 @@
 ---
 title: 'Lec 11: Missing Data'
 author: "MATH 456 - Spring 2016"
-header-includes:
-   - \usepackage{tikz}
-   - \usepackage{pgfplots}
 output:
+  pdf_document: default
   html_document:
     highlight: pygments
     theme: spacelab
     toc: yes
     toc_float: yes
-  pdf_document: default
 ---
 ```{r,echo=FALSE, warning=FALSE, message=FALSE}
 library(xtable); library(rmarkdown); library(knitr)
@@ -21,6 +18,8 @@ opts_chunk$set(warning=FALSE, message=FALSE, fig.height=4, fig.width=4, fig.alig
 ```{r results="asis", echo=FALSE}
 source("C:/Github/MATH456/stylesheets/custom.R")
 ```
+
+[[Schedule]](../Schedule.html) [[Week 15]](../wk15.html)
 
 # Reading & References
 
@@ -146,7 +145,7 @@ The plot on the left is a simplified, and ordered version of the ggplot from
 above, except the bars appear to be inflated because the y-axis goes up to 
 15% instead of 100%. 
 
-The plot on the right shows the missing data patterns, and indiate that 71%
+The plot on the right shows the missing data patterns, and indicate that 71%
 of the records has complete cases, and that everyone who is missing `M.I.`
 is also missing Height. 
 
@@ -163,7 +162,7 @@ observations where values on both variables are observed.
 marginplot(survey[,c(6,10)])
 ```
 
-This shows us that the obserations missing pulse have the same median
+This shows us that the observations missing pulse have the same median
 height, but those missing height have a higher median pulse rate. 
 
 
@@ -567,7 +566,7 @@ At iteration $(\ell)$:
 
 #### Example: Prescribed amount of missing.
 We will demonstrate using Fisher's Iris data (pre-built in with R) 
-where we can artifically create a prespecified percent of the 
+where we can artificially create a prespecified percent of the 
 data missing. This allows us to be able to  estimate the bias incurred by 
 using these imputation methods.
 
@@ -612,7 +611,7 @@ iris_1 <- complete(imp_iris, action=1)
 ```
 Action=1 returns the first completed data set, action=2 returns the second completed data set, and so on. 
 
-##### Alternative - Stack the imputed data sets in _long_ format.
+#### Alternative - Stack the imputed data sets in _long_ format.
 ```{r}
 iris_long <- complete(imp_iris, 'long')
 ```
@@ -640,7 +639,7 @@ xyplot(imp_iris, Sepal.Length ~ Sepal.Width + Petal.Length + Petal.Width | Speci
 ```
 
 ## Analyze and pool
-Conduct an analysis and pool results. 
+All of this imputation was done so we could actually perform an analysis! 
 
 Let's run a simple linear regression on `Sepal.Length` as a function of `Sepal.Width`, 
 `Petal.Length` and `Species`.
@@ -672,12 +671,12 @@ The iris data set had no missing data to begin with. So we can calculate the
 ```{r}
 true.model <- lm(Sepal.Length ~ Sepal.Width + Petal.Length + Species, data=iris)
 ```
-and find the differnce in coefficients. 
+and find the difference in coefficients. 
 
 The variance of the multiply imputed estimates is larger because of the
 between-imputation variance. 
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, fig.width=10}
 library(forestplot)
 te.mean <- summary(true.model)$coefficients[,1]
 mi.mean <- summary(pool(model))[,1]
@@ -746,17 +745,24 @@ So I will leave you with some final thoughts.
    Does the effect of MCAR on the bias differ for the different distributions? 
 2. Repeat #1 but set the missing data mechanism to b NMAR, where $p$ is 
    negatively correlated with the data. 
-
-Afifi 9.18. For the variables describing the average number of cigarettes 
-smoked during the past 3 months (`SMOKEP3M`) and the variable describing
-the mother's education (`EDUMO`) in the Parental HIV data:
-
-3. Determine the percent of missing data per variable, and combined 
-   (records with at least one of these variables missing)
-4. For each variable describe a hypothetical scenario which might 
-   have led to these values being  
-    a. missing completely at random
-    b. missing at random but not completely at random
-    c. neither missing completely at random nor missing at random. 
-        
+3. Using the Parental HIV data set, consider **only** the following variables:
+    `Age`, `Gender`, `livwith`, `BSI_overall`, `Frnds`, and `Hookey`. 
+    a. What percent of the data set overall is missing? 
+    b. How much missing data is there per variables?
+    c. Describe the missing data pattern. (_Hint: Use `aggr` from the `VIM` package for part b and c)
+    d. Describe the relationship of missing data between Age and BSI overall. 
+4. Multiply impute this data set $m=5$ times. 
+    a. State the imputation models used for each variable.
+5. After controlling for age, who the student lives with, their overall friendships, and
+   overall BSI score, what is the effect of gender on the likelihood a student will skip
+   school? (I.e. Fit a logistic regression model using `hookey` as the outcome and 
+   all other covariates as predictors. Calculate the OR and 95% CI for the effect of gender)
+      a. Fit this model on the complete cases (no imputation).
+      b. Fit this model on the multiply imputed data sets and pool the results. 
+      c. Compare these two intervals. Which one is wider? Why? 
+      d. Discuss the amount of information lost (in terms of sample size and varance) 
+         using the complete case method. 
+   
+   
+   
          
