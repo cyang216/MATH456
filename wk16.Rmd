@@ -1,0 +1,28 @@
+---
+title: "Week 16"
+author: "MATH 456, Spring 2016"
+date: ' 05/09/16'
+output: html_document
+---
+```{r results="asis", echo=FALSE}
+source("C:/Github/MATH456/stylesheets/custom.R")
+```
+[[Schedule]](Schedule.html) [[Week 15]](wk15.html)
+
+## Announcements
+
+
+### Monday
+
+* Open work time
+* Quiz on Missing data - Due 12 noon
+
+### Wednesday
+Exam review
+
+### Friday 
+In class portion of the Final exam
+
+## Looking Ahead
+* Final project due 5/18/16 EOD
+* Take home portion of the Final exam due 5/20/16 EOD
