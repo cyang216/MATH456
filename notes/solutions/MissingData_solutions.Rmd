@@ -13,12 +13,6 @@ options(xtable.comment = FALSE)
 opts_chunk$set(warning=FALSE, message=FALSE, fig.height=4, fig.width=4, fig.align='center') 
 ```
 
-```{r results="asis", echo=FALSE}
-source("C:/Github/MATH456/stylesheets/custom.R")
-```
-
-Navbar: [[Home]](../index.html) [[Schedule]](../Schedule.html) [[Data]](../data/Datasets.html) [[Week 15 Overview]](../wk15.html) [[HW Info]](../HW_Info.html)  [[Google Group]](https://groups.google.com/forum/#!forum/csuc_stat)
-
 ```{r}
 lib <- c("VIM", "xtable", "dplyr", "mice", "missForest", "ggplot2","scales", "lattice")
 invisible(lapply(lib, library, character.only=T))

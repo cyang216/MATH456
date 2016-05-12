@@ -13,10 +13,6 @@ hiv <- read.delim("C:/GitHub/MATH456/data/PARHIV_022216.txt")
 opts_chunk$set(warning=FALSE, message=FALSE, fig.align='center') 
 ```
 
-```{r results="asis", echo=FALSE}
-source("C:/Github/MATH456/stylesheets/custom.R")
-```
-
 **1. For the lung function data, use an automated selection process to predict
    FEV1 for the oldest child using age, height, weight and FVC as candidate
    variables. State and justify the method and criteria you chose.**

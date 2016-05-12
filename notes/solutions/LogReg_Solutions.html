@@ -141,11 +141,6 @@ $(document).ready(function () {
 
 </div>
 
-<div id="TOC">
-<ul>
-<li><a href="#on-your-own">On Your Own</a></li>
-</ul>
-</div>
 
 <style>
 h1 {
@@ -205,10 +200,9 @@ border: 1px solid black;}
 
 
 </style>
-<p>Navbar: <a href="../index.html">[Home]</a> <a href="../Schedule.html">[Schedule]</a> <a href="../data/Datasets.html">[Data]</a> <a href="../wk11.html">[Week 11 Overview]</a> <a href="../HW_Info.html">[HW Info]</a> <a href="https://groups.google.com/forum/#!forum/csuc_stat">[Google Group]</a></p>
 <div id="on-your-own" class="section level1">
 <h1>On Your Own</h1>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">depress &lt;-<span class="st"> </span><span class="kw">read.delim</span>(<span class="st">&quot;~/GitHub/MATH456/data/depress_030816.txt&quot;</span>)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">depress &lt;-<span class="st"> </span><span class="kw">read.delim</span>(<span class="st">&quot;C:/GitHub/MATH456/data/depress_030816.txt&quot;</span>)
 <span class="kw">names</span>(depress) &lt;-<span class="st"> </span><span class="kw">tolower</span>(<span class="kw">names</span>(depress)) <span class="co"># make all variable names lower case. </span>
 depress$sex &lt;-<span class="st"> </span>depress$sex -<span class="dv">1</span> <span class="co"># Refactor to match book table.</span></code></pre></div>
 <div id="on-your-own-1" class="section level5">
@@ -521,7 +515,7 @@ cesd:sex
 <ol start="3" style="list-style-type: decimal">
 <li><strong>Afifi 12.14: Define low FEV1 to be an FEV1 measurement below the median FEV1 of the fathers in the family lung function data set.</strong></li>
 </ol>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">lung &lt;-<span class="st"> </span><span class="kw">read.delim</span>(<span class="st">&quot;~/GitHub/MATH456/data/Lung_020716.txt&quot;</span>)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">lung &lt;-<span class="st"> </span><span class="kw">read.delim</span>(<span class="st">&quot;c:/GitHub/MATH456/data/Lung_020716.txt&quot;</span>)
 <span class="kw">names</span>(lung) &lt;-<span class="st"> </span><span class="kw">tolower</span>(<span class="kw">names</span>(lung))
 <span class="kw">table</span>(<span class="kw">is.na</span>(lung$ffev1)) <span class="co"># check for missing</span></code></pre></div>
 <pre><code>## 
@@ -734,7 +728,7 @@ fage
 </tr>
 </table>
 <p>The only variables that are predictive of identifying if someone lives in the valley (not “The” valley) is the age of the parents.</p>
-<p>The stepwise procedure selects mother’s and father’s age in the model of valley. Neither the number of children, nor either parents FEV1 value were important for the model. The results indicate that the mothers are significantly younger in the valley than in the other areas since the coefficient for mother’s age is significant.</p>
+<p>The stepwise procedure selects motherâs and fatherâs age in the model of valley. Neither the number of children, nor either parents FEV1 value were important for the model. The results indicate that the mothers are significantly younger in the valley than in the other areas since the coefficient for motherâs age is significant.</p>
 <ol start="6" style="list-style-type: decimal">
 <li><strong>Afifi 12.17: Assume a logistic regression model includes a continuous variable like age and a categorical variable like gender and an interaction term for these. Is the <span class="math inline">\(p\)</span> value for any of the main effects helpful in determining whether a) the interaction is significant, b) whether the main effect should be included in the model. Would your answers to a) or b) change if the categorical variable were RACE with three categories?</strong></li>
 </ol>
