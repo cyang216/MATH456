@@ -5,7 +5,6 @@ output:
   html_document:
     highlight: pygments
     theme: spacelab
-    toc: yes
   pdf_document: default
 ---
 ```{r,echo=FALSE, warning=FALSE, message=FALSE}
@@ -16,15 +15,13 @@ opts_chunk$set(warning=FALSE, message=FALSE)
 ```
 
 ```{r results="asis", echo=FALSE}
-source("~/Github/MATH456/stylesheets/custom.R")
+source("C:/Github/MATH456/stylesheets/custom.R")
 ```
-
-Navbar: [[Home]](../index.html) [[Schedule]](../Schedule.html) [[Data]](../data/Datasets.html) [[Week 11 Overview]](../wk11.html) [[HW Info]](../HW_Info.html)  [[Google Group]](https://groups.google.com/forum/#!forum/csuc_stat)
 
 # On Your Own
  
 ```{r}
-depress <- read.delim("~/GitHub/MATH456/data/depress_030816.txt")
+depress <- read.delim("C:/GitHub/MATH456/data/depress_030816.txt")
 names(depress) <- tolower(names(depress)) # make all variable names lower case. 
 depress$sex <- depress$sex -1 # Refactor to match book table.
 ```
@@ -104,7 +101,7 @@ The interaction between cesd and sex was not significant, indicating the odds ra
 3. **Afifi 12.14: Define low FEV1 to be an FEV1 measurement below the median
 FEV1 of the fathers in the family lung function data set.**
 ```{r}
-lung <- read.delim("~/GitHub/MATH456/data/Lung_020716.txt")
+lung <- read.delim("c:/GitHub/MATH456/data/Lung_020716.txt")
 names(lung) <- tolower(names(lung))
 table(is.na(lung$ffev1)) # check for missing
 lung$lowfev <- ifelse(lung$ffev1 < median(lung$ffev1), 1, 0)
