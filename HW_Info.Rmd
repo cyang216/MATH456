@@ -26,6 +26,7 @@ This is where I will post homework solutions (full and partial), and some helper
 * Plotting help for spline predictions [Lec04_solutions](notes/solutions/Lec04_solutions.html)
 * My model building [VariableSelection_solutions](notes/solutions/VariableSelection_solutions.html)
 * Categorical Data Analysis [lec07_CDA_solutions](notes/solutions/lec07_CDA_solutions.html)
+* Dimension Reduction [DimensionReduction_solutions](notes/solutions/DimensionReduction_solutions.html)
 * M & M Experiment [MnM_Experiment_S16_Solutions](notes/solutions/MnM_Experiment_S16_Solutions.html)
 * Logistic Regression [LogReg_Solutions](notes/solutions/LogReg_Solutions.html)
 * Multiple Imputation [MissingData_solutions](notes/solutions/MissingData_solutions.html)

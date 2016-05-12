@@ -17,8 +17,6 @@ opts_chunk$set(warning=FALSE, message=FALSE)
 source("C:/Github/MATH456/stylesheets/custom.R")
 ```
 
-Navbar: [[Home]](../index.html) [[Schedule]](../Schedule.html) [[Data]](../data/Datasets.html)  [[HW Info]](../HW_Info.html) 
-
 #### Generate hypothetical data
 Copied from lecture notes. 
 ```{r}
