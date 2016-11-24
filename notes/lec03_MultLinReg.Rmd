@@ -1,16 +1,18 @@
 ---
-title: 'Lec 03: Multiple Linear Regression Analysis'
+title: "Multiple Linear Regression Analysis"
 author: "MATH 456 - Spring 2016"
+subtitle: Robin Donatello
 output:
-  pdf_document: default
   html_document:
     highlight: pygments
     theme: spacelab
     toc: yes
+    toc_float: yes
+  pdf_document: default
 ---
 ```{r,echo=FALSE, warning=FALSE, message=FALSE}
 library(knitr); library(rmarkdown);library(ggplot2)
-opts_chunk$set(warning=FALSE, message=FALSE) 
+opts_chunk$set(warning=FALSE, message=FALSE, fig.height=4, fig.width=5) 
 ```
 
 ```{r results="asis", echo=FALSE}
@@ -19,10 +21,10 @@ source("C:/Github/MATH456/stylesheets/custom.R")
 
 Navbar: [[Home]](../index.html) [[Schedule]](../Schedule.html) [[Data]](../data/Datasets.html) [[Week 4 Overview]](../wk04.html) [[HW Info]](../HW_Info.html)  [[Google Group]](https://groups.google.com/forum/#!forum/csuc_stat)  [[Google Drive]](https://drive.google.com/a/mail.csuchico.edu/folderview?id=0B83Z8_sNw3KPcnVrYzVFRHUtcHM&usp=sharing)
 
-# Assigned Reading
-Afifi: Chapter 7
+# Multiple Regression
 
-# Multiple Regression and Correlation (_Afifi Ch 7_)
+## Associated Reading
+Afifi: Chapter 7
 
 ## Aims
 * Extend simple linear regression.
@@ -45,21 +47,23 @@ regression plane.
 * X's can be transformations of other X's, e.g., polynomial regression
 
 ## Mathematical Model
-[[top]](lec03_MultLinReg.html)
 
-* Mean of $y$ values at any given $x_{i}$ is: $E(y|x_{i}) = \beta_{0} + \beta_{1}x_{1} + \ldots + \beta_{p}x_{p}$
-* Variance of $Y$ values at any set of values of $X$'s is $\sigma^2$ (same
-  for all X's)
-* $Y$ values are normally distributed at any given $X$ (need for inference)
+$$ y_{i} = \beta_{0} + \beta_{1}x_{1i} + \ldots + \beta_{p}x_{pi} + \epsilon_{i}$$
 
+The Gauss-Markov assumptions still hold here. Recall these concern the set of error random variables, $\epsilon_{i}$:  
+
+* They have mean zero  
+* They are homoscedastic, that is all have the same finite variance: $Var(\epsilon_{i})=\sigma^{2}<\infty$  
+* Distinct error terms are uncorrelated: (Independent) $\text{Cov}(\epsilon_{i},\epsilon_{j})=0,\forall i\neq j.$  
 
 The regression model relates $y$ to a function of $\textbf{X}$ and $\mathbf{\beta}$, 
 where $\textbf{X}$ is a $nxp$ matrix of $p$ covariates on $n$ observations and 
-$\mathbf{\beta}$ is a length $p$ vector of regression coefficients. 
+$\mathbf{\beta}$ is a length $p$ vector of regression coefficients. In matrix notation
+this looks like: 
 
 $$ \textbf{y} = \textbf{X} \mathbf{\beta} + \mathbf{\epsilon} $$
 
-### Estimation of parameters
+### Parameter Estimation
 The goal of regression analysis is to minimize the residual error. 
 That is, to minimize the difference between the value of the dependent
 variable predicted by the model and the true value of the dependent variable.
@@ -86,7 +90,6 @@ The details of methods to solve these minimization functions are left to a
 course in mathematical statistics, however we will return to this notation. 
 
 ### Continued Example: Lung Function
-[[top]](lec03_MultLinReg.html)
 
 In Chapter 6 the data for fathers from the lung function data set were 
 analyzed. These data fit the variable-X case. Height was used as the 
@@ -136,8 +139,25 @@ obvious trend observed.
 *  What direction do you expect the slope coefficient for age to be? For height? 
 
 ## Model fitting
-[[top]](lec03_MultLinReg.html)
 
+### Simple Linear Regression
+Let's examine the bivarate relationship of FEV1 (forced expiratory volume in 1 minute)
+for fathers `FFEV1` on their age `FAGE`. 
+
+```{r}
+summary(lm(FFEV1 ~ FAGE, data=fev))
+```
+
+For every one year older the father gets, his FEV1 significantly decreases by 
+0.03 liters (p = .00001).
+
+```{r}
+summary(lm(FFEV1 ~ FHEIGHT, data=fev))
+```
+For every inch taller a father is, his FEV1 significantly increases by 
+0.11 liters (p < .0001).
+
+### Multiple Linear Regression
 Fitting a regression model in R with more than 1 predictor is trivial. Just add
 each variable to the right hand side of the model notation connected with a `+`. 
 
@@ -145,6 +165,18 @@ each variable to the right hand side of the model notation connected with a `+`.
 mv_model <- lm(FFEV1 ~ FAGE + FHEIGHT, data=fev)
 summary(mv_model)
 ```
+A father who is one year older is expected to have a FEV value 0.03 liters 
+less than another father of the same height (p<.0001).
+
+A father who is the same age as another father is expected to have a FEV
+value of 0.11 liter greater than another father of the same age who is one inch shorter (p<.0001). 
+
+For the model that includes age, the coefficient for height is now 
+`r round(mv_model$coefficients[3],2)`, which is interpreted as the rate of change 
+of FEV1 as a function of height **after adjusting for age**. 
+This is also called the **partial regression coefficient** of FEV1 on height after 
+adjusting for age. 
+
 Both height and age are significantly associated with FEV in fathers (p<.0001 each).
 
 ### ANOVA for regression
@@ -167,7 +199,6 @@ summary(mv_model)
 ```
 
 ## Predictions
-[[top]](lec03_MultLinReg.html)
 
 What is the predicted FEV1 for a 30-year-old male whose height was 70 inches?
 There are multiple ways to evaluate this calculation. 
@@ -202,16 +233,12 @@ slr.mod <- lm(FFEV1 ~ FHEIGHT, data=fev)
 predict(slr.mod, newdata = data.frame(FHEIGHT=70))
 ```
 
-## Interpretation of regression coefficients
-[[top]](lec03_MultLinReg.html)
-
 This value of `r round(predict(slr.mod, newdata = data.frame(FHEIGHT=70)),2) `
 is the rate of change of FEV1 for fathers as a function of height when no other
-variables are taken into account. For the model that includes age, the 
-coefficient for  height is now `r round(mv_model$coefficients[3],2)`, which is
-interpreted as the rate of change of FEV1 as a function of height **after adjusting
-for age**. This is also called the **partial regression coefficient** of FEV1 on 
-height after adjusting for age. 
+variables are taken into account. 
+
+## Comparing coefficients
+
 
 * Problem: Values of $\hat{\beta_{j}}$ are NOT directly comparable for any $j=1, \ldots, p$. 
 * Solution: Standardized coefficients:
@@ -225,7 +252,7 @@ $$\hat{\beta}_{j} = \hat{\beta}_{j} \frac{s_{x_{j}}}{s_{y}}$$
   standard deviation, keeping the other $X$ variables constant. 
 
 
-### Interlude: Reporting regression coefficients using tables in Markdown
+#### Interlude: Reporting regression coefficients using tables in Markdown
 There are not many options for making readable tables in Markdown.
 For better control you would be best suited by switching to LaTeX and
 Sweave (both can be done in R Studio). Here is a reference webpage
@@ -238,11 +265,13 @@ p-value to read <.0001 instead of a super small digit. Then I wrap
 `xtable()` around that output. 
 ```{r, results="asis"}
 library(xtable)
+options(xtable.comment=FALSE)
 coeff.out <- round(summary(mv_model)$coef, 2)
 coeff.out[,4] <- ifelse(coeff.out[,4]<.0001, "<.0001", coeff.out[,4])
 tab <- xtable(coeff.out)
 names(tab)[3:4] <- c("t", "p-value")
 print(tab, type="html")
+#print(tab) #latex printing only
 ```
 
 _R specifics_:  Rounding has to come first because the `ifelse()` changed the 
@@ -251,8 +280,7 @@ character you can't round. There are ways around this but I am not going
 to discuss it here. 
 
 
-## Other parameters estimated
-[[top]](lec03_MultLinReg.html)
+## Estimated Covariance
 
 For the variable-X case, several additional parameters are needed to characterize
 the full joint distribution $f(x, y)$. A matrix of the estimated covariances 
@@ -291,8 +319,7 @@ round(cor(x.vars), digits=3)
 
 
 
-## Regression diagnostics and transformations
-[[top]](lec03_MultLinReg.html)
+## Model Diagnostics 
 
 The same set of regression diagnostics can be examined to identify
 any potential influential points, outliers or other problems with
@@ -334,24 +361,25 @@ tolerance
 * Solution: use variable selection to delete some X variables.
 * Alternatively, use Principal Components (Ch. 14)
 
-## Interactions between variables
-[[top]](lec03_MultLinReg.html)
+## Interaction Models
 
 Consider a model with only two predictors: $X_{i}$ and $x_{j}$.
 
 $$E(y|x_{i}) = \beta_{0} + \beta_{1}x_{1} + \beta_{2}x_{2} $$
 
-A model of this form is said to be_additive_
+A model of this form is said to be _additive_. If the additive terms for 
+these variables do not completely specify their effects on the dependent 
+variable $Y$, then interaction of $X_{1}$ and $X_{2}$ is said to be present. 
 
-If the additive terms for these variables do not completely specify their
-effects on the dependent variable &
+#### Interlude: Reshaping the Lung data from wide to long. 
 
+The data on Lung function came to us in _wide_ format, with separate 
+variables for mother's and father's FEV1 score (`MFEV1` and `FFEV`). 
+To analyze the effect of gender on FEV, the data need to be in _long_
+format, with a single variable for `FEV` and a separate variable for
+gender. The following code chunk demonstrates one method of combining
+data on height, gender, age and FEV1 for both males and females. 
 
-For demonstration purposes, consider the situation where the data came to us
-as _long_ format with a separate variable for gender instead of in _wide_
-format with separate variables for mother and father characteristics. 
-Here I combine height, FEV and age for both males and females into a single 
-long data set. 
 ```{r}
 fev2 <- data.frame(gender = c(fev$FSEX, fev$MSEX), 
                    FEV = c(fev$FFEV1, fev$MFEV1), 
@@ -361,12 +389,12 @@ fev2$gender <- factor(fev2$gender, labels=c("M", "F"))
 head(fev2)  
 ```
 
-What does the relationship between height and FEV look like for the overall
-sample? 
+What does the relationship between height and FEV look like for the overall sample? 
 ```{r}
 ggplot(data=fev2, aes(x=ht, y=FEV)) + geom_point() + xlab("Height") + 
   ggtitle("Scatterplot of FEV vs height of adults") + 
-  geom_smooth(se=FALSE, method='lm', col="purple")
+  geom_smooth(se=FALSE, method='lm', col="purple") + 
+  geom_smooth(se=FALSE, col="brown") 
 ```
 
 However if we examine the relationship separately by gender we see
@@ -387,46 +415,40 @@ and for females the correlation is
 `cor(fev$MFEV, fev$MHEIGHT)` = `r round(cor(fev$MFEV, fev$MHEIGHT),2)`.
 
 
-**Conclusion:** The relationship between FEV1 and height depends on gender. 
-These variables are said to **interact** with each other. 
+**Conclusion:** The relationship between FEV1 and height may depend on gender. 
+These variables are said to **interact** with each other. In other words, 
+gender changes the relationship between height and FEV1. 
 
-### Recap of a main effects model
-[[top]](lec03_MultLinReg.html)
+Consider the linear model of FEV on gender($x_{1}$), height($x_{2}$) and age($x_{3}$)
+where gender interacts with  height. 
 
-First let's examine the _main effects_ model, that is the model without any
-interaction terms. 
+$$ FEV1 \sim \beta_{0} + \beta_{1}*gender + \beta_{2}*height + \beta_{3}*age + \beta_{4}*gender*height $$
 
-$$ FEV1 \sim \beta_{0} +  \beta_{1}*height + \beta_{2}*gender$$
+According to the codebook, when `gender = 0` the record is on a male, and when `gender = 1` the record is
+on a female. The model for males then simplifies to: 
 
+$$ FEV1 \sim \beta_{0} + \beta_{2}*height + \beta_{3}*age $$
 
+and the model for females would be:
+
+$$ FEV1 \sim (\beta_{0} + \beta_{1}) + (\beta_{2} + \beta_{4})*height + \beta_{3}*age$$
+
+Interactions are fit in `R` by simply multiplying `*` the two variables together in the model statement. 
 ```{r}
-summary(lm(FEV ~ ht + gender, data=fev2))
+intx.model <- lm(FEV ~ gender + ht + age + gender*ht, data=fev2)
+summary(intx.model)
+confint(intx.model)
 ```
-The first thing to notice is the coefficient label: `genderF`. The gender 
-variable is a factor variable, and is automatically _dummy coded_ into a 
-new variable that is not present on the data set but only as part of the 
+
+* Using the output from R after fitting the interaction model specified above, write out
+the regression equation for males and females separately. 
+
+
+The first thing to notice is the coefficient label: `genderF`. Since the
+variable for gender is a factor variable, is automatically _reference coded_ 
+into a new variable that is not present on the data set but only as part of the 
 linear model function. This variable `genderF` is a 1 if the gender on record 
-is female, and 0 otherwise. In this case there is only one other option, Male, 
-so when `genderF=0` the record states male.
-
-#### Interpretations
-* For every inch taller someone is, their FEV increases by 0.1 liters. 
-* Females have a FEV measurement of 0.57 lower compared to males of the same height. 
-
-### Adding interaction terms to a model
-[[top]](lec03_MultLinReg.html)
-
-The full interaction model can be written as: 
-$$ FEV1 \sim \beta_{0} +  \beta_{1}*height + \beta_{2}*gender + \beta_{3}*ht*gender $$
-
-To add an interaction term to a linear model in R you use the `*` operator between
-the interaction variables.
-
-```{r}
-intx_model <- lm(FEV ~ ht + gender + ht*gender, data=fev2)
-summary(intx_model)
-confint(intx_model)
-```
+is female, and 0 otherwise. 
 
 The p-value for the interaction term `ht:genderF` is large, and the confidence
 interval for this parameter covers zero, so there is no indication that an 
@@ -434,11 +456,19 @@ interaction exists. That is, there is not enough reason to believe that gender
 significantly affects the relationship between height and FEV. 
 
 **Reminder** Just as in a Two-Way ANOVA with an interaction term, the main effects
-cannot be interpreted directly when there is an interaction in the model. 
+cannot be interpreted directly when there is an interaction in the model. This means
+you **cannot** interpret the direct effect of height or gender on FEV1 using just 
+$\beta_{1}$ or $\beta_{3}$.
+
+
+* What is the effect of height on FEV1 for females? 
+
+
+Later on we will talk about how categorical variables with multiple factor
+levels are reference coded for entry into models. 
 
 
 ## Stratification
-[[top]](lec03_MultLinReg.html)
 
 Sometimes it is desirable to examine equations for subgroup of
 the population. Consider the relationship between age, height and FEV
@@ -447,20 +477,6 @@ strata (gender).
 
 $$ FEV1_{M} \sim \beta_{0M} + \beta_{1M}*height + \beta_{2M}*age $$
 $$ FEV1_{F} \sim \beta_{0M} + \beta_{1F}*height + \beta_{2F}*age $$
-
-<!--- #### 
-
-```{r}
-ggplot(data=fev2, aes(x=age, y=FEV, col=gender)) + geom_point() +
-  ggtitle("Scatterplot of height vs age of adults by gender") + 
-  geom_smooth(se=FALSE, method='lm') + 
-  geom_smooth(aes(x=age, y=FEV), col="purple", se=FALSE, method='lm')
-
-ggplot(data=fev2, aes(x=ht, y=FEV, col=gender)) + geom_point() +
-  ggtitle("Scatterplot of height vs age of adults by gender") + 
-  geom_smooth(se=FALSE, method='lm') + 
-  geom_smooth(aes(x=ht, y=FEV), col="purple", se=FALSE, method='lm')
-```
 
 Example: Within each gender there exists a negative correlation between 
 age and height. However in the combined sample this appears to be a
@@ -493,9 +509,9 @@ and the model for females would be:
 $$ FEV1 \sim (\beta_{0} + \beta_{1}) + (\beta_{2} + \beta_{4})*height + (\beta_{3}+\beta_{5})*age$$
 
 Instead of running the model on the full set of data and then calculating
-the correct coefficient for each gender we _stratify_ the model and run
+the correct coefficient for each gender we _stratify_ the model by fitting 
+the model on each subgroup separately. 
 
---->
 
 ```{r}
 # subset the data
@@ -513,18 +529,21 @@ with height (p<.0001 each)
 ```{r, results='asis'}
 tab <- xtable(summary(overall_model), digits=3)
 print(tab, type="html")
+#print(tab)
 ```
 
 Model on females only:
 ```{r, results='asis'}
 tabf <- xtable(summary(female_model), digits=3)
 print(tabf, type="html")
+#print(tabf)
 ```
 
 Model on males only:
 ```{r, results='asis'}
 tabm <- xtable(summary(male_model), digits=3)
 print(tabm, type="html")
+#print(tabm)
 ```
 
 Create a prediction of FEV for two cases, a 30 year old who is
@@ -539,6 +558,7 @@ m.pred <- predict(male_model, new.data)
 f.pred <- predict(female_model, new.data)
 pred <- xtable(rbind(o.pred, m.pred, f.pred), digits=3)
 print(pred, type="html")
+#print(pred)
 ```
 
 Column number 1 is a prediction of FEV for a 30 year old who is 66cm tall,
@@ -599,12 +619,15 @@ how I wrangled the linear model output into a table that is easily read for
 your info only. This is not mandatory but it looks nice._
 
 ```{r, results="asis"}
-mci <- paste("(", round(confint(male_model)[,1],2),", ", round(confint(male_model)[,2],2), ")", sep="")
-fci <- paste("(", round(confint(female_model)[,1],2),", ", round(confint(female_model)[,2],2), ")", sep="")
+mci <- paste("(", round(confint(male_model)[,1],2),", ", 
+             round(confint(male_model)[,2],2), ")", sep="")
+fci <- paste("(", round(confint(female_model)[,1],2),", ", 
+             round(confint(female_model)[,2],2), ")", sep="")
 out <- cbind(Male = mci, Female = fci)[-1,]
 rownames(out) <- c("Age", "Height")
 out <- xtable(out)
 print(out, type="html")
+#print(out)
 ```
 
 * If CIs _do not_ overlap then slopes are significantly different from each other.
@@ -616,8 +639,7 @@ would suspect that there is no significant difference in the coefficients
 between models. This finding corroborates the formal statistical test
 done earlier. 
 
-# What to watch out for
-[[top]](lec03_MultLinReg.html)
+## What to watch out for
 
 * See cautions for simple regression including violations of assumptions, outliers, 
   influential points
@@ -679,5 +701,339 @@ done earlier.
    (`NGHB1-NGHB11`). Is the age at which adolescents start smoking different
    for girls compared to boys, after adjusting for the score describing the 
    neighborhood? 
+   
+   
+# Categorical Predictors
+
+## Associated  Reading
+
+Afifi: Chapter 9.3, Harrel Ch 2
+
+## Factor variable coding
+
+* Most commonly known as "Dummy coding"
+* Better used term: Indicator variable
+* Math notation: **I(gender == "Female")**. 
+* A.k.a reference coding
+* For a nominal X with K categories, define K indicator variables.
+    - Choose a reference (referent) category:
+    - Leave it out
+    - Use remaining K-1 in the regression.
+    - Often, the largest category is chosen as the reference category.
+
+
+
+
+## Example: Religion against income and depression
+Consider a log-linear model for the effect of marital status ($X_2$) on
+log income while controlling for age($X_1$). This is called a log-linear
+model because the outcome has been log transformed. 
+
+$$ log(Y_i) = \beta_0 + \beta_1*x_1 + \beta_2*x_2 $$
+
+Forget why we log-transformed income? Re-visit the notes on Data Screening 
+and Transformations http://norcalbiostat.github.io/MATH456/notes/lec01_data_prep.html 
+
+```{r}
+dep <- read.table("C:/GitHub/MATH456/data/Depress_041616.txt", sep="\t", header=TRUE)
+names(dep) <- tolower(names(dep)) # I hate all captal variable names
+levels(dep$marital)
+```
+
+Marital status has 5 levels, so we would need 4 indicator variables. 
+R always uses the first level of a factor variable as the reference level. 
+
+* Let $x_{2}=1$ when `marital='Married'`, and 0 otherwise,  
+* let $x_{3}=1$ when `marital='Never Married'`, and 0 otherwise,  
+* let $x_{4}=1$ when `marital='Separated'`, and 0 otherwise,  
+* let $x_{5}=1$ when `marital='Widowed'`, and 0 otherwise. 
+
+The mathematical model would look like: 
+
+$$ log(Y)|X \sim \beta_{0} + \beta_{1}*x_{1} + \beta_{2}x_{2} + \beta_{3}x_{3} + \beta_{4}x_{4} + \beta_{5}x_{5} $$
+
+Two levels of interpretation here. 
+
+1. The outcome is log transformed, so the interpretation has to be 
+   back-transformed.   
+2. The coefficients for the other levels of the categorical variable
+   are in _comparison_ to the reference level. 
+
+
+**Interpretation of log-linear models** 
+Calculate the change in $Y$ that corresponds to a one unit change in $x_1$. 
+Since marital status is remaining constant, I will exclude it from the 
+calculations below to save space and not to detract from the main point.
+
+Write each equation down
+
+$$ log(Y)|x_1 = \beta_{0} + \beta_{1}x_{1}$$ 
+$$ log(Y)|(x_1+1)  = \beta_{0} + \beta_{1}(x_{1}+1)$$ 
+
+Find the difference
+
+$$ (log(Y)|x_1) - (log(Y)|(x_1+1)) = (\beta_{0} + \beta_{1}x_{1}) - (\beta_{0} + \beta_{1}(x_{1}+1))$$ 
+
+and simplify. 
+
+$$ log(\frac{Y|x_1}{Y|x_1+1}) = \beta_{1}$$ 
+$$ \frac{Y|x_1}{Y|x_1+1} = e^{\beta_{1}}$$
+
+Each 1-unit increase in $x_{j}$ multiplies the expected value of Y by $e^{\hat{\beta_{j}}}$.  
+
+Interpretation: $100\hat{\beta_{j}}$ is the expected **percentage** change
+in $Y$ for a unit increase in $x_{j}$.
+
+
+The nice thing about factor variables in R, is that the appropriate 
+indicator variables are automatically created for you by the linear
+model (`lm()`) function.
+
+```{r, echo=1}
+summary(lm(log(income) ~ age + marital,data=dep))
+cf <- round(exp(coef(summary(lm(log(income) ~ age + marital,data=dep)))),2)
+```
+
+
+* For every year older, a persons income decreases by 1%. (`exp(-0.009)` = `r cf[2,1]`)
+* Married individuals have a 52% higher income compared to those who are divorced. (`exp(-0.417)` = `r cf[3,1]`)
+* Those who have never been married have  16% lower income compared to those who are divorced. (`exp(-0.183)` = `r cf[4,1]`)
+* Separated individuals have 32% lower income compared to those who are divorced. (`exp(-0.394)` = `r cf[5,1]`)
+* Widowed individuals have 24% lower income compared to those who are divorced. (`exp(-0.278)` = `r cf[6,1]`)
+
+Other references on how to interpret regression parameters when they have 
+been log transformed: 
+
+* http://www.ats.ucla.edu/stat/mult_pkg/faq/general/log_transformed_regression.htm 
+* http://www.kenbenoit.net/courses/ME104/logmodels2.pdf
+
+## On Your Own
+##### On Your Own
+
+**Create a model to analyze the relationship of education status to depression level as measured by
+CESD after controlling for age. Combine all education levels below a HS graduate into one reference 
+category called "Up to HS" prior to analysis.**
+
+This is a seemingly simple request, but there are a lot of steps you must do
+to correctly analyze this question. 
+
+1. Ensure that you are using the analyzable version of the depression data set. 
+   It may be helpful to confirm that your recodes are correct by comparing
+   your data management code file to mine [dm_depress](../data/dm_depress.html) 
+   located on our course website. 
+2. Reference your Ch3 homework (or the [solutions](./solutions/ch3_solutions.html))
+   if you need help collapsing educational categories. 
+3. Ensure that R is treating "Up to HS" as the reference category for education level. 
+   If it is not, use the `levels` argument of the `factor()` function to reorder
+   your factor levels. This is also presented in the Ch3 solutions. 
+4. Consider a transformation of `CESD`. Explain and justify using graphical
+   measures why you chose to, or chose not to, transform CESD prior to modeling. 
+5. Check the model fit by examining the residuals to see if the assumption that 
+   $\epsilon_{i} \sim \mathcal{N}(0, \sigma^{2})$ is upheld. 
+6. Identify any potential outliers. Explain why you think they are outliers. 
+   Examine their standardized residuals and leverage values.If any seem to stand out or 
+   have high values for either measure, exclude them from the analysis and re-run the model. 
+7. Once you have finalized your model, interpret ALL coefficients in context of the problem. 
+   State if any are significantly predictive of the outcome, provide p-values in your conclusion. 
+8. Does this model do well at all in predicting CESD? Answer this question using both the
+   coefficient of determination and the ANOVA test of overall global fit (testing that
+   all $\beta$'s are 0)
+   
+
+
+# Splines & other non-linear terms
+
+## Associated Reading
+
+* Afifi Section 9.4
+* Harrell 2.4.3, pg 39 http://biostat.mc.vanderbilt.edu/tmp/course.pdf
+* Harrell ch2 from second edition [pdf](https://drive.google.com/open?id=0B83Z8_sNw3KPb0dsYzk0OTR1Nms) in shared GDrive. 
+* https://www.youtube.com/watch?v=o_d4hmKhmsQ
+* http://www.r-bloggers.com/thats-smooth/
+
+
+#### Example 1: Simulated data.
+Example data pulled from 
+_http://faculty.washington.edu/heagerty/Courses/b571/homework/spline-tutorial.q_
+
+Suppose we have a predictor that takes the values 1:24
+```{r}
+x <- c(1:24)
+```
+and there is an outcome variable that is predicted by
+the variable X, but in some non-linear fashion:
+```{r}
+mu <- 10 + 5 * sin( x * pi / 24 )  - 2 * cos( (x-6)*4/24 )
+```
+But there is always some amount of error associated with real data.
+```{r}
+set.seed(42)
+eee <- rnorm(length(mu))
+```
+So our simulated data then is the true trend + the noise. 
+```{r}
+y <- mu + eee
+```
+
+Let's look at the data, and the real mean trend without the random noise. 
+```{r}
+plot(y~x)
+lines(x, mu, col="red" )
+```
+
+Let's look at ways to fit a model to this data. 
+
+
+## Linear
+Ignore the trend and fit a linear model. 
+
+$$ E(Y|X) = \beta_{0} + \beta_{1}X$$ 
+
+```{r}
+fit.slr <- lm(y~x)
+plot(y~x)
+abline(fit.slr)
+lines(x, mu, col="red" )
+```
+
+Undoubtedly not a good fit. Examining the residuals shows the non-constant
+variance clearly. 
+
+```{r}
+par(mfrow=c(2,2))
+plot(fit.slr)
+```
+
+## Piecewise linear splines
+We allow the $x$ axis to be divided into intervals, with a linear model
+fit within each interval. The breakpoints between intervals are called _knots_. 
+This is where you are allowing the slope of the line to change. 
+For example to break the x-axis into three sections we would use 2 knots. 
+The model would look like. 
+
+$$ E(Y|X) = \beta_{0} + \beta_{1}X + \beta_{2}(X-a)_{+} + \beta_{3}(X-b)_{+}$$
+
+where $(u)_{+}$ contains the value of $u$ when $u$ is positive, and 0 otherwise. 
+
+Let's put knots at 6, 12, and 18. 
+```{r}
+x6 <- (x-6)
+x6[ x6<0 ] <- 0
+
+x12 <- (x-12)
+x12[ x12<0 ] <- 0
+
+x18 <- (x-18)
+x18[ x18<0 ] <- 0
+```
+What does this data look like now? 
+```{r}
+t(cbind(x, x6, x12, x18)[8:20,])
+```
+
+Now let's fit this model. 
+```{r}
+fit.lin.spline <- lm(y ~ x + x6 + x12 + x18)
+plot(y~x)
+lines(x, predict(fit.lin.spline), col="orange")
+points(c(6, 12, 18), predict(fit.lin.spline)[c(6, 12, 18)], pch=16, col="orange")
+lines(x, mu, col="red" )
+```
+
+Much closer than the linear model, but it still lacks the curvature that 
+is present in the data. The residual plots look much better already. 
+
+```{r}
+par(mfrow=c(2,2))
+plot(fit.lin.spline)
+```
+
+
+## Powers
+A non-linear effect can be as simple as adding a covariate at some power. 
+
+$$ E(Y|X) = \beta_{0} + \beta_{1}X + \beta_{2}X^{2}$$ 
+
+Testing $H_{0}: \beta_{2} = 0$ tests the null hypothesis that the effect
+of $X_1$ on $Y$ is linear vs the effect is quadratic. 
+
+```{r}
+x.squared <- x^2
+fit.sq <- lm(y~x + x.squared)
+plot(y~x)
+lines(x, predict(fit.sq), col="blue")
+lines(x, mu, col="red" )
+```
+
+A cubic term could also be added. 
+
+$$ E(Y|X) = \beta_{0} + \beta_{1}X + \beta_{2}X^{2} + \beta_{3}x^{3}$$ 
+
+```{r}
+x.cubed <- x^3
+fit.cubic <- lm(y~x + x.squared + x.cubed)
+plot(y~x)
+lines(x, predict(fit.cubic), col="purple")
+lines(x, mu, col="red" )
+```
+
+Adding this cubic term allows for another "wiggle" in the fitted line. 
+
+## Cubic splines
+Combining the two concepts allows for a very flexible polynomial model. 
+
+$$ E(Y|X) = \beta_{0} + \beta_{1}X + \beta_{2}X^{2} + \beta_{3}X^{3} + 
+            \beta_{4}(X-a)^{3}_{+} + \beta_{5}(X-b)^{3}_{+}$$
+            
+Using the knots at 6, 12, and 18 let's fit a cubic spline. 
+
+```{r}
+x6.cubed <- x6^3
+x12.cubed <- x12^3
+x18.cubed <- x18^3
+
+fit.cub.spline <- lm(y ~ x + x.squared + x.cubed + x6.cubed + x12.cubed + x18.cubed)
+```
+
+Replot and look at the fitted model. 
+```{r}
+plot(y~x)
+lines(x, predict(fit.cub.spline), col="darkgreen")
+points(c(6, 12, 18), predict(fit.cub.spline)[c(6, 12, 18)], pch=16, col="darkgreen")
+lines(x, mu, col="red" )
+```
+
+It seems like our model is fitting the data better, but sometimes there is a 
+balance between a flexible model, and overfitting the data (when your model fits
+each point better than the true underlying average.)
+
+## Natural splines
+Also called _natural splines_, these models constrain the model to be linear in the
+tails. The model is difficult to write, and fit by hand so we will use the `splines` 
+package. 
+
+```{r}
+library(splines)
+
+fit.ns = lm( y ~ ns(x, knots=c(6,12,18) ) )
+
+plot(y~x)
+lines(x, predict(fit.ns), col="darkcyan")
+points(c(6, 12, 18), predict(fit.ns)[c(6, 12, 18)], pch=16, col="darkcyan")
+lines(x, mu, col="red" )
+```
+
+There are other methods of model fitting under the umbrella of _Nonparametric Regression_, 
+these include kernel smoothing, smoothing splines, and the familiar LOWESS 
+(locally weighted scatterplot smoothing) and LOESS (Local regression) models. 
+
+## On Your Own
+##### On Your Own
+
+1. Using the `cars` data set built into R, build a model to predict the
+   distance a car takes to stop based on how fast it was going.  
+2. Using the family lung function data, build a model to predict FEV1
+   to height for the oldest child. 
+
    
    
