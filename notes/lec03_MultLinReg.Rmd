@@ -2,11 +2,12 @@
 title: 'Lec 03: Multiple Linear Regression Analysis'
 author: "MATH 456 - Spring 2016"
 output:
-  pdf_document: default
   html_document:
     highlight: pygments
     theme: spacelab
     toc: yes
+    toc_float: yes
+  pdf_document: default
 ---
 ```{r,echo=FALSE, warning=FALSE, message=FALSE}
 library(knitr); library(rmarkdown);library(ggplot2)
